@@ -8,7 +8,7 @@
   letter-spacing: 0.05em;
 
   .ac-icon {
-    background-image: url('../img/icon-2x.png');
+    background-image: url('../img/icon.png');
     background-repeat: no-repeat;
     background-size: 128px 128px;
     width: 128px;
@@ -41,4 +41,13 @@
 .fa-chevron-right {
   position: relative;
   top: 0.08em;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+.ac-logo {
+  .ac-icon {
+    background-image: url('../img/icon-2x.png');
+  }
+}
+
 }
