@@ -14,6 +14,7 @@
 // If you want your base font-size to be different and not have it affect the grid breakpoints,
 // set $rem-base to $base-font-size and make sure $base-font-size is a px value.
 // $base-font-size: 100%;
+$extra-bold-font-weight: 800;
 
 // The $base-line-height is 100% while $base-font-size is 150%
 // $base-line-height: 150%;
@@ -40,6 +41,8 @@ $body-font-color: #222;
 // $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 // $body-font-weight: normal;
 // $body-font-style: normal;
+$header-font-family: 'Alegreya Sans SC', sans-serif;
+$header-font-weight: $extra-bold-font-weight !default;
 
 // We use this to control font-smoothing
 // $font-smoothing: antialiased;
@@ -934,13 +937,13 @@ $topbar-bg-color: #fff;
 $topbar-bg: none;
 
 // Height and margin
-// $topbar-height: 45px;
+$topbar-height: 49px;
 // $topbar-margin-bottom: 0;
 
 // Control Input height for top bar
 
 // Controlling the styles for the title in the top bar
-$topbar-title-weight: 800;
+$topbar-title-weight: $extra-bold-font-weight;
 // $topbar-title-font-size: rem-calc(17);
 
 // Style the top bar dropdown elements
@@ -955,14 +958,14 @@ $topbar-dropdown-bg: $topbar-bg;
 $topbar-link-color: $body-font-color;
 $topbar-link-color-hover: $primary-color;
 $topbar-link-color-active: $primary-color;
-// $topbar-link-weight: normal;
+$topbar-link-weight: $header-font-weight;
 // $topbar-link-font-size: rem-calc(13);
 // $topbar-link-hover-lightness: -10%; // Darken by 10%
 $topbar-link-bg-hover: $topbar-bg;
 $topbar-link-bg-active: $topbar-bg;
 $topbar-link-bg-active-hover: $primary-color;
 $topbar-link-color-active-hover: #fff;
-// $topbar-link-font-family: $body-font-family;
+$topbar-link-font-family: $header-font-family;
 
 // $topbar-button-font-size: 0.75rem;
 
