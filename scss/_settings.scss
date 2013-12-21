@@ -3,7 +3,7 @@
 //
 
 // Uncomment to use rem-calc() in your settings
-// @import "foundation/functions";
+@import "foundation/functions";
 
 // $experimental: true;
 
@@ -20,7 +20,7 @@ $extra-bold-font-weight: 800;
 // $base-line-height: 150%;
 
 // This is the default html and body font-size for the base rem value.
-// $rem-base: 16px;
+$rem-base: 16px;
 
 // We use this to control whether or not CSS classes come through in the gem files.
 // $include-html-classes: true;
@@ -944,7 +944,7 @@ $topbar-height: 49px;
 
 // Controlling the styles for the title in the top bar
 $topbar-title-weight: $extra-bold-font-weight;
-// $topbar-title-font-size: rem-calc(17);
+$topbar-title-font-size: rem-calc(20);
 
 // Style the top bar dropdown elements
 $topbar-dropdown-bg: $topbar-bg;
@@ -959,7 +959,7 @@ $topbar-link-color: $body-font-color;
 $topbar-link-color-hover: $primary-color;
 $topbar-link-color-active: $primary-color;
 $topbar-link-weight: $header-font-weight;
-// $topbar-link-font-size: rem-calc(13);
+$topbar-link-font-size: rem-calc(20);
 // $topbar-link-hover-lightness: -10%; // Darken by 10%
 $topbar-link-bg-hover: $topbar-bg;
 $topbar-link-bg-active: $topbar-bg;
