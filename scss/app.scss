@@ -51,6 +51,15 @@ fieldset {
   }
 }
 
+input.helper,
+textarea.helper {
+  margin-bottom: 0;
+}
+
+span.helper, small.helper {
+  @include form-error-message($body-font-color)
+}
+
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 .ac-logo {
   .ac-icon {
