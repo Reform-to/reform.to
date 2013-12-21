@@ -3,41 +3,41 @@
 
 
 .ac-logo {
-	text-align: center;
-	text-transform: lowercase;
-	letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
 
-	.ac-icon {
-		background-image: url('../img/icon.png');
-		background-repeat: no-repeat;
-		width: 128px;
-		height: 128px;
-		margin: 0 auto;
-	}
+  .ac-icon {
+    background-image: url('../img/icon.png');
+    background-repeat: no-repeat;
+    width: 128px;
+    height: 128px;
+    margin: 0 auto;
+  }
 
-	.strapline {
-		font-size: $header-font-size;
-	}
+  .strapline {
+    font-size: $header-font-size;
+  }
 
 }
 
 .top-bar {
-	text-transform: lowercase;
-	letter-spacing: 0.05em;
-	border-bottom: 1px solid $secondary-color;
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid $secondary-color;
 }
 
 .top-bar-section {
-	ul li {
-		&.active > a {
-		&:hover {
-			color: $topbar-link-color-active-hover;
-		}
-		}
-	}
+  ul li {
+    &.active > a {
+    &:hover {
+      color: $topbar-link-color-active-hover;
+    }
+    }
+  }
 }
 
 .fa-chevron-right {
-	position: relative;
-	top: 0.08em;
+  position: relative;
+  top: 0.08em;
 }
