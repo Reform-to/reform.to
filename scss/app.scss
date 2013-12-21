@@ -1,2 +1,23 @@
 @import "settings";
 @import "foundation";
+
+h1, .top-bar-section ul li>a {
+	font-family: 'Alegreya Sans SC', sans-serif;
+	text-transform: lowercase;
+	font-weight: 800;
+}
+
+.top-bar {
+	border-bottom: 1px solid $secondary-color;
+}
+
+.top-bar-section {
+	ul li {
+		&.active > a {
+		&:hover {
+			color: $topbar-link-color-active-hover;
+		}
+		}
+	}
+}
+
