@@ -43,6 +43,14 @@
   top: 0.08em;
 }
 
+fieldset {
+  legend {
+      font-family: $legend-font-family;
+      font-size: $legend-font-size;
+      text-transform: lowercase;
+  }
+}
+
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 .ac-logo {
   .ac-icon {

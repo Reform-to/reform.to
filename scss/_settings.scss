@@ -358,8 +358,10 @@ $alert-color: #f04124;
 
 // We use these to style the legends when you use them
 // $legend-bg: #fff;
-// $legend-font-weight: bold;
+$legend-font-weight: $header-font-weight;
 // $legend-padding: rem-calc(0 3);
+$legend-font-family: $header-font-family;
+$legend-font-size: $header-font-size;
 
 // We use these to style the prefix and postfix input elements
 // $input-prefix-bg: darken(#fff, 5%);
