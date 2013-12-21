@@ -43,6 +43,7 @@ $body-font-color: #222;
 // $body-font-style: normal;
 $header-font-family: 'Alegreya Sans SC', sans-serif;
 $header-font-weight: $extra-bold-font-weight !default;
+$header-font-size: rem-calc(20);
 
 // We use this to control font-smoothing
 // $font-smoothing: antialiased;
@@ -944,7 +945,7 @@ $topbar-margin-bottom: $rem-base;
 
 // Controlling the styles for the title in the top bar
 $topbar-title-weight: $extra-bold-font-weight;
-$topbar-title-font-size: rem-calc(20);
+$topbar-title-font-size: $header-font-size;
 
 // Style the top bar dropdown elements
 $topbar-dropdown-bg: $topbar-bg;
@@ -959,7 +960,7 @@ $topbar-link-color: $body-font-color;
 $topbar-link-color-hover: $primary-color;
 $topbar-link-color-active: $primary-color;
 $topbar-link-weight: $header-font-weight;
-$topbar-link-font-size: rem-calc(20);
+$topbar-link-font-size: $header-font-size;
 // $topbar-link-hover-lightness: -10%; // Darken by 10%
 $topbar-link-bg-hover: $topbar-bg;
 $topbar-link-bg-active: $topbar-bg;
