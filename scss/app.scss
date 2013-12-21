@@ -1,16 +1,24 @@
 @import "settings";
 @import "foundation";
 
-.ac-icon {
-	background-image: url('../img/icon.png');
-	background-repeat: no-repeat;
-	width: 128px;
-	height: 128px;
-	margin: 0 auto;
-}
 
 .ac-logo {
 	text-align: center;
+	text-transform: lowercase;
+	letter-spacing: 0.05em;
+
+	.ac-icon {
+		background-image: url('../img/icon.png');
+		background-repeat: no-repeat;
+		width: 128px;
+		height: 128px;
+		margin: 0 auto;
+	}
+
+	.strapline {
+		font-size: $header-font-size;
+	}
+
 }
 
 .top-bar {
