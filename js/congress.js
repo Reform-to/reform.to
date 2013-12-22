@@ -71,6 +71,6 @@ var legislators = [
 ];
 
 React.renderComponent(
-    <CongressPicker url="legislators.json" />,
+    <CongressPicker />,
     document.getElementById('ac-congress')
 );
