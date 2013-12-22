@@ -2,12 +2,21 @@
  * @jsx React.DOM
  */
 var CongressPicker = React.createClass({
+  getInitialState: function() {
+    $.ajax({
+      url: 'legislators.json',
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this)
+    });
+    return {data: []};
+  },
   render: function() {
     return (
     <div className="row">
       <div className="large-12 columns">
         <AddressForm />
-        <LegislatorList data={this.props.data} />
+        <LegislatorList data={this.state.data} />
       </div>
     </div>
     );
@@ -62,6 +71,6 @@ var legislators = [
 ];
 
 React.renderComponent(
-    <CongressPicker data={legislators} />,
+    <CongressPicker url="legislators.json" />,
     document.getElementById('ac-congress')
 );
