@@ -2,14 +2,11 @@
  * @jsx React.DOM
  */
 
-var apikey = '574712f76976437cb98767c4a2622588';
-var lat = '42.96';
-var lng = '-108.09';
-var params = {apikey: apikey, latitude: lat, longitude: lng};
-var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(params);
-
 var CongressPicker = React.createClass({
-  locateLegislators: function() {
+  locateLegislators: function(coordinates) {
+    var apikey = '574712f76976437cb98767c4a2622588';
+    var params = {apikey: apikey, latitude: coordinates.latitude, longitude: coordinates.longitude};
+    var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(params);
     $.ajax({
       url: locate,
       success: function(data) {
@@ -19,14 +16,16 @@ var CongressPicker = React.createClass({
   },
   handleAddressSubmit: function(address) {
     var geocoder = new google.maps.Geocoder();
+    self = this;
     geocoder.geocode(address, function(results, status) {
       if (status === 'OK') {
         var location = results[0].geometry.location;
         var lat = location.lat();
         var lng = location.lng();
-        console.log('Address', address);
-        console.log('Latitude', lat);
-        console.log('Longitude', lng);
+        console.log('Address:', address.address);
+        console.log('Latitude:', lat);
+        console.log('Longitude:', lng);
+        self.locateLegislators({latitude: lat, longitude: lng});
       }
     });
   },
@@ -34,7 +33,6 @@ var CongressPicker = React.createClass({
     return {data: []};
   },
   componentWillMount: function() {
-    this.locateLegislators();
   },
   render: function() {
     return (
@@ -98,12 +96,6 @@ var Legislator = React.createClass({
     );
   }
 });
-
-var legislators = [
-{bioguide_id: "L000571", first_name: "Cynthia", last_name: "Lummis"},
-{bioguide_id: "E000285", first_name: "Michael", last_name: "Enzi"},
-{bioguide_id: "B001261", first_name: "John", last_name: "Barrasso"}
-];
 
 React.renderComponent(
     <CongressPicker />,
