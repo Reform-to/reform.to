@@ -7,6 +7,7 @@ var CongressPicker = React.createClass({
     <div className="row">
       <div className="large-12 columns">
         <AddressForm />
+        <LegislatorList />
       </div>
     </div>
     );
@@ -23,6 +24,14 @@ var AddressForm = React.createClass({
         <small className="helper">Start the search...</small>
       </fieldset>
     </form>
+    );
+  }
+});
+
+var LegislatorList = React.createClass({
+  render: function() {
+    return (
+      <h4>your legislators</h4>
     );
   }
 });
