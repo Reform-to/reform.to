@@ -9,14 +9,19 @@ var params = {apikey: apikey, latitude: lat, longitude: lng};
 var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(params);
 
 var CongressPicker = React.createClass({
-  getInitialState: function() {
+  locateLegislators: function() {
     $.ajax({
       url: locate,
       success: function(data) {
         this.setState({data: data.results});
       }.bind(this)
     });
+  },
+  getInitialState: function() {
     return {data: []};
+  },
+  componentWillMount: function() {
+    this.locateLegislators();
   },
   render: function() {
     return (
@@ -53,7 +58,7 @@ var LegislatorList = React.createClass({
         lastName={legislator.last_name} />
     });
     return (
-      <div classnName="ac-legislator-list">
+      <div className="ac-legislator-list">
         <h4>your legislators</h4>
         {legislatorNodes}
       </div>
