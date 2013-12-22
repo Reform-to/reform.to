@@ -3,9 +3,9 @@
  */
 
 var CongressPicker = React.createClass({
-  locateLegislators: function(params) {
+  locateLegislators: function(coords) {
     var apikey = '574712f76976437cb98767c4a2622588';
-    var query = {apikey: apikey, latitude: params.latitude, longitude: params.longitude};
+    var query = {apikey: apikey, latitude: coords.latitude, longitude: coords.longitude};
     var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(query);
     $.ajax({
       url: locate,
