@@ -17,6 +17,10 @@ var CongressPicker = React.createClass({
       }.bind(this)
     });
   },
+  handleAddressSubmit: function(address) {
+    // TODO: geocode the address and look up legislators from it
+    console.log('Address', address);
+  },
   getInitialState: function() {
     return {data: []};
   },
@@ -27,7 +31,7 @@ var CongressPicker = React.createClass({
     return (
     <div className="row">
       <div className="large-12 columns">
-        <AddressForm />
+        <AddressForm onAddressSubmit={this.handleAddressSubmit} />
         <LegislatorList data={this.state.data} />
       </div>
     </div>
@@ -38,7 +42,7 @@ var CongressPicker = React.createClass({
 var AddressForm = React.createClass({
   handleSubmit: function() {
     var address = this.refs.address.getDOMNode().value.trim();
-    console.log('Address', address);
+    this.props.onAddressSubmit({address: address});
     return false;
   },
   render: function() {
