@@ -31,7 +31,10 @@ var AddressForm = React.createClass({
 var LegislatorList = React.createClass({
   render: function() {
     var legislatorNodes = this.props.data.map(function (legislator) {
-      return <Legislator first_name={legislator.first_name} last_name={legislator.last_name} />
+      return <Legislator
+        key={legislator.bioguide_id}
+        first_name={legislator.first_name}
+        last_name={legislator.last_name} />
     });
     return (
       <div classnName="ac-legislator-list">
@@ -53,9 +56,9 @@ var Legislator = React.createClass({
 });
 
 var legislators = [
-{first_name: "Cynthia", last_name: "Lummis"},
-{first_name: "Michael", last_name: "Enzi"},
-{first_name: "John", last_name: "Barrasso"}
+{bioguide_id: "L000571", first_name: "Cynthia", last_name: "Lummis"},
+{bioguide_id: "E000285", first_name: "Michael", last_name: "Enzi"},
+{bioguide_id: "B001261", first_name: "John", last_name: "Barrasso"}
 ];
 
 React.renderComponent(
