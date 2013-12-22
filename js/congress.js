@@ -33,8 +33,8 @@ var LegislatorList = React.createClass({
     var legislatorNodes = this.props.data.map(function (legislator) {
       return <Legislator
         key={legislator.bioguide_id}
-        first_name={legislator.first_name}
-        last_name={legislator.last_name} />
+        firstName={legislator.first_name}
+        lastName={legislator.last_name} />
     });
     return (
       <div classnName="ac-legislator-list">
@@ -49,7 +49,7 @@ var Legislator = React.createClass({
   render: function() {
     return (
       <div className="ac-legislator">
-        <p>{this.props.first_name} {' '} {this.props.last_name}</p>
+        <p>{this.props.firstName} {' '} {this.props.lastName}</p>
       </div>
     );
   }
