@@ -33,8 +33,8 @@ var LegislatorList = React.createClass({
     return (
       <div classnName="ac-legislator-list">
         <h4>your legislators</h4>
-        <Legislator fullName="First Last" />
-        <Legislator fullName="Given Family" />
+        <Legislator first_name="First" last_name="Last" />
+        <Legislator first_name="Given" last_name="Family" />
       </div>
     );
   }
@@ -44,7 +44,7 @@ var Legislator = React.createClass({
   render: function() {
     return (
       <div className="ac-legislator">
-        <p>{this.props.fullName}</p>
+        <p>{this.props.first_name} {' '} {this.props.last_name}</p>
       </div>
     );
   }
