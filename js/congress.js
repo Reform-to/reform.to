@@ -3,30 +3,15 @@
  */
 
 var CongressPicker = React.createClass({
-  locateLegislators: function(coordinates) {
+  locateLegislators: function(params) {
     var apikey = '574712f76976437cb98767c4a2622588';
-    var params = {apikey: apikey, latitude: coordinates.latitude, longitude: coordinates.longitude};
-    var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(params);
+    var query = {apikey: apikey, latitude: params.latitude, longitude: params.longitude};
+    var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(query);
     $.ajax({
       url: locate,
       success: function(data) {
         this.setState({data: data.results});
       }.bind(this)
-    });
-  },
-  handleAddressSubmit: function(address) {
-    var geocoder = new google.maps.Geocoder();
-    self = this;
-    geocoder.geocode(address, function(results, status) {
-      if (status === 'OK') {
-        var location = results[0].geometry.location;
-        var lat = location.lat();
-        var lng = location.lng();
-        console.log('Address:', address.address);
-        console.log('Latitude:', lat);
-        console.log('Longitude:', lng);
-        self.locateLegislators({latitude: lat, longitude: lng});
-      }
     });
   },
   getInitialState: function() {
@@ -38,7 +23,7 @@ var CongressPicker = React.createClass({
     return (
     <div className="row">
       <div className="large-12 columns">
-        <AddressForm onAddressSubmit={this.handleAddressSubmit} />
+        <AddressForm onAddressGeocode={this.locateLegislators} />
         <LegislatorList data={this.state.data} />
       </div>
     </div>
@@ -47,14 +32,33 @@ var CongressPicker = React.createClass({
 });
 
 var AddressForm = React.createClass({
-  handleSubmit: function() {
+  geocodeAddress: function() {
     var address = this.refs.address.getDOMNode().value.trim();
-    this.props.onAddressSubmit({address: address});
+
+    var geocoder = new google.maps.Geocoder();
+    self = this;
+    geocoder.geocode(
+      {
+        address: address
+      },
+      function(results, status) {
+        if (status === 'OK') {
+          var location = results[0].geometry.location;
+          var lat = location.lat();
+          var lng = location.lng();
+          console.log('Address:', address.address);
+          console.log('Latitude:', lat);
+          console.log('Longitude:', lng);
+          self.props.onAddressGeocode({latitude: lat, longitude: lng});
+        }
+      }
+    );
+
     return false;
   },
   render: function() {
     return (
-    <form className="address-form" onSubmit={this.handleSubmit}>
+    <form className="address-form" onSubmit={this.geocodeAddress}>
       <fieldset>
         <legend>Find Your Legislator</legend>
         <input
