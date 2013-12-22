@@ -4,9 +4,9 @@
 var CongressPicker = React.createClass({
   getInitialState: function() {
     $.ajax({
-      url: 'legislators.json',
+      url: 'locate.json',
       success: function(data) {
-        this.setState({data: data});
+        this.setState({data: data.results});
       }.bind(this)
     });
     return {data: []};
