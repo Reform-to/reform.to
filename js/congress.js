@@ -18,8 +18,17 @@ var CongressPicker = React.createClass({
     });
   },
   handleAddressSubmit: function(address) {
-    // TODO: geocode the address and look up legislators from it
-    console.log('Address', address);
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode(address, function(results, status) {
+      if (status === 'OK') {
+        var location = results[0].geometry.location;
+        var lat = location.lat();
+        var lng = location.lng();
+        console.log('Address', address);
+        console.log('Latitude', lat);
+        console.log('Longitude', lng);
+      }
+    });
   },
   getInitialState: function() {
     return {data: []};
