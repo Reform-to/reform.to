@@ -36,12 +36,22 @@ var CongressPicker = React.createClass({
 });
 
 var AddressForm = React.createClass({
+  handleSubmit: function() {
+    var address = this.refs.address.getDOMNode().value.trim();
+    console.log('Address', address);
+    return false;
+  },
   render: function() {
     return (
-    <form>
+    <form className="address-form" onSubmit={this.handleSubmit}>
       <fieldset>
         <legend>Find Your Legislator</legend>
-        <input type="text" className="helper" placeholder="Enter an address to find your legislators"/>
+        <input
+          type="text"
+          className="helper"
+          placeholder="Enter an address to find your legislators"
+          ref="address"
+        />
         <small className="helper">Start the search...</small>
       </fieldset>
     </form>
