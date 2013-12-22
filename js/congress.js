@@ -7,7 +7,7 @@ var CongressPicker = React.createClass({
     <div className="row">
       <div className="large-12 columns">
         <AddressForm />
-        <LegislatorList />
+        <LegislatorList data={this.props.data} />
       </div>
     </div>
     );
@@ -30,11 +30,13 @@ var AddressForm = React.createClass({
 
 var LegislatorList = React.createClass({
   render: function() {
+    var legislatorNodes = this.props.data.map(function (legislator) {
+      return <Legislator first_name={legislator.first_name} last_name={legislator.last_name} />
+    });
     return (
       <div classnName="ac-legislator-list">
         <h4>your legislators</h4>
-        <Legislator first_name="First" last_name="Last" />
-        <Legislator first_name="Given" last_name="Family" />
+        {legislatorNodes}
       </div>
     );
   }
@@ -50,7 +52,13 @@ var Legislator = React.createClass({
   }
 });
 
+var legislators = [
+{first_name: "Cynthia", last_name: "Lummis"},
+{first_name: "Michael", last_name: "Enzi"},
+{first_name: "John", last_name: "Barrasso"}
+];
+
 React.renderComponent(
-    <CongressPicker />,
+    <CongressPicker data={legislators} />,
     document.getElementById('ac-congress')
 );
