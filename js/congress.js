@@ -46,7 +46,7 @@ var AddressForm = React.createClass({
           var location = results[0].geometry.location;
           var lat = location.lat();
           var lng = location.lng();
-          console.log('Address:', address.address);
+          console.log('Address:', address);
           console.log('Latitude:', lat);
           console.log('Longitude:', lng);
           self.props.onAddressGeocode({latitude: lat, longitude: lng});
