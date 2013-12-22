@@ -31,12 +31,26 @@ var AddressForm = React.createClass({
 var LegislatorList = React.createClass({
   render: function() {
     return (
-      <h4>your legislators</h4>
+      <div classnName="ac-legislator-list">
+        <h4>your legislators</h4>
+        <Legislator fullName="First Last" />
+        <Legislator fullName="Given Family" />
+      </div>
+    );
+  }
+});
+
+var Legislator = React.createClass({
+  render: function() {
+    return (
+      <div className="ac-legislator">
+        <p>{this.props.fullName}</p>
+      </div>
     );
   }
 });
 
 React.renderComponent(
     <CongressPicker />,
-    document.getElementById('congress')
+    document.getElementById('ac-congress')
 );
