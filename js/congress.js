@@ -1,10 +1,17 @@
 /**
  * @jsx React.DOM
  */
+
+var apikey = '574712f76976437cb98767c4a2622588';
+var lat = '42.96';
+var lng = '-108.09';
+var params = {apikey: apikey, latitude: lat, longitude: lng};
+var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(params);
+
 var CongressPicker = React.createClass({
   getInitialState: function() {
     $.ajax({
-      url: 'locate.json',
+      url: locate,
       success: function(data) {
         this.setState({data: data.results});
       }.bind(this)
