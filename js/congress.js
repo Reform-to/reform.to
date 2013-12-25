@@ -103,7 +103,6 @@ var LegislatorList = React.createClass({
     });
     return (
       <div className="ac-legislator-list">
-        <h4>your legislators</h4>
         {legislatorNodes}
       </div>
     );
@@ -114,7 +113,7 @@ var Legislator = React.createClass({
   render: function() {
     return (
       <div className="ac-legislator">
-        <p>{this.props.firstName} {' '} {this.props.lastName}</p>
+        <h4>{this.props.firstName} {' '} {this.props.lastName}</h4>
       </div>
     );
   }
