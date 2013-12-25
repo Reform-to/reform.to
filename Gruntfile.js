@@ -12,9 +12,11 @@ module.exports = function(grunt) {
         },
         files: {
           'css/app.css': 'scss/app.scss'
-        }        
+        }
       }
     },
+
+    clean: ['dist'],
 
     watch: {
       grunt: { files: ['Gruntfile.js'] },
@@ -28,7 +30,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.registerTask('build', ['sass']);
   grunt.registerTask('default', ['build','watch']);
+  grunt.registerTask('dist', ['clean', 'build']);
+
 }
