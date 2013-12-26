@@ -123,7 +123,12 @@ var Legislator = React.createClass({
     return (
       <div className="ac-legislator clearfix">
         <div className="avatar img-circle" style={avatarStyle}></div>
-        <h3 className="name">{this.props.title} {' '} {this.props.firstName} {' '} {this.props.lastName}</h3>
+        <h3 className="name">
+          <span className="title">{this.props.title}</span> {' '}
+          <a href="#">
+            {this.props.firstName} {' '} {this.props.lastName}
+          </a>
+        </h3>
         <span className="details">{this.props.party}-{this.props.state}</span>
       </div>
     );
