@@ -114,6 +114,7 @@ var Legislator = React.createClass({
     return (
       <div className="ac-legislator">
         <h4>{this.props.firstName} {' '} {this.props.lastName}</h4>
+        <img src={"vendor/congress-photos/img/100x125/" + this.props.key + ".jpg"} alt={this.props.key + ".jpg"}/>
       </div>
     );
   }
