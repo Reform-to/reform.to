@@ -64,11 +64,26 @@ span.helper, small.helper {
   @include form-error-message($body-font-color)
 }
 
+.ac-legislator {
+  margin-bottom: 0.5rem;
+}
+
+.ac-legislator .avatar {
+  float: left;
+  top: 3px;
+  margin-right: 25px;
+}
+
+.ac-legislator .name {
+  margin: 20px 0 8px 0;
+}
+
 .avatar {
   width: 100px;
   height: 100px;
   background-repeat:no-repeat;
   background-position:center;
+  border: 2px solid $secondary-color;
 }
 
 .img-circle {

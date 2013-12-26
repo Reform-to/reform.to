@@ -99,7 +99,12 @@ var LegislatorList = React.createClass({
       return <Legislator
         key={legislator.bioguide_id}
         firstName={legislator.first_name}
-        lastName={legislator.last_name} />
+        lastName={legislator.last_name}
+        title={legislator.title}
+        state={legislator.state}
+        district={legislator.district}
+        party={legislator.party}
+        />
     });
     return (
       <div className="ac-legislator-list">
@@ -116,9 +121,10 @@ var Legislator = React.createClass({
       backgroundImage: 'url(' + imageDir + this.props.key + '.jpg)'
     };
     return (
-      <div className="ac-legislator">
-        <h3>{this.props.firstName} {' '} {this.props.lastName}</h3>
+      <div className="ac-legislator clearfix">
         <div className="avatar img-circle" style={avatarStyle}></div>
+        <h3 className="name">{this.props.title} {' '} {this.props.firstName} {' '} {this.props.lastName}</h3>
+        <span className="details">{this.props.party}-{this.props.state}</span>
       </div>
     );
   }
