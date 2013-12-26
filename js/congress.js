@@ -111,10 +111,14 @@ var LegislatorList = React.createClass({
 
 var Legislator = React.createClass({
   render: function() {
+    var imageDir = 'vendor/congress-photos/img/100x125/';
+    var avatarStyle = {
+      backgroundImage: 'url(' + imageDir + this.props.key + '.jpg)'
+    };
     return (
       <div className="ac-legislator">
         <h3>{this.props.firstName} {' '} {this.props.lastName}</h3>
-        <img src={"vendor/congress-photos/img/100x125/" + this.props.key + ".jpg"} alt={this.props.key + ".jpg"}/>
+        <div className="avatar img-circle" style={avatarStyle}></div>
       </div>
     );
   }

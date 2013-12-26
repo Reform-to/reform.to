@@ -64,6 +64,17 @@ span.helper, small.helper {
   @include form-error-message($body-font-color)
 }
 
+.avatar {
+  width: 100px;
+  height: 100px;
+  background-repeat:no-repeat;
+  background-position:center;
+}
+
+.img-circle {
+  @include radius(50%);
+}
+
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
 .ac-logo {
   .ac-icon {
