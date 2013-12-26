@@ -80,6 +80,11 @@ span.helper, small.helper {
     color: $small-font-color;
     font-family: $subheader-font-family;
   }
+
+  .contact {
+    font-family: $header-font-family;
+    margin-top: 18px;
+  }
 }
 
 .avatar {
@@ -101,7 +106,7 @@ span.helper, small.helper {
   }
 
   .ac-legislator .name {
-    margin: 20px 0 8px 0;
+    margin: 18px 0 4px 0;
   }
 }
 

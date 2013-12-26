@@ -104,6 +104,11 @@ var LegislatorList = React.createClass({
         state={legislator.state}
         district={legislator.district}
         party={legislator.party}
+        phone={legislator.phone}
+        office={legislator.office}
+        contactForm={legislator.contact_form}
+        twitter={legislator.twitter_id}
+        facebook={legislator.facebook_id}
         />
     });
     return (
@@ -121,7 +126,9 @@ var Legislator = React.createClass({
       backgroundImage: 'url(' + imageDir + this.props.key + '.jpg)'
     };
     return (
-      <div className="ac-legislator clearfix">
+      <div className="ac-legislator">
+      <div className="row">
+      <div className="medium-6 columns">
         <div className="avatar img-circle" style={avatarStyle}></div>
         <h3 className="name">
           <span className="title">{this.props.title}</span> {' '}
@@ -130,6 +137,34 @@ var Legislator = React.createClass({
           </a>
         </h3>
         <span className="details">{this.props.party}-{this.props.state}</span>
+      </div>
+      <div className="small-6 medium-3 columns">
+        <ul className="contact no-bullet">
+          <li>
+            <a href={"tel" + this.props.phone}>{this.props.phone}</a>
+          </li>
+          <li>
+            <a href={this.props.contactForm}>
+              {this.props.contactForm ? "Contact Form" : ''}
+            </a>
+          </li>
+          </ul>
+        </div>
+        <div className="small-6 medium-3 columns">
+        <ul className="contact no-bullet">
+          <li>
+            <a href={"http://twitter.com/" + this.props.twitter}>
+              {this.props.twitter ? "@" + this.props.twitter : ''}
+            </a>
+          </li>
+          <li>
+            <a href={"http://facebook.com/" + this.props.facebook}>
+              {this.props.facebook ? "Facebook" : ''}
+            </a>
+          </li>
+        </ul>
+      </div>
+      </div>
       </div>
     );
   }
