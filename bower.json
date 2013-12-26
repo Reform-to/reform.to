@@ -1,7 +1,8 @@
 {
-  "name": "foundation-libsass-template",
+  "name": "theanticorruptionpledge",
   "dependencies": {
     "foundation": "zurb/bower-foundation",
-    "react": "~0.8.0"
+    "react": "~0.8.0",
+    "congress-photos": "Fabricatorz/congress-photos-component"
   }
 }
