@@ -141,7 +141,7 @@ var Legislator = React.createClass({
       <div className="small-6 medium-3 columns">
         <ul className="contact no-bullet">
           <li>
-            <a href={"tel" + this.props.phone}>{this.props.phone}</a>
+            <a href={"tel:" + this.props.phone}>{this.props.phone}</a>
           </li>
           <li>
             <a href={this.props.contactForm}>
