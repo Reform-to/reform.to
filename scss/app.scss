@@ -99,7 +99,6 @@ span.helper, small.helper {
   height: 60px;
   background-repeat:no-repeat;
   background-position:center;
-  border: 2px solid $secondary-color;
 }
 
 .img-circle {
@@ -110,6 +109,33 @@ span.helper, small.helper {
   .avatar {
     width: 100px;
     height: 100px;
+  }
+
+  .avatar.party-R:after {
+    content: " ";
+    position: absolute;
+    background-color: rgba(255, 125, 125, 0.5);
+    width: 100px;
+    height: 100px;
+    @include radius(50%);
+  }
+
+  .avatar.party-D:after {
+    content: " ";
+    position: absolute;
+    background-color: rgba(125, 125, 255, 0.5);
+    width: 100px;
+    height: 100px;
+    @include radius(50%);
+  }
+
+  .avatar.party-I:after {
+    content: " ";
+    position: absolute;
+    background-color: rgba(255, 50, 255, 0.5);
+    width: 100px;
+    height: 100px;
+    @include radius(50%);
   }
 
   .ac-legislator {
