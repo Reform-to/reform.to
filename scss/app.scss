@@ -68,7 +68,8 @@ span.helper, small.helper {
 }
 
 .ac-legislator {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $secondary-color;
 
   .avatar {
     float: left;
@@ -111,9 +112,12 @@ span.helper, small.helper {
     height: 100px;
   }
 
-  .ac-legislator .name {
-    display: block;
-    margin: 18px 0 4px 0;
+  .ac-legislator {
+    padding-bottom: 1rem;
+    .name {
+      display: block;
+      margin: 18px 0 4px 0;
+    }
   }
 
   .contact {
