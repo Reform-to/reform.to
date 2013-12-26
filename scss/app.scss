@@ -1,7 +1,6 @@
 @import "settings";
 @import "foundation";
 
-
 .ac-logo {
   text-align: center;
   text-transform: lowercase;
@@ -75,12 +74,11 @@ span.helper, small.helper {
 }
 
 .ac-legislator .name {
-  margin: 20px 0 8px 0;
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   background-repeat:no-repeat;
   background-position:center;
   border: 2px solid $secondary-color;
@@ -88,6 +86,17 @@ span.helper, small.helper {
 
 .img-circle {
   @include radius(50%);
+}
+
+@media #{$medium-up} {
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .ac-legislator .name {
+    margin: 20px 0 8px 0;
+  }
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
