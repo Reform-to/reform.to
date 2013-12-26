@@ -14,6 +14,7 @@
 // If you want your base font-size to be different and not have it affect the grid breakpoints,
 // set $rem-base to $base-font-size and make sure $base-font-size is a px value.
 // $base-font-size: 100%;
+$bold-font-weight: 700;
 $extra-bold-font-weight: 800;
 
 // The $base-line-height is 100% while $base-font-size is 150%
@@ -41,9 +42,11 @@ $body-font-color: #222;
 $body-font-family: "Open Sans", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 // $body-font-weight: normal;
 // $body-font-style: normal;
-$header-font-family: 'Alegreya Sans SC', sans-serif;
-$header-font-weight: $extra-bold-font-weight !default;
+$header-font-family: 'Alegreya Sans', sans-serif;
+$header-font-weight: $bold-font-weight !default;
 $header-font-size: rem-calc(20);
+$subheader-font-family: 'Alegreya Sans SC', sans-serif;
+$subheader-font-weight: $extra-bold-font-weight !default;
 
 // We use this to control font-smoothing
 // $font-smoothing: antialiased;
@@ -358,9 +361,9 @@ $alert-color: #f04124;
 
 // We use these to style the legends when you use them
 // $legend-bg: #fff;
-$legend-font-weight: $header-font-weight;
+$legend-font-weight: $subheader-font-weight;
 // $legend-padding: rem-calc(0 3);
-$legend-font-family: $header-font-family;
+$legend-font-family: $subheader-font-family;
 $legend-font-size: $header-font-size;
 
 // We use these to style the prefix and postfix input elements
@@ -961,14 +964,14 @@ $topbar-dropdown-bg: $topbar-bg;
 $topbar-link-color: $body-font-color;
 $topbar-link-color-hover: $primary-color;
 $topbar-link-color-active: $primary-color;
-$topbar-link-weight: $header-font-weight;
+$topbar-link-weight: $subheader-font-weight;
 $topbar-link-font-size: $header-font-size;
 // $topbar-link-hover-lightness: -10%; // Darken by 10%
 $topbar-link-bg-hover: $topbar-bg;
 $topbar-link-bg-active: $topbar-bg;
 $topbar-link-bg-active-hover: $primary-color;
 $topbar-link-color-active-hover: #fff;
-$topbar-link-font-family: $header-font-family;
+$topbar-link-font-family: $subheader-font-family;
 
 // $topbar-button-font-size: 0.75rem;
 

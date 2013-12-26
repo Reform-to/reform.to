@@ -43,6 +43,10 @@
   top: 0.08em;
 }
 
+.subheader {
+  font-family: $subheader-font-family;
+}
+
 fieldset {
   legend {
       font-family: $legend-font-family;

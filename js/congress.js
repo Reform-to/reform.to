@@ -78,7 +78,7 @@ var AddressForm = React.createClass({
     return (
     <form className="address-form" onSubmit={this.geocodeAddress}>
       <fieldset>
-        <legend>Find Your Legislator</legend>
+        <legend>Find Your Legislators</legend>
         <input
           type="text"
           className={this.state.addressStatus}
@@ -113,7 +113,7 @@ var Legislator = React.createClass({
   render: function() {
     return (
       <div className="ac-legislator">
-        <h4>{this.props.firstName} {' '} {this.props.lastName}</h4>
+        <h3>{this.props.firstName} {' '} {this.props.lastName}</h3>
         <img src={"vendor/congress-photos/img/100x125/" + this.props.key + ".jpg"} alt={this.props.key + ".jpg"}/>
       </div>
     );
