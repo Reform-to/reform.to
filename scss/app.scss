@@ -76,6 +76,13 @@ span.helper, small.helper {
     margin-right: 25px;
   }
 
+  .name {
+    display: inline;
+    margin-top: 0;
+    line-height: 1;
+    margin-right: 0.5rem;
+  }
+
   .title {
     color: $small-font-color;
     font-family: $subheader-font-family;
@@ -83,7 +90,6 @@ span.helper, small.helper {
 
   .contact {
     font-family: $header-font-family;
-    margin-top: 18px;
   }
 }
 
@@ -106,7 +112,12 @@ span.helper, small.helper {
   }
 
   .ac-legislator .name {
+    display: block;
     margin: 18px 0 4px 0;
+  }
+
+  .contact {
+    margin-top: 18px;
   }
 }
 

@@ -129,7 +129,7 @@ var Legislator = React.createClass({
       <div className="ac-legislator">
       <div className="row">
       <div className="medium-6 columns">
-        <div className="avatar img-circle" style={avatarStyle}></div>
+        <div className="show-for-medium-up avatar img-circle" style={avatarStyle}></div>
         <h3 className="name">
           <span className="title">{this.props.title}</span> {' '}
           <a href="#">
