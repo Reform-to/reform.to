@@ -1,6 +1,10 @@
 @import "settings";
 @import "foundation";
 
+html, body {
+  min-width: 320px;
+}
+
 .ac-logo {
   text-align: center;
   text-transform: lowercase;
