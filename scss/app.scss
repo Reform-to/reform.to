@@ -69,15 +69,17 @@ span.helper, small.helper {
 
 .ac-legislator {
   margin-bottom: 0.5rem;
-}
 
-.ac-legislator .avatar {
-  float: left;
-  top: 3px;
-  margin-right: 25px;
-}
+  .avatar {
+    float: left;
+    top: 3px;
+    margin-right: 25px;
+  }
 
-.ac-legislator .name {
+  .title {
+    color: $small-font-color;
+    font-family: $subheader-font-family;
+  }
 }
 
 .avatar {
