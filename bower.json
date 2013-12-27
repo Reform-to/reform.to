@@ -3,6 +3,6 @@
   "dependencies": {
     "foundation": "zurb/bower-foundation",
     "react": "~0.8.0",
-    "congress-photos": "Fabricatorz/congress-photos-component"
+    "congress-photos": "Fabricatorz/congress-photos-grayscale"
   }
 }
