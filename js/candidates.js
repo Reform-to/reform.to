@@ -111,13 +111,12 @@ var AddressForm = React.createClass({
 
 var District = React.createClass({
   getInitialState: function() {
-    return {data: []};
+    return {cycle: [], state: [], district: [], candidates: []};
   },
   componentWillReceiveProps: function(props) {
     var apiKey = "0e71e93cf1cc57809a601579842aa03b:15:68622833";
     var query = {
       'api-key': apiKey
-      //, callback: "test"
     };
     var cycle = 2014;
     var state = props.state;
@@ -125,7 +124,6 @@ var District = React.createClass({
     var financesURI = 'http://api.nytimes.com/svc/elections/us/v3/finances/'
         + cycle + '/seats/' + state + '/house/' + district + '.json?'
         + $.param(query);
-    console.log(financesURI);
 
     $.ajax({
       url: financesURI,
@@ -135,7 +133,8 @@ var District = React.createClass({
           this.setState({
             cycle: data.cycle,
             state: data.state,
-            district: data.district
+            district: data.district,
+            candidates: data.results
           });
         }
       }.bind(this)
@@ -150,8 +149,40 @@ var District = React.createClass({
           District: {this.state.district}<br/>
           Cycle: {this.state.cycle}
         </p>
+        <CandidateList candidates={this.state.candidates} />
       </div>
 
+    );
+  }
+});
+
+var CandidateList = React.createClass({
+  render: function() {
+    var candidateNodes = this.props.candidates.map(function (candidate) {
+      return <Candidate
+        key={candidate.candidate.id}
+        name={candidate.candidate.name}
+      />
+    });
+    return (
+      <div className="ac-candidate-list">
+        <h4>Candidates</h4>
+        {candidateNodes}
+      </div>
+    );
+  }
+});
+
+var Candidate = React.createClass({
+  render: function() {
+    return (
+      <div className="ac-candidate">
+        <div className="row">
+          <div className="medium-6 columns">
+            <p>{this.props.name}</p>
+          </div>
+        </div>
+      </div>
     );
   }
 });
