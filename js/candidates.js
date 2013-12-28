@@ -144,11 +144,6 @@ var District = React.createClass({
   render: function() {
     return (
       <div>
-        <p>
-          State: {this.state.state}<br/>
-          District: {this.state.district}<br/>
-          Cycle: {this.state.cycle}
-        </p>
         <CandidateList candidates={this.state.candidates} />
       </div>
 
@@ -162,11 +157,11 @@ var CandidateList = React.createClass({
       return <Candidate
         key={candidate.candidate.id}
         name={candidate.candidate.name}
+        party={candidate.candidate.party}
       />
     });
     return (
       <div className="ac-candidate-list">
-        <h4>Candidates</h4>
         {candidateNodes}
       </div>
     );
@@ -179,7 +174,7 @@ var Candidate = React.createClass({
       <div className="ac-candidate">
         <div className="row">
           <div className="medium-6 columns">
-            <p>{this.props.name}</p>
+            <h4>{this.props.name} {' '} <small>{this.props.party}</small></h4>
           </div>
         </div>
       </div>
