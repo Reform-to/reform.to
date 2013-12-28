@@ -22,6 +22,7 @@ module.exports = function(grunt) {
       main: {
         files: [
           { expand: true, src: ['index.html'], dest: 'dist/'},
+          { expand: true, src: ['candidates/**'], dest: 'dist/'},
           { expand: true, src: ['favicon.ico'], dest: 'dist/'},
           { expand: true, src: ['css/**'], dest: 'dist/'},
           { expand: true, src: ['img/**'], dest: 'dist/'},
