@@ -17,7 +17,6 @@ var CandidatePicker = React.createClass({
       success: function(data) {
         if (data.count > 0) {
           this.setState({data: data.results[0]});
-          console.log(data);
         }
       }.bind(this)
     });
@@ -32,7 +31,7 @@ var CandidatePicker = React.createClass({
     <div className="row">
       <div className="large-12 columns">
         <AddressForm onAddressGeocode={this.locateCandidates} />
-        <District data={this.state.data} />
+        <District state={this.state.data.state} district={this.state.data.district} />
       </div>
     </div>
     );
@@ -114,9 +113,45 @@ var District = React.createClass({
   getInitialState: function() {
     return {data: []};
   },
+  componentWillReceiveProps: function(props) {
+    var apiKey = "0e71e93cf1cc57809a601579842aa03b:15:68622833";
+    var query = {
+      'api-key': apiKey
+      //, callback: "test"
+    };
+    var cycle = 2014;
+    var state = props.state;
+    var district = props.district;
+    var financesURI = 'http://api.nytimes.com/svc/elections/us/v3/finances/'
+        + cycle + '/seats/' + state + '/house/' + district + '.json?'
+        + $.param(query);
+    console.log(financesURI);
+
+    $.ajax({
+      url: financesURI,
+      dataType: 'jsonp',
+      success: function(data) {
+        if (data.status == "OK") {
+          this.setState({
+            cycle: data.cycle,
+            state: data.state,
+            district: data.district
+          });
+        }
+      }.bind(this)
+    });
+
+  },
   render: function() {
     return (
-      <p>State: {this.props.data.state}<br/>District: {this.props.data.district}</p>
+      <div>
+        <p>
+          State: {this.state.state}<br/>
+          District: {this.state.district}<br/>
+          Cycle: {this.state.cycle}
+        </p>
+      </div>
+
     );
   }
 });
