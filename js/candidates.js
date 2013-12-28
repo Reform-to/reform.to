@@ -10,12 +10,15 @@ var CandidatePicker = React.createClass({
       latitude: coords.latitude,
       longitude: coords.longitude
     };
-    var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?'
+    var locate = 'http://congress.api.sunlightfoundation.com/districts/locate?'
                   + $.param(query);
     $.ajax({
       url: locate,
       success: function(data) {
-        this.setState({data: data.results});
+        if (data.count > 0) {
+          this.setState({data: data.results[0]});
+          console.log(data);
+        }
       }.bind(this)
     });
   },
@@ -29,7 +32,7 @@ var CandidatePicker = React.createClass({
     <div className="row">
       <div className="large-12 columns">
         <AddressForm onAddressGeocode={this.locateCandidates} />
-        <LegislatorList data={this.state.data} />
+        <District data={this.state.data} />
       </div>
     </div>
     );
@@ -90,11 +93,11 @@ var AddressForm = React.createClass({
     return (
     <form className="address-form" onSubmit={this.geocodeAddress}>
       <fieldset>
-        <legend>Find Your Legislators</legend>
+        <legend>Find Your Candidates</legend>
         <input
           type="text"
           className={this.state.addressStatus}
-          placeholder="Enter an address to find your legislators"
+          placeholder="Enter an address to find your candidates"
           ref="address"
           autoFocus
         />
@@ -103,6 +106,17 @@ var AddressForm = React.createClass({
         </small>
       </fieldset>
     </form>
+    );
+  }
+});
+
+var District = React.createClass({
+  getInitialState: function() {
+    return {data: []};
+  },
+  render: function() {
+    return (
+      <p>State: {this.props.data.state}<br/>District: {this.props.data.district}</p>
     );
   }
 });
