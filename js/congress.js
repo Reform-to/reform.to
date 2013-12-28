@@ -5,8 +5,13 @@
 var CongressPicker = React.createClass({
   locateLegislators: function(coords) {
     var apikey = '574712f76976437cb98767c4a2622588';
-    var query = {apikey: apikey, latitude: coords.latitude, longitude: coords.longitude};
-    var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?' + $.param(query);
+    var query = {
+      apikey: apikey,
+      latitude: coords.latitude,
+      longitude: coords.longitude
+    };
+    var locate = 'http://congress.api.sunlightfoundation.com/legislators/locate?'
+                  + $.param(query);
     $.ajax({
       url: locate,
       success: function(data) {
@@ -47,11 +52,16 @@ var AddressForm = React.createClass({
       },
       function(results, status) {
         if (status === 'OK') {
-          self.setState({addressHelper: 'Found... ' + results[0].formatted_address});
-
-          var country = $.grep(results[0].address_components, function(component) {
-            return $.inArray('country', component.types) > -1;
+          self.setState({
+            addressHelper: 'Found... ' + results[0].formatted_address
           });
+
+          var country = $.grep(
+            results[0].address_components,
+            function(component) {
+              return $.inArray('country', component.types) > -1;
+            }
+          );
 
           if (country.length > 0) {
             var location = results[0].geometry.location;
@@ -59,7 +69,9 @@ var AddressForm = React.createClass({
             var lng = location.lng();
             self.props.onAddressGeocode({latitude: lat, longitude: lng});
           } else {
-            self.setState({addressHelper: 'No information for ' + results[0].formatted_address});
+            self.setState({
+              addressHelper:'No information for ' + results[0].formatted_address
+            });
             self.setState({addressStatus: 'error'});
           }
         }
@@ -86,7 +98,9 @@ var AddressForm = React.createClass({
           ref="address"
           autoFocus
         />
-        <small className={this.state.addressStatus}>{this.state.addressHelper}</small>
+        <small className={this.state.addressStatus}>
+          {this.state.addressHelper}
+        </small>
       </fieldset>
     </form>
     );
@@ -129,7 +143,8 @@ var Legislator = React.createClass({
       <div className="ac-legislator">
       <div className="row">
       <div className="medium-6 columns">
-        <div className={"show-for-medium-up avatar img-circle party-" + this.props.party } style={avatarStyle}></div>
+        <div className={"show-for-medium-up avatar img-circle party-"
+          + this.props.party } style={avatarStyle}></div>
         <h3 className="name">
           <span className="title">{this.props.title}</span> {' '}
           <a href="#">
