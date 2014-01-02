@@ -214,22 +214,25 @@ var Legislator = React.createClass({
 
 var District = React.createClass({
   getInitialState: function() {
-    return {cycle: [], state: [], district: [], candidates: []};
+    return {cycle: [], state: [], district: [], congressional: [], senatorial: []};
   },
   componentWillReceiveProps: function(props) {
     var apiKey = "0e71e93cf1cc57809a601579842aa03b:15:68622833";
+    var nytimesAPI = "http://api.nytimes.com/svc/elections/us/v3/finances/";
+
     var query = {
       'api-key': apiKey
     };
     var cycle = 2014;
     var state = props.state;
     var district = props.district;
-    var financesURI = 'http://api.nytimes.com/svc/elections/us/v3/finances/'
-        + cycle + '/seats/' + state + '/house/' + district + '.json?'
-        + $.param(query);
+
+    var houseURI = nytimesAPI
+      + cycle + '/seats/' + state + '/house/' + district
+      + '.json?' + $.param(query);
 
     $.ajax({
-      url: financesURI,
+      url: houseURI,
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
@@ -237,7 +240,23 @@ var District = React.createClass({
             cycle: data.cycle,
             state: data.state,
             district: data.district,
-            candidates: data.results
+            congressional: data.results
+          });
+        }
+      }.bind(this)
+    });
+
+    var senateURI = nytimesAPI
+      + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
+    console.log(senateURI);
+
+    $.ajax({
+      url: senateURI,
+      dataType: 'jsonp',
+      success: function(data) {
+        if (data.status == "OK") {
+          this.setState({
+            senatorial: data.results
           });
         }
       }.bind(this)
@@ -247,7 +266,8 @@ var District = React.createClass({
   render: function() {
     return (
       <div>
-        <CandidateList candidates={this.state.candidates} />
+        <CandidateList candidates={this.state.congressional} />
+        <CandidateList candidates={this.state.senatorial} />
       </div>
 
     );
