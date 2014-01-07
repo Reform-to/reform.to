@@ -163,16 +163,13 @@ var LegislatorList = React.createClass({
 
 var Legislator = React.createClass({
   render: function() {
-    var imageDir = 'vendor/congress-photos/img/100x125/';
-    var avatarStyle = {
-      backgroundImage: 'url(' + imageDir + this.props.key + '.jpg)'
-    };
+    var imageDir = '/vendor/congress-photos/img/100x125/';
+    var image = imageDir + this.props.key + '.jpg';
     return (
       <div className="ac-legislator">
       <div className="row">
       <div className="medium-6 columns">
-        <div className={"show-for-medium-up avatar img-circle party-"
-          + this.props.party } style={avatarStyle}></div>
+        <Avatar party={this.props.party} image={image} />
         <h3 className="name">
           <span className="title">{this.props.title}</span> {' '}
           <a href="#">
@@ -300,6 +297,21 @@ var Candidate = React.createClass({
             <h4>{this.props.name} {' '} <small>{this.props.party}</small></h4>
           </div>
         </div>
+      </div>
+    );
+  }
+});
+
+var Avatar = React.createClass({
+  render: function() {
+    var avatarClass = "party-" + this.props.party;
+    var avatarStyle = {
+      backgroundImage: 'url(' + this.props.image + ')'
+    };
+    return (
+      <div
+        className={"show-for-medium-up avatar img-circle " + avatarClass }
+        style={avatarStyle}>
       </div>
     );
   }
