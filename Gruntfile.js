@@ -30,7 +30,7 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      main: {
+      assets: {
         files: [
           {
             expand: true,
@@ -44,6 +44,16 @@ module.exports = function(grunt) {
             src: ['**/*'],
             dest: 'tmp/result'
           },
+        ]
+      },
+      app: {
+        files: [
+          {
+            expand: true,
+            cwd: 'app/',
+            src: ['index.html'],
+            dest: 'tmp/result'
+          }
         ]
       },
       dist: {
@@ -67,6 +77,11 @@ module.exports = function(grunt) {
         tasks: ['sass']
       },
 
+      app: {
+        files: 'app/index.html',
+        tasks: ['copy:app']
+      },
+
       react: {
         files: 'jsx/**/*.jsx',
         tasks: ['react']
@@ -80,7 +95,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-react');
 
-  grunt.registerTask('build', ['copy:main', 'react', 'sass']);
+  grunt.registerTask('build', ['copy:assets', 'copy:app', 'react', 'sass']);
   grunt.registerTask('default', ['clean:tmp', 'build','watch']);
   grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
 
