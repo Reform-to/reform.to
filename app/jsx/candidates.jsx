@@ -176,6 +176,7 @@ var Legislator = React.createClass({
           lastName={this.props.lastName}
           party={this.props.party}
           state={this.props.state}
+          district={this.props.district}
         />
       </div>
       <div className="small-6 medium-2 columns">
@@ -285,6 +286,14 @@ var District = React.createClass({
 var CandidateList = React.createClass({
   render: function() {
     var state = this.props.state;
+
+    // Remove any leading zero from the district number, if it exists
+    if (this.props.district !== undefined && this.props.district.length > 0) {
+      var district = this.props.district.replace(/\b0+/g, "");
+    } else {
+      var district = null;
+    }
+
     var chamber = this.props.chamber == "House" ? "Congress" : this.props.chamber;
     var subtitle = "for " + chamber + ', ' + this.props.cycle;
 
@@ -299,6 +308,7 @@ var CandidateList = React.createClass({
         lastName={lastName}
         party={party}
         state={state}
+        district={district}
         subtitle={subtitle}
       />
     });
@@ -316,13 +326,14 @@ var Candidate = React.createClass({
     return (
       <div className="ac-candidate">
         <div className="row">
-          <div className="medium-8 columns">
+          <div className="medium-12 columns">
             <Avatar party={this.props.party} image={image} />
             <CandidateName
               firstName={this.props.firstName}
               lastName={this.props.lastName}
               party={this.props.party}
               state={this.props.state}
+              district={this.props.district}
               subtitle={this.props.subtitle}
             />
           </div>
@@ -358,7 +369,10 @@ var CandidateName = React.createClass({
         </a>
         <span className="title">{' '} {this.props.subtitle}</span> {' '}
       </h3>
-      <span className="details">{this.props.party}-{this.props.state}</span>
+      <span className="details">
+        {this.props.party}-{this.props.state}
+        {this.props.district ? ", District " + this.props.district : ''}
+        </span>
       </div>
     );
   }
