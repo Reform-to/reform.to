@@ -161,28 +161,12 @@ var LegislatorList = React.createClass({
   }
 });
 
-var CandidateName = React.createClass({
-  render: function() {
-    return (
-      <div>
-      <h3 className="name">
-        <span className="title">{this.props.title}</span> {' '}
-        <a href="#">
-          {this.props.firstName} {' '} {this.props.lastName}
-        </a>
-      </h3>
-      <span className="details">{this.props.party}-{this.props.state}</span>
-      </div>
-    );
-  }
-});
-
 var Legislator = React.createClass({
   render: function() {
     var imageDir = '/vendor/congress-photos/img/100x125/';
     var image = imageDir + this.props.key + '.jpg';
     return (
-      <div className="ac-legislator">
+      <div className="ac-candidate">
       <div className="row">
       <div className="large-6 medium-8 columns">
         <Avatar party={this.props.party} image={image} />
@@ -279,8 +263,19 @@ var District = React.createClass({
   render: function() {
     return (
       <div>
-        <CandidateList candidates={this.state.congressional} />
-        <CandidateList candidates={this.state.senatorial} />
+        <CandidateList
+          candidates={this.state.congressional}
+          state={this.props.state}
+          chamber="House"
+          district={this.state.district}
+          cycle={this.state.cycle}
+        />
+        <CandidateList
+          candidates={this.state.senatorial}
+          state={this.props.state}
+          chamber="Senate"
+          cycle={this.state.cycle}
+        />
       </div>
 
     );
@@ -289,11 +284,22 @@ var District = React.createClass({
 
 var CandidateList = React.createClass({
   render: function() {
+    var state = this.props.state;
+    var chamber = this.props.chamber == "House" ? "Congress" : this.props.chamber;
+    var subtitle = "for " + chamber + ', ' + this.props.cycle;
+
     var candidateNodes = this.props.candidates.map(function (candidate) {
+      var party = candidate.candidate.party.substring(0, 1);
+      var names = candidate.candidate.name.split(',');
+      var lastName = toTitleCase(names[0]);
+      var firstName = toTitleCase(names[1]);
       return <Candidate
         key={candidate.candidate.id}
-        name={candidate.candidate.name}
-        party={candidate.candidate.party}
+        firstName={firstName}
+        lastName={lastName}
+        party={party}
+        state={state}
+        subtitle={subtitle}
       />
     });
     return (
@@ -306,11 +312,19 @@ var CandidateList = React.createClass({
 
 var Candidate = React.createClass({
   render: function() {
+    var image = '';
     return (
       <div className="ac-candidate">
         <div className="row">
-          <div className="medium-6 columns">
-            <h4>{this.props.name} {' '} <small>{this.props.party}</small></h4>
+          <div className="medium-8 columns">
+            <Avatar party={this.props.party} image={image} />
+            <CandidateName
+              firstName={this.props.firstName}
+              lastName={this.props.lastName}
+              party={this.props.party}
+              state={this.props.state}
+              subtitle={this.props.subtitle}
+            />
           </div>
         </div>
       </div>
@@ -333,7 +347,28 @@ var Avatar = React.createClass({
   }
 });
 
+var CandidateName = React.createClass({
+  render: function() {
+    return (
+      <div>
+      <h3 className="name">
+        <span className="title">{this.props.title}</span> {' '}
+        <a href="#">
+          {this.props.firstName} {' '} {this.props.lastName} {' '}
+        </a>
+        <span className="title">{' '} {this.props.subtitle}</span> {' '}
+      </h3>
+      <span className="details">{this.props.party}-{this.props.state}</span>
+      </div>
+    );
+  }
+});
+
 React.renderComponent(
     <CandidateLocator />,
     document.getElementById('ac-candidates')
 );
+
+function toTitleCase(str) {
+      return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}

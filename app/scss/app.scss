@@ -67,7 +67,7 @@ span.helper, small.helper {
   @include form-error-message($body-font-color)
 }
 
-.ac-legislator {
+.ac-candidate {
   margin-bottom: 1rem;
   border-bottom: 1px solid $secondary-color;
 
@@ -138,7 +138,7 @@ span.helper, small.helper {
     @include radius(50%);
   }
 
-  .ac-legislator {
+  .ac-candidate {
     padding-bottom: 1rem;
     .name {
       display: block;
