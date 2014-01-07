@@ -21,6 +21,14 @@ module.exports = function(grunt) {
       tmp: ['tmp']
     },
 
+    react: {
+      main: {
+        files: {
+            'tmp/result/js/candidates.js': 'jsx/candidates.jsx'
+        }
+      }
+    },
+
     copy: {
       main: {
         files: [
@@ -35,16 +43,6 @@ module.exports = function(grunt) {
             cwd: 'public/',
             src: ['**/*'],
             dest: 'tmp/result'
-          },
-        ]
-      },
-      react: {
-        files: [
-          {
-            expand: true,
-            cwd: 'jsx/',
-            src: ['**/*'],
-            dest: 'tmp/result/js'
           },
         ]
       },
@@ -71,7 +69,7 @@ module.exports = function(grunt) {
 
       react: {
         files: 'jsx/**/*.jsx',
-        tasks: ['copy:react']
+        tasks: ['react']
       }
     }
   });
@@ -80,8 +78,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-react');
 
-  grunt.registerTask('build', ['copy:main', 'copy:react', 'sass']);
+  grunt.registerTask('build', ['copy:main', 'react', 'sass']);
   grunt.registerTask('default', ['clean:tmp', 'build','watch']);
   grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
 
