@@ -89,11 +89,12 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-react');
+  grunt.loadNpmTasks('grunt-sass');
 
   grunt.registerTask('build', ['copy:assets', 'copy:app', 'react', 'sass']);
   grunt.registerTask('default', ['clean:tmp', 'build','watch']);
