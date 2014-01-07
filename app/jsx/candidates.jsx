@@ -312,7 +312,7 @@ var CandidateList = React.createClass({
 
 var Candidate = React.createClass({
   render: function() {
-    var image = '';
+    var image = '/img/avatar.png';
     return (
       <div className="ac-candidate">
         <div className="row">
