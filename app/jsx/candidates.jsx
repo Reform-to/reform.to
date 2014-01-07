@@ -248,7 +248,6 @@ var District = React.createClass({
 
     var senateURI = nytimesAPI
       + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
-    console.log(senateURI);
 
     $.ajax({
       url: senateURI,
