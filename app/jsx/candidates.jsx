@@ -184,7 +184,7 @@ var Legislator = React.createClass({
     return (
       <div className="ac-legislator">
       <div className="row">
-      <div className="medium-6 columns">
+      <div className="large-6 medium-8 columns">
         <Avatar party={this.props.party} image={image} />
         <CandidateName
           title={this.props.title}
@@ -194,7 +194,7 @@ var Legislator = React.createClass({
           state={this.props.state}
         />
       </div>
-      <div className="small-6 medium-3 columns">
+      <div className="small-6 medium-2 columns">
         <ul className="contact no-bullet">
           <li>
             <a href={"tel:" + this.props.phone}>{this.props.phone}</a>
@@ -206,7 +206,7 @@ var Legislator = React.createClass({
           </li>
           </ul>
         </div>
-        <div className="small-6 medium-3 columns">
+        <div className="small-6 medium-2 columns">
         <ul className="contact no-bullet">
           <li>
             <a href={"http://twitter.com/" + this.props.twitter}>
