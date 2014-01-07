@@ -161,6 +161,22 @@ var LegislatorList = React.createClass({
   }
 });
 
+var CandidateName = React.createClass({
+  render: function() {
+    return (
+      <div>
+      <h3 className="name">
+        <span className="title">{this.props.title}</span> {' '}
+        <a href="#">
+          {this.props.firstName} {' '} {this.props.lastName}
+        </a>
+      </h3>
+      <span className="details">{this.props.party}-{this.props.state}</span>
+      </div>
+    );
+  }
+});
+
 var Legislator = React.createClass({
   render: function() {
     var imageDir = '/vendor/congress-photos/img/100x125/';
@@ -170,13 +186,13 @@ var Legislator = React.createClass({
       <div className="row">
       <div className="medium-6 columns">
         <Avatar party={this.props.party} image={image} />
-        <h3 className="name">
-          <span className="title">{this.props.title}</span> {' '}
-          <a href="#">
-            {this.props.firstName} {' '} {this.props.lastName}
-          </a>
-        </h3>
-        <span className="details">{this.props.party}-{this.props.state}</span>
+        <CandidateName
+          title={this.props.title}
+          firstName={this.props.firstName}
+          lastName={this.props.lastName}
+          party={this.props.party}
+          state={this.props.state}
+        />
       </div>
       <div className="small-6 medium-3 columns">
         <ul className="contact no-bullet">
