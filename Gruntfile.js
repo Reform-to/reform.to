@@ -11,23 +11,52 @@ module.exports = function(grunt) {
           outputStyle: 'compressed'
         },
         files: {
-          'css/app.css': 'scss/app.scss'
+          'tmp/result/css/app.css': 'scss/app.scss'
         }
       }
     },
 
-    clean: ['dist'],
+    clean: {
+      dist: ['dist'],
+      tmp: ['tmp']
+    },
 
     copy: {
       main: {
         files: [
-          { expand: true, src: ['index.html'], dest: 'dist/'},
-          { expand: true, src: ['candidates/**'], dest: 'dist/'},
-          { expand: true, src: ['favicon.ico'], dest: 'dist/'},
-          { expand: true, src: ['css/**'], dest: 'dist/'},
-          { expand: true, src: ['img/**'], dest: 'dist/'},
-          { expand: true, src: ['js/**'], dest: 'dist/'},
-          { expand: true, src: ['vendor/**'], dest: 'dist/'}
+          {
+            expand: true,
+            src: ['vendor/**'],
+            dest: 'tmp/result'
+          },
+          {
+            expand: true,
+            dot: true,
+            cwd: 'public/',
+            src: ['**/*'],
+            dest: 'tmp/result'
+          },
+        ]
+      },
+      react: {
+        files: [
+          {
+            expand: true,
+            cwd: 'jsx/',
+            src: ['**/*'],
+            dest: 'tmp/result/js'
+          },
+        ]
+      },
+      dist: {
+        files: [
+          {
+            expand: true,
+            dot: true,
+            cwd: 'tmp/result/',
+            src: ['**/*'],
+            dest: 'dist/'
+          }
         ]
       }
     },
@@ -38,6 +67,11 @@ module.exports = function(grunt) {
       sass: {
         files: 'scss/**/*.scss',
         tasks: ['sass']
+      },
+
+      react: {
+        files: 'jsx/**/*.jsx',
+        tasks: ['copy:react']
       }
     }
   });
@@ -47,8 +81,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('build', ['sass']);
-  grunt.registerTask('default', ['build','watch']);
-  grunt.registerTask('dist', ['clean', 'build', 'copy']);
+  grunt.registerTask('build', ['copy:main', 'copy:react', 'sass']);
+  grunt.registerTask('default', ['clean:tmp', 'build','watch']);
+  grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
 
 }
