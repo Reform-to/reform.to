@@ -69,6 +69,15 @@ module.exports = function(grunt) {
       }
     },
 
+    connect: {
+      server: {
+        options: {
+          port: 9001,
+          base: 'tmp/result'
+        }
+      }
+    },
+
     watch: {
       grunt: { files: ['Gruntfile.js'] },
 
@@ -97,7 +106,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
 
   grunt.registerTask('build', ['copy:assets', 'copy:app', 'react', 'sass']);
-  grunt.registerTask('default', ['clean:tmp', 'build','watch']);
+  grunt.registerTask('default', ['clean:tmp', 'build', 'watch']);
+  grunt.registerTask('server', ['clean:tmp', 'build', 'connect', 'watch']);
   grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
 
 }

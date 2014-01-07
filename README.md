@@ -15,6 +15,12 @@
 
     grunt
 
+### Server
+
+    grunt server
+
+This task will compile and run the app on `http://localhost:9000`.
+
 ## Deployment
 
     grunt dist
