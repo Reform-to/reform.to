@@ -65,6 +65,7 @@ var CandidateLocator = React.createClass({
 
 var AddressForm = React.createClass({
   geocodeAddress: function() {
+    $(".address-form input").blur();
     this.setState({addressHelper: 'Searching...'});
     this.setState({addressStatus: 'helper'});
 
