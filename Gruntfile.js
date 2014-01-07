@@ -11,7 +11,7 @@ module.exports = function(grunt) {
           outputStyle: 'compressed'
         },
         files: {
-          'tmp/result/css/app.css': 'scss/app.scss'
+          'tmp/result/css/app.css': 'app/scss/app.scss'
         }
       }
     },
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
     react: {
       main: {
         files: {
-            'tmp/result/js/candidates.js': 'jsx/candidates.jsx'
+            'tmp/result/js/candidates.js': 'app/jsx/candidates.jsx'
         }
       }
     },
@@ -73,7 +73,7 @@ module.exports = function(grunt) {
       grunt: { files: ['Gruntfile.js'] },
 
       sass: {
-        files: 'scss/**/*.scss',
+        files: 'app/scss/**/*.scss',
         tasks: ['sass']
       },
 
@@ -83,7 +83,7 @@ module.exports = function(grunt) {
       },
 
       react: {
-        files: 'jsx/**/*.jsx',
+        files: 'app/jsx/**/*.jsx',
         tasks: ['react']
       }
     }
