@@ -133,7 +133,8 @@ span.helper, small.helper {
     @include radius(50%);
   }
 
-  .avatar.party-I:after {
+  .avatar:after,
+  .avatar.party-I {
     content: " ";
     position: absolute;
     background-color: rgba(255, 50, 255, 0.4);
