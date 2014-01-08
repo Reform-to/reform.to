@@ -242,7 +242,13 @@ var District = React.createClass({
             congressional: data.results
           });
         }
-      }.bind(this)
+      }.bind(this),
+      error: function() {
+          // Wipe state on API error
+          this.setState({
+            congressional: []
+          });
+      }.bind(this),
     });
 
     var senateURI = nytimesAPI
@@ -257,7 +263,13 @@ var District = React.createClass({
             senatorial: data.results
           });
         }
-      }.bind(this)
+      }.bind(this),
+      error: function() {
+          // Wipe state on API error
+          this.setState({
+            senatorial: []
+          });
+      }.bind(this),
     });
 
   },
