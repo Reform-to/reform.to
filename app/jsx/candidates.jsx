@@ -50,6 +50,9 @@ var CandidateLocator = React.createClass({
     </div>
     <div className="row">
       <div className="large-12 columns">
+        <h2 className="subheader">
+          {this.state.legislators.length > 0 ? 'United States Congress' : ''}
+        </h2>
         <LegislatorList legislators={this.state.legislators} />
       </div>
     </div>
@@ -213,7 +216,7 @@ var Legislator = React.createClass({
 
 var District = React.createClass({
   getInitialState: function() {
-    return {cycle: [], state: [], district: [], congressional: [], senatorial: []};
+    return {cycle: '', state: [], district: [], congressional: [], senatorial: []};
   },
   componentWillReceiveProps: function(props) {
     var apiKey = "0e71e93cf1cc57809a601579842aa03b:15:68622833";
@@ -276,21 +279,39 @@ var District = React.createClass({
   render: function() {
     return (
       <div>
-        <CandidateList
-          candidates={this.state.congressional}
-          state={this.props.state}
-          chamber="House"
-          district={this.state.district}
-          cycle={this.state.cycle}
-        />
-        <CandidateList
-          candidates={this.state.senatorial}
-          state={this.props.state}
-          chamber="Senate"
-          cycle={this.state.cycle}
-        />
+        <div className="row">
+          <div className="large-12 columns">
+            <h2 className="special-header subheader">
+              {this.state.cycle ? 'Election ' + this.state.cycle : ''}
+            </h2>
+          </div>
+        </div>
+        <div className="row">
+          <div className="medium-6 columns">
+            <h4 className="subheader">
+              {this.state.congressional.length > 0 ? 'House of Representatives' : ''}
+            </h4>
+            <CandidateList
+              candidates={this.state.congressional}
+              state={this.props.state}
+              chamber="House"
+              district={this.state.district}
+              cycle={this.state.cycle}
+            />
+          </div>
+          <div className="medium-6 columns">
+            <h4 className="subheader">
+              {this.state.senatorial.length > 0 ? 'Senate' : ''}
+            </h4>
+            <CandidateList
+              candidates={this.state.senatorial}
+              state={this.props.state}
+              chamber="Senate"
+              cycle={this.state.cycle}
+            />
+          </div>
+        </div>
       </div>
-
     );
   }
 });
@@ -306,14 +327,15 @@ var CandidateList = React.createClass({
       var district = null;
     }
 
-    var chamber = this.props.chamber == "House" ? "Congress" : this.props.chamber;
-    var subtitle = "for " + chamber + ', ' + this.props.cycle;
-
     var candidateNodes = this.props.candidates.map(function (candidate) {
+      // Take the first letter of the party name only
       var party = candidate.candidate.party.substring(0, 1);
+
+      // Format "LASTNAME, FIRSTNAME" as "Firstname LASTNAME"
       var names = candidate.candidate.name.split(',');
-      var lastName = toTitleCase(names[0]);
+      var lastName = names[0];
       var firstName = toTitleCase(names[1]);
+
       return <Candidate
         key={candidate.candidate.id}
         firstName={firstName}
@@ -321,7 +343,6 @@ var CandidateList = React.createClass({
         party={party}
         state={state}
         district={district}
-        subtitle={subtitle}
       />
     });
     return (
@@ -339,14 +360,13 @@ var Candidate = React.createClass({
       <div className="ac-candidate">
         <div className="row">
           <div className="medium-12 columns">
-            <Avatar party={this.props.party} image={image} />
+          <Avatar party={this.props.party} image={image} />
             <CandidateName
               firstName={this.props.firstName}
               lastName={this.props.lastName}
               party={this.props.party}
               state={this.props.state}
               district={this.props.district}
-              subtitle={this.props.subtitle}
             />
           </div>
         </div>
@@ -379,7 +399,6 @@ var CandidateName = React.createClass({
         <a href="#">
           {this.props.firstName} {' '} {this.props.lastName} {' '}
         </a>
-        <span className="title">{' '} {this.props.subtitle}</span> {' '}
       </h3>
       <span className="details">
         {this.props.party}-{this.props.state}

@@ -50,6 +50,10 @@ html, body {
   font-family: $subheader-font-family;
 }
 
+.special-header {
+  color: $success-color;
+}
+
 fieldset {
   legend {
       font-family: $legend-font-family;
