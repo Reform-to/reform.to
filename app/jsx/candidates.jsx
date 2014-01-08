@@ -58,7 +58,11 @@ var CandidateLocator = React.createClass({
     </div>
     <div className="row">
       <div className="large-12 columns">
-        <District state={this.state.districts.state} district={this.state.districts.district} />
+        <District
+          state={this.state.districts.state}
+          district={this.state.districts.district}
+          legislators={this.state.legislators}
+        />
       </div>
     </div>
     </div>
@@ -216,9 +220,28 @@ var Legislator = React.createClass({
 
 var District = React.createClass({
   getInitialState: function() {
-    return {cycle: '', state: [], district: [], congressional: [], senatorial: []};
+    return {
+      cycle: '',
+      state: [],
+      district: [],
+      congressional: [],
+      senatorial: [],
+      legislators: [],
+      fecBioMap: []
+    };
   },
   componentWillReceiveProps: function(props) {
+
+    // Use the legislators list to map fec_ids to bioguide_ids
+    var fecBioMap = {};
+    props.legislators.forEach(function(legislator) {
+        legislator.fec_ids.forEach(function(fecId) {
+          fecBioMap[fecId] = legislator.bioguide_id;
+        });
+    });
+    this.setState({fecBioMap: fecBioMap});
+
+    // Look up current candidates for this state and district
     var apiKey = "0e71e93cf1cc57809a601579842aa03b:15:68622833";
     var nytimesAPI = "http://api.nytimes.com/svc/elections/us/v3/finances/";
 
@@ -297,6 +320,7 @@ var District = React.createClass({
               chamber="House"
               district={this.state.district}
               cycle={this.state.cycle}
+              fecBioMap={this.state.fecBioMap}
             />
           </div>
           <div className="medium-6 columns">
@@ -308,6 +332,7 @@ var District = React.createClass({
               state={this.props.state}
               chamber="Senate"
               cycle={this.state.cycle}
+              fecBioMap={this.state.fecBioMap}
             />
           </div>
         </div>
@@ -327,6 +352,8 @@ var CandidateList = React.createClass({
       var district = null;
     }
 
+    var self = this;
+
     var candidateNodes = this.props.candidates.map(function (candidate) {
       // Take the first letter of the party name only
       var party = candidate.candidate.party.substring(0, 1);
@@ -336,13 +363,20 @@ var CandidateList = React.createClass({
       var lastName = names[0];
       var firstName = toTitleCase(names[1]);
 
+      // Check if candidate has a bioguide id
+      var fecId = candidate.candidate.id;
+      var fecBioMap = self.props.fecBioMap;
+
+      var bioguideId = fecBioMap.hasOwnProperty(fecId) ? fecBioMap[fecId] : null;
+
       return <Candidate
-        key={candidate.candidate.id}
+        key={fecId}
         firstName={firstName}
         lastName={lastName}
         party={party}
         state={state}
         district={district}
+        bioguideId={bioguideId}
       />
     });
     return (
@@ -355,7 +389,12 @@ var CandidateList = React.createClass({
 
 var Candidate = React.createClass({
   render: function() {
-    var image = '/img/avatar.png';
+    if (this.props.bioguideId) {
+      var imageDir = '/vendor/congress-photos/img/100x125/';
+      var image = imageDir + this.props.bioguideId + '.jpg';
+    } else {
+      var image = '/img/avatar.png';
+    }
     return (
       <div className="ac-candidate">
         <div className="row">
