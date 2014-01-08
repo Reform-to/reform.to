@@ -134,7 +134,7 @@ span.helper, small.helper {
   }
 
   .avatar:after,
-  .avatar.party-I {
+  .avatar.party-I:after {
     content: " ";
     position: absolute;
     background-color: rgba(255, 50, 255, 0.4);
