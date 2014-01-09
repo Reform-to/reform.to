@@ -29,6 +29,17 @@ module.exports = function(grunt) {
       }
     },
 
+    concat: {
+      dev: {
+        src: ['config/environment.js', 'config/environments/development.js'],
+        dest: 'tmp/result/js/config.js'
+      },
+      dist: {
+        src: ['config/environment.js', 'config/environments/production.js'],
+        dest: 'tmp/result/js/config.js'
+      }
+    },
+
     copy: {
       vendor: {
         files: [
@@ -59,10 +70,6 @@ module.exports = function(grunt) {
             dest: 'tmp/result'
           }
         ]
-      },
-      environment: {
-        src: 'config/environment.js',
-        dest: 'tmp/result/js/config.js'
       },
       dist: {
         files: [
@@ -112,15 +119,16 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets',  'copy:environment', 'copy:app', 'react', 'sass']);
-  grunt.registerTask('default', ['clean:tmp', 'build', 'watch']);
-  grunt.registerTask('server', ['clean:tmp', 'build', 'connect', 'watch']);
-  grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'copy:app', 'react', 'sass']);
+  grunt.registerTask('default', ['clean:tmp', 'build', 'concat:dev']);
+  grunt.registerTask('server', ['clean:tmp', 'build', 'concat:dev', 'connect', 'watch']);
+  grunt.registerTask('dist', ['clean', 'build', 'concat:dist', 'copy:dist']);
 
 }
