@@ -30,20 +30,24 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      assets: {
+      vendor: {
         files: [
           {
             expand: true,
             src: ['vendor/**'],
             dest: 'tmp/result'
-          },
+          }
+        ]
+      },
+      assets: {
+        files: [
           {
             expand: true,
             dot: true,
             cwd: 'public/',
             src: ['**/*'],
             dest: 'tmp/result'
-          },
+          }
         ]
       },
       app: {
@@ -91,6 +95,11 @@ module.exports = function(grunt) {
         tasks: ['copy:app']
       },
 
+      assets: {
+        files: 'public/**/*',
+        tasks: ['copy:assets']
+      },
+
       react: {
         files: 'app/jsx/**/*.jsx',
         tasks: ['react']
@@ -105,7 +114,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:assets', 'copy:app', 'react', 'sass']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets',  'copy:app', 'react', 'sass']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'watch']);
   grunt.registerTask('server', ['clean:tmp', 'build', 'connect', 'watch']);
   grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
