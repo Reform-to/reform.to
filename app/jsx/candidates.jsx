@@ -4,11 +4,11 @@
 
 var CandidateLocator = React.createClass({
   locateCandidates: function(coords) {
-    var apikey = '574712f76976437cb98767c4a2622588';
-    var sunlightAPI = "http://congress.api.sunlightfoundation.com";
+    var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
+    var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
 
     var locationQuery = {
-      apikey: apikey,
+      apikey: apiKey,
       latitude: coords.latitude,
       longitude: coords.longitude
     };
@@ -174,8 +174,9 @@ var LegislatorList = React.createClass({
 
 var Legislator = React.createClass({
   render: function() {
-    var imageDir = '/vendor/congress-photos/img/100x125/';
-    var image = imageDir + this.props.key + '.jpg';
+    var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
+    var photoResource = '/img/100x125/'+ this.props.key + '.jpg';
+    var image = congressPhotosAPI + photoResource;
     return (
       <div className="ac-candidate">
       <div className="row">
@@ -246,13 +247,13 @@ var District = React.createClass({
     this.setState({fecBioMap: fecBioMap});
 
     // Look up current candidates for this state and district
-    var apiKey = "0e71e93cf1cc57809a601579842aa03b:15:68622833";
-    var nytimesAPI = "http://api.nytimes.com/svc/elections/us/v3/finances/";
+    var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
+    var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
 
     var query = {
       'api-key': apiKey
     };
-    var cycle = 2014;
+    var cycle = window.ENV.ELECTIONS.cycle;
     var state = props.state;
     var district = props.district;
 
@@ -394,8 +395,9 @@ var CandidateList = React.createClass({
 var Candidate = React.createClass({
   render: function() {
     if (this.props.bioguideId) {
-      var imageDir = '/vendor/congress-photos/img/100x125/';
-      var image = imageDir + this.props.bioguideId + '.jpg';
+      var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
+      var photoResource = '/img/100x125/'+ this.props.bioguideId + '.jpg';
+      var image = congressPhotosAPI + photoResource;
     } else {
       var image = '/img/avatar.png';
     }

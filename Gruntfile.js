@@ -60,6 +60,10 @@ module.exports = function(grunt) {
           }
         ]
       },
+      environment: {
+        src: 'config/environment.js',
+        dest: 'tmp/result/js/config.js'
+      },
       dist: {
         files: [
           {
@@ -114,7 +118,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets',  'copy:app', 'react', 'sass']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets',  'copy:environment', 'copy:app', 'react', 'sass']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'watch']);
   grunt.registerTask('server', ['clean:tmp', 'build', 'connect', 'watch']);
   grunt.registerTask('dist', ['clean', 'build', 'copy:dist']);
