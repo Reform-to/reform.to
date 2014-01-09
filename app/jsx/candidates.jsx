@@ -2,6 +2,29 @@
  * @jsx React.DOM
  */
 
+var App = React.createClass({
+  getInitialState: function() {
+    return {page: 'home'};
+  },
+  componentDidMount: function() {
+    var router = Router({
+      '/': this.setState.bind(this, this.getInitialState(), null)
+    });
+    router.init();
+  },
+  render: function() {
+    var content;
+    if (this.state.page === 'home') {
+      content = <CandidateLocator />
+    }
+    return (
+      <div>
+        {content}
+      </div>
+    );
+  }
+});
+
 var CandidateLocator = React.createClass({
   locateCandidates: function(coords) {
     var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
@@ -459,7 +482,7 @@ var CandidateName = React.createClass({
 });
 
 React.renderComponent(
-    <CandidateLocator />,
+    <App />,
     document.getElementById('ac-candidates')
 );
 
