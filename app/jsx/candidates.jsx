@@ -9,7 +9,8 @@ var App = React.createClass({
   componentDidMount: function() {
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
-      '/reforms': this.setState.bind(this, {page: 'reforms', editing: false}, null)
+      '/reforms': this.setState.bind(this, {page: 'reforms', editing: false}, null),
+      '/candidates': this.setState.bind(this, {page: 'candidates', editing: false}, null)
     });
     router.init();
   },
@@ -19,6 +20,8 @@ var App = React.createClass({
       content = <CandidateLocator />
     } else if (this.state.page === 'reforms') {
       content = <Reforms />
+    } else if (this.state.page === 'candidates') {
+      content = <PledgeTaker />
     }
     return (
       <div>
@@ -480,6 +483,75 @@ var CandidateName = React.createClass({
         {this.props.district ? ", District " + this.props.district : ''}
         </span>
       </div>
+    );
+  }
+});
+
+var PledgeTaker = React.createClass({
+  render: function() {
+    return (
+      <div className="ac-pledge-taker">
+      <div className="row">
+        <div className="large-12 columns">
+          <CongressForm />
+        </div>
+      </div>
+      </div>
+    );
+  }
+});
+
+var CongressForm = React.createClass({
+  render: function() {
+    return (
+      <form className="congress-form">
+        <fieldset>
+          <legend>Support Reform</legend>
+          <div className="row">
+            <div className="large-3 columns">
+              <input type="radio" name="role" value="congressman" id="form-radio-congressman"/>
+              <label htmlFor="form-radio-congressman">Member of Congress</label>
+            </div>
+            <div className="large-3 columns">
+              <input type="radio" name="role" value="candidate" id="form-radio-candidate"/>
+              <label htmlFor="form-radio-candidate">Candidate for Congress</label>
+            </div>
+            <div className="large-6 columns">
+            </div>
+          </div>
+          <div className="row">
+            <div className="large-3 medium-3 columns">
+              <select id="form-select-party">
+                <option>Party...</option>
+                <option value="Democratic">Democratic</option>
+                <option value="Green">Green</option>
+                <option value="Independent">Independent</option>
+                <option value="Libertarian">Libertarian</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Republican">Republican</option>
+                <option value="Unaffiliated">Unaffiliated</option>
+              </select>
+            </div>
+            <div className="large-3 medium-3 columns">
+              <select id="form-select-chamber">
+                <option>Chamber...</option>
+                <option value="house">House</option>
+                <option value="senate">Senate</option>
+              </select>
+            </div>
+            <div className="large-3 medium-3 columns">
+              <select id="form-select-state">
+                <option>State...</option>
+              </select>
+            </div>
+            <div className="large-3 medium-3 columns">
+              <select id="form-select-district">
+                <option>District...</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+      </form>
     );
   }
 });
