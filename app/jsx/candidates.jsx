@@ -488,12 +488,33 @@ var CandidateName = React.createClass({
 });
 
 var PledgeTaker = React.createClass({
+  fillInCandidate: function(candidate) {
+    console.log("Filling in candidate", candidate);
+  },
+  fillInReforms: function(reforms) {
+    console.log("Filling in reforms", reforms);
+  },
+  getInitialState: function() {
+    var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
+
+    $.ajax({
+      url: reformsURL,
+      success: function(data) {
+        this.setState({ reforms: data.reforms });
+      }.bind(this)
+    });
+
+    return { reforms: [], role: "" };
+  },
   render: function() {
     return (
       <div className="ac-pledge-taker">
       <div className="row">
         <div className="large-12 columns">
-          <CongressForm />
+          <form className="congress-form">
+            <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
+            <ReformsFieldset onReformsSelect={this.fillReforms} />
+          </form>
         </div>
       </div>
       </div>
@@ -501,27 +522,246 @@ var PledgeTaker = React.createClass({
   }
 });
 
-var CongressForm = React.createClass({
+var CandidacyFieldset = React.createClass({
+  getInitialState: function() {
+    return { role: '', party: '', chamber: '', state: '', district: '', legislators: [], candidates: []};
+  },
+  locateCandidates: function(candidacy) {
+
+    // Only do a search if a state has been chosen
+    if (candidacy.state) {
+
+      if (candidacy.role === 'congress') {
+        // Search for current members of Congress
+
+        // Use the Sunlight Foundation API
+        var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
+        var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
+
+        var locationQuery = {
+          apikey: apiKey,
+          state: candidacy.state,
+          chamber: candidacy.chamber,
+        };
+
+        // Only select by district for House members
+        if (candidacy.chamber === 'house') {
+          locationQuery.district = candidacy.district;
+        }
+
+        // Perform the search for Senate, or House + District
+        if (candidacy.chamber === "senate" || (candidacy.chamber === "house" && candidacy.district)) {
+
+          var locateLegislatorsURL =
+            sunlightAPI + '/legislators' + "?" + $.param(locationQuery);
+
+          $.ajax({
+            url: locateLegislatorsURL,
+            success: function(data) {
+              this.setState({legislators: data.results});
+            }.bind(this)
+          });
+        }
+
+      } else if (candidacy.role === 'candidate') {
+        // Search for candidates for Congress
+
+        // Use the NYT Campaign Finance API
+        var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
+        var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+
+        var query = {
+          'api-key': apiKey
+        };
+
+        var cycle = window.ENV.ELECTIONS.cycle;
+        var state = candidacy.state;
+
+        // Perform the search for Senate, or House + District
+        if (candidacy.chamber === "senate") {
+          var senateURI = nytimesAPI
+            + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
+
+          $.ajax({
+            url: senateURI,
+            dataType: 'jsonp',
+            success: function(data) {
+              if (data.status == "OK") {
+                this.setState({
+                  candidates: data.results
+                });
+              }
+            }.bind(this),
+            error: function() {
+                // Wipe state on API error
+                this.setState({
+                  candidates: []
+                });
+            }.bind(this),
+          });
+
+        } else if (candidacy.chamber === "house" && candidacy.district) {
+          var district = candidacy.district;
+          var houseURI = nytimesAPI
+            + cycle + '/seats/' + state + '/house/' + district
+            + '.json?' + $.param(query);
+
+          $.ajax({
+            url: houseURI,
+            dataType: 'jsonp',
+            success: function(data) {
+              if (data.status == "OK") {
+                this.setState({
+                  candidates: data.results
+                });
+              }
+            }.bind(this),
+            error: function() {
+                // Wipe state on API error
+                this.setState({
+                  candidates: []
+                });
+            }.bind(this),
+          });
+
+        }
+
+      }
+    }
+  },
+  selectRole: function(event) {
+    this.setState({ role: event.target.value });
+    // Reset the legislators
+    this.setState({ legislators: [] });
+    // Reset the candidates
+    this.setState({ candidates: [] });
+   // Merge old and new state and look up candidate
+    this.locateCandidates($.extend(this.state, { role: event.target.value }));
+  },
+  selectParty: function(event) {
+    this.setState({ party: event.target.value });
+    this.locateCandidates($.extend(this.state, { party: event.target.value }));
+  },
+  selectChamber: function(event) {
+    // Reset the district
+    this.setState({ district: '' });
+    // Reset the legislators
+    this.setState({ legislators: [] });
+    // Reset the candidates
+    this.setState({ candidates: [] });
+
+    this.setState({ chamber: event.target.value });
+    this.locateCandidates($.extend(this.state, { chamber: event.target.value }));
+  },
+  selectState: function(event) {
+    // Reset the district if the state changes
+    this.setState({ district: '' });
+    this.setState({ state: event.target.value });
+    this.locateCandidates($.extend(this.state, { state: event.target.value }));
+  },
+  selectDistrict: function(event) {
+    this.setState({ district: event.target.value });
+    this.locateCandidates($.extend(this.state, { district: event.target.value }));
+  },
+  selectLegislator: function(i) {
+    var legislator = this.state.legislators[i];
+    this.props.onCandidateSelect(legislator);
+  },
+  selectCandidate: function(i) {
+    var candidate = this.state.candidates[i];
+    this.props.onCandidateSelect(candidate);
+  },
   render: function() {
+    var cx = React.addons.classSet;
+    var congressFieldsetClasses = cx({
+      'hide': !(this.state.role === 'congress' || this.state.role === 'candidate')
+    });
+    var districtSelectClasses = cx({
+      'hide': this.state.chamber !== 'house'
+    });
     return (
-      <form className="congress-form">
-        <fieldset>
-          <legend>Support Reform</legend>
-          <div className="row">
-            <div className="large-3 columns">
-              <input type="radio" name="role" value="congressman" id="form-radio-congressman"/>
-              <label htmlFor="form-radio-congressman">Member of Congress</label>
-            </div>
-            <div className="large-3 columns">
-              <input type="radio" name="role" value="candidate" id="form-radio-candidate"/>
-              <label htmlFor="form-radio-candidate">Candidate for Congress</label>
-            </div>
-            <div className="large-6 columns">
-            </div>
+      <fieldset>
+        <legend>Declare Your Candidacy</legend>
+        <label><strong>I am a...</strong></label>
+        <div className="row">
+          <div className="large-3 columns">
+            <input
+              type="radio"
+              name="role"
+              value="congress"
+              id="form-radio-congress"
+              checked={this.state.role == 'congress' ? 'checked' : null}
+              onChange={this.selectRole}
+            />
+            <label htmlFor="form-radio-congress">Member of Congress</label>
           </div>
+          <div className="large-3 columns">
+            <input
+              type="radio"
+              name="role"
+              value="candidate"
+              id="form-radio-candidate"
+              checked={this.state.role == 'candidate' ? 'checked' : null}
+              onChange={this.selectRole}
+            />
+            <label htmlFor="form-radio-candidate">Candidate for Congress</label>
+          </div>
+          <div className="large-3 columns">
+            <input
+              type="radio"
+              name="role"
+              value="voter"
+              id="form-radio-voter"
+              checked={this.state.role == 'voter' ? 'checked' : null}
+              onChange={this.selectRole}
+            />
+            <label htmlFor="form-radio-voter">Voter</label>
+          </div>
+          <div className="large-6 columns">
+          </div>
+        </div>
+        <div className={congressFieldsetClasses}>
+          <label><strong>My Seat is in...</strong></label>
           <div className="row">
             <div className="large-3 medium-3 columns">
-              <select id="form-select-party">
+              <select
+                id="form-select-chamber"
+                onChange={this.selectChamber}
+                value={this.state.chamber}
+              >
+                <option value="">Chamber...</option>
+                <option value="house">House of Representatives</option>
+                <option value="senate">Senate</option>
+              </select>
+            </div>
+            <div className="large-3 medium-3 columns">
+              <select
+                id="form-select-state"
+                onChange={this.selectState}
+                value={this.state.state}
+              >
+                <option value="">State...</option>
+                <option value="AL">Alabama</option> <option value="AK">Alaska</option> <option value="AR">Arkansas</option> <option value="AZ">Arizona</option> <option value="CA">California</option> <option value="CO">Colorado</option> <option value="CT">Connecticut</option> <option value="DE">Delaware</option> <option value="FL">Florida</option> <option value="GA">Georgia</option> <option value="HI">Hawaii</option> <option value="IA">Iowa</option> <option value="ID">Idaho</option> <option value="IL">Illinois</option> <option value="IN">Indiana</option> <option value="KS">Kansas</option> <option value="KY">Kentucky</option> <option value="LA">Louisiana</option> <option value="MA">Massachusetts</option> <option value="MD">Maryland</option> <option value="ME">Maine</option> <option value="MI">Michigan</option> <option value="MN">Minnesota</option> <option value="MO">Missouri</option> <option value="MS">Mississippi</option> <option value="MT">Montana</option> <option value="NC">North Carolina</option> <option value="ND">North Dakota</option> <option value="NE">Nebraska</option> <option value="NH">New Hampshire</option> <option value="NJ">New Jersey</option> <option value="NM">New Mexico</option> <option value="NV">Nevada</option> <option value="NY">New York</option> <option value="OH">Ohio</option> <option value="OK">Oklahoma</option> <option value="OR">Oregon</option> <option value="PA">Pennsylvania</option> <option value="RI">Rhode Island</option> <option value="SC">South Carolina</option> <option value="SD">South Dakota</option> <option value="TN">Tennessee</option> <option value="TX">Texas</option> <option value="UT">Utah</option> <option value="VA">Virginia</option> <option value="VT">Vermont</option> <option value="WA">Washington</option> <option value="DC">Washington, D.C.</option> <option value="WI">Wisconsin</option> <option value="WV">West Virginia</option> <option value="WY">Wyoming</option>
+              </select>
+            </div>
+            <div className="large-3 medium-3 columns">
+              <select
+                id="form-select-district"
+                className={districtSelectClasses}
+                onChange={this.selectDistrict}
+                value={this.state.district}
+              >
+                <option value="">District...</option>
+                <option value="0">At Large</option>
+                <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option> <option value="41">41</option> <option value="42">42</option> <option value="43">43</option> <option value="44">44</option> <option value="45">45</option> <option value="46">46</option> <option value="47">47</option> <option value="48">48</option> <option value="49">49</option> <option value="50">50</option> <option value="51">51</option> <option value="52">52</option> <option value="53">53</option> <option value="54">54</option> <option value="55">55</option>
+              </select>
+            </div>
+            <div className="large-3 medium-3 columns hide">
+              <select
+                id="form-select-party"
+                onChange={this.selectParty}
+                value={this.state.party}
+              >
                 <option>Party...</option>
                 <option value="Democratic">Democratic</option>
                 <option value="Green">Green</option>
@@ -532,27 +772,73 @@ var CongressForm = React.createClass({
                 <option value="Unaffiliated">Unaffiliated</option>
               </select>
             </div>
-            <div className="large-3 medium-3 columns">
-              <select id="form-select-chamber">
-                <option>Chamber...</option>
-                <option value="house">House</option>
-                <option value="senate">Senate</option>
-              </select>
-            </div>
-            <div className="large-3 medium-3 columns">
-              <select id="form-select-state">
-                <option>State...</option>
-              </select>
-            </div>
-            <div className="large-3 medium-3 columns">
-              <select id="form-select-district">
-                <option>District...</option>
-              </select>
-            </div>
           </div>
-        </fieldset>
-      </form>
+        </div>
+        <hr/>
+        <div className="row">
+          <div className="large-12 columns">
+            <label>
+              <strong>
+              {this.state.legislators.length > 0 ? 'I am...' : ''}
+              </strong>
+            </label>
+            {this.state.legislators.map(function (legislator, i) {
+              return (
+                <div key={i}>
+                <input
+                  type="radio"
+                  name="legislator"
+                  value={legislator.bioguide_id}
+                  id={'form-radio-' + legislator.bioguide_id}
+                  onClick={this.selectLegislator.bind(this, i)}
+                />
+                <label htmlFor={'form-radio-' + legislator.bioguide_id}>
+                  <span className="subheader">{legislator.title}</span> {' '}
+                  {legislator.first_name} {' '} {legislator.last_name},{' '}
+                  {legislator.party}-{legislator.state}
+                </label>
+                </div>
+              )
+            }, this)}
+          </div>
+        </div>
+        <div className="row">
+          <div className="large-12 columns">
+            <label>
+              <strong>
+              {this.state.candidates.length > 0 ? 'I am...' : ''}
+              </strong>
+            </label>
+            {this.state.candidates.map(function (candidate, i) {
+              return (
+                <div key={i}>
+                <input
+                  type="radio"
+                  name="candidate"
+                  value={candidate.candidate.id}
+                  id={'form-radio-' + candidate.candidate.id}
+                  onClick={this.selectCandidate.bind(this, i)}
+                />
+                <label htmlFor={'form-radio-' + candidate.candidate.id}>
+                  {candidate.candidate.name}
+                </label>
+                </div>
+              )
+            }, this)}
+          </div>
+        </div>
+      </fieldset>
     );
+  }
+});
+
+var ReformsFieldset = React.createClass({
+  render: function() {
+    return (
+      <fieldset>
+        <legend>Select Reforms</legend>
+      </fieldset>
+    )
   }
 });
 
