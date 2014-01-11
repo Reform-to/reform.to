@@ -632,9 +632,9 @@ var CandidacyFieldset = React.createClass({
   selectRole: function(event) {
     this.setState({ role: event.target.value });
     // Reset the legislators
-    this.setState({ legislators: [] });
+    this.setState({ legislators: [], legislator_key: '' });
     // Reset the candidates
-    this.setState({ candidates: [] });
+    this.setState({ candidates: [], candidate_key: '' });
    // Merge old and new state and look up candidate
     this.locateCandidates($.extend(this.state, { role: event.target.value }));
   },
@@ -646,9 +646,9 @@ var CandidacyFieldset = React.createClass({
     // Reset the district
     this.setState({ district: '' });
     // Reset the legislators
-    this.setState({ legislators: [] });
+    this.setState({ legislators: [], legislator_key: '' });
     // Reset the candidates
-    this.setState({ candidates: [] });
+    this.setState({ candidates: [], candidate_key: '' });
 
     this.setState({ chamber: event.target.value });
     this.locateCandidates($.extend(this.state, { chamber: event.target.value }));
