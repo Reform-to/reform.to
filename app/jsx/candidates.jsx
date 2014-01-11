@@ -663,12 +663,14 @@ var CandidacyFieldset = React.createClass({
     this.setState({ district: event.target.value });
     this.locateCandidates($.extend(this.state, { district: event.target.value }));
   },
-  selectLegislator: function(i) {
-    var legislator = this.state.legislators[i];
+  selectLegislator: function(event) {
+    var legislator = this.state.legislators[event.target.value];
+    this.setState({ legislator_key: event.target.value });
     this.props.onCandidateSelect(legislator);
   },
-  selectCandidate: function(i) {
-    var candidate = this.state.candidates[i];
+  selectCandidate: function(event) {
+    var candidate = this.state.candidates[event.target.value];
+    this.setState({ candidate_key: event.target.value });
     this.props.onCandidateSelect(candidate);
   },
   render: function() {
@@ -678,6 +680,12 @@ var CandidacyFieldset = React.createClass({
     });
     var districtSelectClasses = cx({
       'hide': this.state.chamber !== 'house'
+    });
+    var legislatorSelectClasses = cx({
+      'hide': this.state.legislators.length === 0
+    });
+    var candidateSelectClasses = cx({
+      'hide': this.state.candidates.length === 0
     });
     return (
       <fieldset>
@@ -762,7 +770,7 @@ var CandidacyFieldset = React.createClass({
                 onChange={this.selectParty}
                 value={this.state.party}
               >
-                <option>Party...</option>
+                <option value="">Party...</option>
                 <option value="Democratic">Democratic</option>
                 <option value="Green">Green</option>
                 <option value="Independent">Independent</option>
@@ -774,57 +782,56 @@ var CandidacyFieldset = React.createClass({
             </div>
           </div>
         </div>
-        <hr/>
         <div className="row">
-          <div className="large-12 columns">
+          <div className="large-3 medium-3 columns">
+            <div className={legislatorSelectClasses}>
             <label>
               <strong>
-              {this.state.legislators.length > 0 ? 'I am...' : ''}
+                My Name is...
               </strong>
             </label>
+            <select
+              id="form-select-legislator"
+              onChange={this.selectLegislator}
+              value={this.state.legislator_key}
+            >
+            <option value="">Select Your Name...</option>
             {this.state.legislators.map(function (legislator, i) {
               return (
-                <div key={i}>
-                <input
-                  type="radio"
-                  name="legislator"
-                  value={legislator.bioguide_id}
-                  id={'form-radio-' + legislator.bioguide_id}
-                  onClick={this.selectLegislator.bind(this, i)}
-                />
-                <label htmlFor={'form-radio-' + legislator.bioguide_id}>
-                  <span className="subheader">{legislator.title}</span> {' '}
+                <option value={i} key={i}>
+                  {legislator.title} {' '}
                   {legislator.first_name} {' '} {legislator.last_name},{' '}
                   {legislator.party}-{legislator.state}
-                </label>
-                </div>
+                </option>
               )
             }, this)}
+            </select>
+            </div>
           </div>
         </div>
         <div className="row">
-          <div className="large-12 columns">
+          <div className="large-3 medium-3 columns">
+            <div className={candidateSelectClasses}>
             <label>
               <strong>
-              {this.state.candidates.length > 0 ? 'I am...' : ''}
+                My Name is...
               </strong>
             </label>
+            <select
+              id="form-select-candidate"
+              onChange={this.selectCandidate}
+              value={this.state.candidate_key}
+            >
+            <option value="">Select Your Name...</option>
             {this.state.candidates.map(function (candidate, i) {
               return (
-                <div key={i}>
-                <input
-                  type="radio"
-                  name="candidate"
-                  value={candidate.candidate.id}
-                  id={'form-radio-' + candidate.candidate.id}
-                  onClick={this.selectCandidate.bind(this, i)}
-                />
-                <label htmlFor={'form-radio-' + candidate.candidate.id}>
+                <option value={i} key={i}>
                   {candidate.candidate.name}
-                </label>
-                </div>
+                </option>
               )
             }, this)}
+            </select>
+            </div>
           </div>
         </div>
       </fieldset>
