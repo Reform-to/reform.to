@@ -509,11 +509,13 @@ var PledgeTaker = React.createClass({
     };
   },
   render: function() {
+    var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
+    var addReformersURL = reformersAPI + '/reformers/add';
     return (
       <div className="ac-pledge-taker">
       <div className="row">
         <div className="large-12 columns">
-          <form className="congress-form" data-abide>
+          <form className="congress-form" data-abide method="post" action={addReformersURL}>
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
             <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillInReforms} />
             <ContactFieldset
@@ -763,7 +765,7 @@ var CandidacyFieldset = React.createClass({
                 id="form-select-chamber"
                 onChange={this.selectChamber}
                 value={this.state.chamber}
-                name="congress-chamber"
+                name="chamber"
               >
                 <option value="">Chamber...</option>
                 <option value="house">House of Representatives</option>
@@ -775,7 +777,7 @@ var CandidacyFieldset = React.createClass({
                 id="form-select-state"
                 onChange={this.selectState}
                 value={this.state.state}
-                name="congress-state"
+                name="state"
               >
                 <option value="">State...</option>
                 <option value="AL">Alabama</option> <option value="AK">Alaska</option> <option value="AR">Arkansas</option> <option value="AZ">Arizona</option> <option value="CA">California</option> <option value="CO">Colorado</option> <option value="CT">Connecticut</option> <option value="DE">Delaware</option> <option value="FL">Florida</option> <option value="GA">Georgia</option> <option value="HI">Hawaii</option> <option value="IA">Iowa</option> <option value="ID">Idaho</option> <option value="IL">Illinois</option> <option value="IN">Indiana</option> <option value="KS">Kansas</option> <option value="KY">Kentucky</option> <option value="LA">Louisiana</option> <option value="MA">Massachusetts</option> <option value="MD">Maryland</option> <option value="ME">Maine</option> <option value="MI">Michigan</option> <option value="MN">Minnesota</option> <option value="MO">Missouri</option> <option value="MS">Mississippi</option> <option value="MT">Montana</option> <option value="NC">North Carolina</option> <option value="ND">North Dakota</option> <option value="NE">Nebraska</option> <option value="NH">New Hampshire</option> <option value="NJ">New Jersey</option> <option value="NM">New Mexico</option> <option value="NV">Nevada</option> <option value="NY">New York</option> <option value="OH">Ohio</option> <option value="OK">Oklahoma</option> <option value="OR">Oregon</option> <option value="PA">Pennsylvania</option> <option value="RI">Rhode Island</option> <option value="SC">South Carolina</option> <option value="SD">South Dakota</option> <option value="TN">Tennessee</option> <option value="TX">Texas</option> <option value="UT">Utah</option> <option value="VA">Virginia</option> <option value="VT">Vermont</option> <option value="WA">Washington</option> <option value="DC">Washington, D.C.</option> <option value="WI">Wisconsin</option> <option value="WV">West Virginia</option> <option value="WY">Wyoming</option>
@@ -787,7 +789,7 @@ var CandidacyFieldset = React.createClass({
                 className={districtSelectClasses}
                 onChange={this.selectDistrict}
                 value={this.state.district}
-                name="congress-district"
+                name="district"
               >
                 <option value="">District...</option>
                 <option value="0">At Large</option>
@@ -983,45 +985,6 @@ var ContactFieldset = React.createClass({
               id="contact-form-suffix"
               ref="contactSuffix"
               value={this.state.suffix}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="large-5 medium-5 columns">
-            <label htmlFor="contact-form-address">Address</label>
-            <input
-              type="text"
-              name="address"
-              id="contact-form-address"
-              ref="contact-address"
-            />
-          </div>
-          <div className="large-4 medium-4 columns">
-            <label htmlFor="contact-form-city">City</label>
-            <input
-              type="text"
-              name="city"
-              id="contact-form-city"
-              ref="contactCity"
-            />
-          </div>
-          <div className="large-1 medium-1 columns">
-            <label htmlFor="contact-form-state">State</label>
-            <input
-              type="text"
-              name="state"
-              id="contact-form-state"
-              ref="contactState"
-              value={this.state.state}
-            />
-          </div>
-          <div className="large-2 medium-2 columns">
-            <label htmlFor="contact-form-zip-code">Zip Code</label>
-            <input
-              type="text"
-              name="zipcode"
-              id="contact-form-suffix"
-              ref="contactZipCode"
             />
           </div>
         </div>
