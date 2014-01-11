@@ -511,7 +511,7 @@ var PledgeTaker = React.createClass({
       <div className="ac-pledge-taker">
       <div className="row">
         <div className="large-12 columns">
-          <form className="congress-form">
+          <form className="congress-form" data-abide>
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
             <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillInReforms} />
             <ContactFieldset />
@@ -954,7 +954,9 @@ var ContactFieldset = React.createClass({
               name="state"
               id="contact-form-state"
               ref="contactState"
+              required="required"
             />
+            <small className="error">Req...</small>
           </div>
           <div className="large-2 medium-2 columns">
             <label htmlFor="contact-form-zip-code">Zip Code</label>
@@ -970,11 +972,13 @@ var ContactFieldset = React.createClass({
           <div className="large-5 medium-5 columns">
             <label htmlFor="contact-form-email">Email</label>
             <input
-              type="text"
+              type="email"
               name="first_name"
               id="contact-form-email"
               ref="contact-email"
+              required="required"
             />
+            <small className="error">A valid email address is required.</small>
           </div>
           <div className="large-7 medium-7 columns">
             <label htmlFor="contact-form-button">Submit</label>
