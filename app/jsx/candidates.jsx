@@ -675,6 +675,7 @@ var CandidacyFieldset = React.createClass({
   selectLegislator: function(event) {
     var legislator = this.state.legislators[event.target.value];
     this.setState({ legislator_key: event.target.value });
+    this.setState({ bioguide_id: legislator.bioguide_id });
 
     this.props.onCandidateSelect({
       firstName: legislator.first_name,
@@ -687,7 +688,7 @@ var CandidacyFieldset = React.createClass({
   selectCandidate: function(event) {
     var candidate = this.state.candidates[event.target.value];
     this.setState({ candidate_key: event.target.value });
-    this.props.onCandidateSelect(candidate);
+    this.setState({ fec_id: candidate.candidate.id });
 
     var names = candidate.candidate.name.split(',');
     var lastName = names[0];
@@ -836,6 +837,11 @@ var CandidacyFieldset = React.createClass({
             }, this)}
             </select>
             </div>
+            <input
+              type="hidden"
+              name="bioguide_id"
+              value={this.state.bioguide_id}
+            />
           </div>
         </div>
         <div className="row">
@@ -861,6 +867,11 @@ var CandidacyFieldset = React.createClass({
             }, this)}
             </select>
             </div>
+            <input
+              type="hidden"
+              name="fec_id"
+              value={this.state.fec_id}
+            />
           </div>
         </div>
       </fieldset>
