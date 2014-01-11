@@ -991,7 +991,7 @@ var ContactFieldset = React.createClass({
             <label htmlFor="contact-form-address">Address</label>
             <input
               type="text"
-              name="first_name"
+              name="address"
               id="contact-form-address"
               ref="contact-address"
             />
@@ -1030,7 +1030,7 @@ var ContactFieldset = React.createClass({
             <label htmlFor="contact-form-email">Email <small>required</small></label>
             <input
               type="email"
-              name="first_name"
+              name="email"
               id="contact-form-email"
               ref="contact-email"
               required="required"
