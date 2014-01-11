@@ -718,7 +718,7 @@ var CandidacyFieldset = React.createClass({
     });
     return (
       <fieldset>
-        <legend>Declare Your Candidacy</legend>
+        <legend>State Your Position</legend>
         <label><strong>I am a...</strong></label>
         <div className="row">
           <div className="large-3 columns">
@@ -743,7 +743,7 @@ var CandidacyFieldset = React.createClass({
             />
             <label htmlFor="form-radio-candidate">Candidate for Congress</label>
           </div>
-          <div className="large-3 columns">
+          <div className="large-3 columns hide">
             <input
               type="radio"
               name="role"
