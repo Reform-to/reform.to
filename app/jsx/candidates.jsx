@@ -514,6 +514,7 @@ var PledgeTaker = React.createClass({
           <form className="congress-form">
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
             <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillInReforms} />
+            <ContactFieldset />
           </form>
         </div>
       </div>
@@ -873,6 +874,113 @@ var ReformsFieldset = React.createClass({
             </div>
           )
         }, this)}
+      </fieldset>
+    )
+  }
+});
+
+var ContactFieldset = React.createClass({
+  getInitialState: function() {
+    return { firstName: '' };
+  },
+  render: function() {
+    var submitStyle = {
+      width: '100%'
+    };
+    return (
+      <fieldset>
+        <legend>Sign the Pledge</legend>
+        <div className="row">
+          <div className="large-3 medium-3 columns">
+            <label htmlFor="contact-form-first-name">First Name</label>
+            <input
+              type="text"
+              name="first_name"
+              id="contact-form-first-name"
+              ref="contactFirstName"
+            />
+          </div>
+          <div className="large-3 medium-3 columns">
+            <label htmlFor="contact-form-middle-name">Middle Name</label>
+            <input
+              type="text"
+              name="middle_name"
+              id="contact-form-middle-name"
+              ref="contactMiddleName"
+            />
+          </div>
+          <div className="large-4 medium-4 columns">
+            <label htmlFor="contact-form-last-name">Last Name</label>
+            <input
+              type="text"
+              name="last_name"
+              id="contact-form-last-name"
+              ref="contactLastName"
+            />
+          </div>
+          <div className="large-2 medium-2 columns">
+            <label htmlFor="contact-form-last-name">Suffix</label>
+            <input
+              type="text"
+              name="suffix"
+              id="contact-form-suffix"
+              ref="contactSuffix"
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="large-5 medium-5 columns">
+            <label htmlFor="contact-form-address">Address</label>
+            <input
+              type="text"
+              name="first_name"
+              id="contact-form-address"
+              ref="contact-address"
+            />
+          </div>
+          <div className="large-4 medium-4 columns">
+            <label htmlFor="contact-form-city">City</label>
+            <input
+              type="text"
+              name="city"
+              id="contact-form-city"
+              ref="contactCity"
+            />
+          </div>
+          <div className="large-1 medium-1 columns">
+            <label htmlFor="contact-form-state">State</label>
+            <input
+              type="text"
+              name="state"
+              id="contact-form-state"
+              ref="contactState"
+            />
+          </div>
+          <div className="large-2 medium-2 columns">
+            <label htmlFor="contact-form-zip-code">Zip Code</label>
+            <input
+              type="text"
+              name="zipcode"
+              id="contact-form-suffix"
+              ref="contactZipCode"
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="large-5 medium-5 columns">
+            <label htmlFor="contact-form-email">Email</label>
+            <input
+              type="text"
+              name="first_name"
+              id="contact-form-email"
+              ref="contact-email"
+            />
+          </div>
+          <div className="large-7 medium-7 columns">
+            <label htmlFor="contact-form-button">Submit</label>
+            <button style={submitStyle} className="button tiny">I do so pledge</button>
+          </div>
+        </div>
       </fieldset>
     )
   }
