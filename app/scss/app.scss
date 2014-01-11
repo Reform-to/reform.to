@@ -62,6 +62,12 @@ fieldset {
   }
 }
 
+.form-fieldset-reforms {
+  input[type="checkbox"] {
+    margin: 0;
+  }
+}
+
 input.helper,
 textarea.helper {
   margin-bottom: 0;
