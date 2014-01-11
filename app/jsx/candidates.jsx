@@ -489,7 +489,7 @@ var CandidateName = React.createClass({
 
 var PledgeTaker = React.createClass({
   fillInCandidate: function(candidate) {
-    console.log("Filling in candidate", candidate);
+    this.setState(candidate);
   },
   fillInReforms: function(reforms) {
     console.log("Filling in reforms", reforms);
@@ -504,7 +504,9 @@ var PledgeTaker = React.createClass({
       }.bind(this)
     });
 
-    return { reforms: [], role: "" };
+    return {
+      reforms: [],
+    };
   },
   render: function() {
     return (
@@ -514,7 +516,13 @@ var PledgeTaker = React.createClass({
           <form className="congress-form" data-abide>
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
             <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillInReforms} />
-            <ContactFieldset />
+            <ContactFieldset
+              firstName={this.state.firstName}
+              middleName={this.state.middleName}
+              lastName={this.state.lastName}
+              suffix={this.state.suffix}
+              state={this.state.state}
+            />
           </form>
         </div>
       </div>
@@ -667,12 +675,29 @@ var CandidacyFieldset = React.createClass({
   selectLegislator: function(event) {
     var legislator = this.state.legislators[event.target.value];
     this.setState({ legislator_key: event.target.value });
-    this.props.onCandidateSelect(legislator);
+
+    this.props.onCandidateSelect({
+      firstName: legislator.first_name,
+      middleName: legislator.middle_name,
+      lastName: legislator.last_name,
+      suffix: legislator.name_suffix,
+      state: legislator.state,
+    });
   },
   selectCandidate: function(event) {
     var candidate = this.state.candidates[event.target.value];
     this.setState({ candidate_key: event.target.value });
     this.props.onCandidateSelect(candidate);
+
+    var names = candidate.candidate.name.split(',');
+    var lastName = names[0];
+    var firstName = names[1];
+
+    this.props.onCandidateSelect({
+      firstName: firstName,
+      lastName: lastName,
+      state: this.state.state
+    });
   },
   render: function() {
     var cx = React.addons.classSet;
@@ -737,6 +762,7 @@ var CandidacyFieldset = React.createClass({
                 id="form-select-chamber"
                 onChange={this.selectChamber}
                 value={this.state.chamber}
+                name="congress-chamber"
               >
                 <option value="">Chamber...</option>
                 <option value="house">House of Representatives</option>
@@ -748,6 +774,7 @@ var CandidacyFieldset = React.createClass({
                 id="form-select-state"
                 onChange={this.selectState}
                 value={this.state.state}
+                name="congress-state"
               >
                 <option value="">State...</option>
                 <option value="AL">Alabama</option> <option value="AK">Alaska</option> <option value="AR">Arkansas</option> <option value="AZ">Arizona</option> <option value="CA">California</option> <option value="CO">Colorado</option> <option value="CT">Connecticut</option> <option value="DE">Delaware</option> <option value="FL">Florida</option> <option value="GA">Georgia</option> <option value="HI">Hawaii</option> <option value="IA">Iowa</option> <option value="ID">Idaho</option> <option value="IL">Illinois</option> <option value="IN">Indiana</option> <option value="KS">Kansas</option> <option value="KY">Kentucky</option> <option value="LA">Louisiana</option> <option value="MA">Massachusetts</option> <option value="MD">Maryland</option> <option value="ME">Maine</option> <option value="MI">Michigan</option> <option value="MN">Minnesota</option> <option value="MO">Missouri</option> <option value="MS">Mississippi</option> <option value="MT">Montana</option> <option value="NC">North Carolina</option> <option value="ND">North Dakota</option> <option value="NE">Nebraska</option> <option value="NH">New Hampshire</option> <option value="NJ">New Jersey</option> <option value="NM">New Mexico</option> <option value="NV">Nevada</option> <option value="NY">New York</option> <option value="OH">Ohio</option> <option value="OK">Oklahoma</option> <option value="OR">Oregon</option> <option value="PA">Pennsylvania</option> <option value="RI">Rhode Island</option> <option value="SC">South Carolina</option> <option value="SD">South Dakota</option> <option value="TN">Tennessee</option> <option value="TX">Texas</option> <option value="UT">Utah</option> <option value="VA">Virginia</option> <option value="VT">Vermont</option> <option value="WA">Washington</option> <option value="DC">Washington, D.C.</option> <option value="WI">Wisconsin</option> <option value="WV">West Virginia</option> <option value="WY">Wyoming</option>
@@ -759,6 +786,7 @@ var CandidacyFieldset = React.createClass({
                 className={districtSelectClasses}
                 onChange={this.selectDistrict}
                 value={this.state.district}
+                name="congress-district"
               >
                 <option value="">District...</option>
                 <option value="0">At Large</option>
@@ -881,7 +909,22 @@ var ReformsFieldset = React.createClass({
 
 var ContactFieldset = React.createClass({
   getInitialState: function() {
-    return { firstName: '' };
+    return {
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      suffix: '',
+      state: '',
+    };
+  },
+  componentWillReceiveProps: function(props) {
+    this.setState({
+      firstName: props.firstName,
+      middleName: props.middleName,
+      lastName: props.lastName,
+      suffix: props.suffix,
+      state: props.state
+    });
   },
   render: function() {
     var submitStyle = {
@@ -898,6 +941,7 @@ var ContactFieldset = React.createClass({
               name="first_name"
               id="contact-form-first-name"
               ref="contactFirstName"
+              value={this.state.firstName}
             />
           </div>
           <div className="large-3 medium-3 columns">
@@ -907,6 +951,7 @@ var ContactFieldset = React.createClass({
               name="middle_name"
               id="contact-form-middle-name"
               ref="contactMiddleName"
+              value={this.state.middleName}
             />
           </div>
           <div className="large-4 medium-4 columns">
@@ -916,6 +961,7 @@ var ContactFieldset = React.createClass({
               name="last_name"
               id="contact-form-last-name"
               ref="contactLastName"
+              value={this.state.lastName}
             />
           </div>
           <div className="large-2 medium-2 columns">
@@ -925,6 +971,7 @@ var ContactFieldset = React.createClass({
               name="suffix"
               id="contact-form-suffix"
               ref="contactSuffix"
+              value={this.state.suffix}
             />
           </div>
         </div>
@@ -954,9 +1001,8 @@ var ContactFieldset = React.createClass({
               name="state"
               id="contact-form-state"
               ref="contactState"
-              required="required"
+              value={this.state.state}
             />
-            <small className="error">Req...</small>
           </div>
           <div className="large-2 medium-2 columns">
             <label htmlFor="contact-form-zip-code">Zip Code</label>
@@ -970,7 +1016,7 @@ var ContactFieldset = React.createClass({
         </div>
         <div className="row">
           <div className="large-5 medium-5 columns">
-            <label htmlFor="contact-form-email">Email</label>
+            <label htmlFor="contact-form-email">Email <small>required</small></label>
             <input
               type="email"
               name="first_name"
