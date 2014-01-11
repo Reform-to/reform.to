@@ -513,7 +513,7 @@ var PledgeTaker = React.createClass({
         <div className="large-12 columns">
           <form className="congress-form">
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
-            <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillReforms} />
+            <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillInReforms} />
           </form>
         </div>
       </div>
@@ -840,8 +840,13 @@ var CandidacyFieldset = React.createClass({
 });
 
 var ReformsFieldset = React.createClass({
+  selectReforms: function(event) {
+    var reforms = $('input[name="reforms[]"]:checked').map(function(_, el) {
+      return $(el).val();
+    }).get();
+    this.props.onReformsSelect(reforms);
+  },
   render: function() {
-    console.log(this.props.reforms);
     return (
       <fieldset className="form-fieldset-reforms">
         <legend>Select Reforms</legend>
@@ -859,6 +864,9 @@ var ReformsFieldset = React.createClass({
                 type="checkbox"
                 name="reforms[]"
                 id={'form-checkbox-reform-' + reform.id}
+                className="form-checkbox-reform"
+                value={reform.id}
+                onChange={this.selectReforms}
               />{' '}
               <strong>{version.title}.</strong> {' '} <em>{version.description}</em>
               </label>
