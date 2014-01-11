@@ -3,6 +3,39 @@
 
 html, body {
   min-width: 320px;
+  height: 100%;
+}
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -4em;
+}
+
+.footer, .push {
+  height: 4em;
+  clear: both;
+}
+
+.footer {
+  border-top: 1px solid #e7e7e7;
+}
+
+.footer-wrapper {
+  border-bottom: 4px solid #B1D726;
+}
+
+.footer-content {
+  padding-top: 1em;
+  height: 100%;
+}
+
+.footer, .footer p {
+  text-transform: uppercase;
+  font-family: $subheader-font-family;
+  font-weight: 100;
+  font-size: 1.2em;
 }
 
 .ac-logo {
