@@ -68,6 +68,10 @@ var CandidateLocator = React.createClass({
     return {legislators: [], districts: []};
   },
   componentWillMount: function() {
+    // Display results for a default location
+    var lat = window.ENV.SITE.latitude;
+    var lng = window.ENV.SITE.longitude;
+    this.locateCandidates({ latitude: lat, longitude: lng });
   },
   render: function() {
     return (

@@ -1,6 +1,10 @@
 // Put general configuration here.
 
 window.ENV = {
+  SITE: {
+    latitude: '44.8708811',
+    longitude: '-71.30591349999997'
+  },
   ELECTIONS: {
     cycle: 2014
   },
