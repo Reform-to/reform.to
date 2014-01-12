@@ -491,7 +491,6 @@ var PledgeTaker = React.createClass({
     this.setState(candidate);
   },
   fillInReforms: function(reforms) {
-    console.log("Filling in reforms", reforms);
   },
   getInitialState: function() {
     var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
