@@ -63,9 +63,21 @@ var CandidateLocator = React.createClass({
         }
       }.bind(this)
     });
+
+    var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
+
+    $.ajax({
+      url: reformsURL,
+      success: function(data) {
+        var bioguideIds = data.reformers.map(function (reformer) {
+          return reformer.bioguide_id;
+        });
+        this.setState({ reformers: bioguideIds });
+      }.bind(this)
+    });
   },
   getInitialState: function() {
-    return {legislators: [], districts: []};
+    return {legislators: [], districts: [], reformers: []};
   },
   componentWillMount: function() {
     // Display results for a default location
@@ -89,7 +101,10 @@ var CandidateLocator = React.createClass({
         <h2 className="subheader">
           {this.state.legislators.length > 0 ? 'United States Congress' : ''}
         </h2>
-        <LegislatorList legislators={this.state.legislators} />
+        <LegislatorList
+          legislators={this.state.legislators}
+          reformers={this.state.reformers}
+        />
       </div>
     </div>
     <div className="row">
@@ -180,7 +195,9 @@ var AddressForm = React.createClass({
 
 var LegislatorList = React.createClass({
   render: function() {
+    var reformers = this.props.reformers;
     var legislatorNodes = this.props.legislators.map(function (legislator) {
+      var isReformer = $.inArray(legislator.bioguide_id, reformers) >= 0;
       return <Legislator
         key={legislator.bioguide_id}
         firstName={legislator.first_name}
@@ -194,6 +211,7 @@ var LegislatorList = React.createClass({
         contactForm={legislator.contact_form}
         twitter={legislator.twitter_id}
         facebook={legislator.facebook_id}
+        isReformer={isReformer}
         />
     });
     return (
@@ -221,6 +239,7 @@ var Legislator = React.createClass({
           party={this.props.party}
           state={this.props.state}
           district={this.props.district}
+          isReformer={this.props.isReformer}
         />
       </div>
       <div className="small-6 medium-2 columns">
@@ -472,9 +491,10 @@ var CandidateName = React.createClass({
     return false;
   },
   render: function() {
+    var nameClass = this.props.isReformer ? 'name special-header' : 'name'
     return (
       <div>
-      <h3 className="name">
+      <h3 className={nameClass}>
         <span className="title">{this.props.title}</span> {' '}
         <a href="#" onClick={this.handleClick}>
           {this.props.firstName} {' '} {this.props.lastName} {' '}
@@ -482,7 +502,12 @@ var CandidateName = React.createClass({
       </h3>
       <span className="details">
         {this.props.party}-{this.props.state}
-        {this.props.district ? ", District " + this.props.district : ''}
+        {this.props.district ? ", District " + this.props.district : ''} { ' ' }
+        <span className="subheader">
+        <a href="/#reforms">
+        {this.props.isReformer ? " -  Reformer" : ''}
+        </a>
+        </span>
         </span>
       </div>
     );
