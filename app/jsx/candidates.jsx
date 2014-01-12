@@ -94,10 +94,6 @@ var CandidateLocator = React.createClass({
         />
       </div>
     </div>
-    <div id="ac-candidate-modal" className="reveal-modal" data-reveal>
-    <h2>Support for Reforms</h2>
-    <p><strong>Your candidate has not supported any reforms yet.</strong> Please contact your representatives today and urge them to make an Anti-Corruption Pledge.</p>
-    </div>
     </div>
     );
   }
@@ -466,7 +462,6 @@ var Avatar = React.createClass({
 
 var CandidateName = React.createClass({
   handleClick: function(event) {
-    $('#ac-candidate-modal').foundation('reveal', 'open');
     return false;
   },
   render: function() {
@@ -474,7 +469,7 @@ var CandidateName = React.createClass({
       <div>
       <h3 className="name">
         <span className="title">{this.props.title}</span> {' '}
-        <a href="#" data-reveal-id="ac-candidate-modal" onClick={this.handleClick}>
+        <a href="#" onClick={this.handleClick}>
           {this.props.firstName} {' '} {this.props.lastName} {' '}
         </a>
       </h3>
