@@ -78,7 +78,9 @@ var CandidateLocator = React.createClass({
     <div className="ac-candidate-locator">
     <div className="row">
       <div className="large-12 columns">
-        <h2 className="subheader special-header text-center">Which reforms does your candidate support?</h2>
+        <h2 className="subheader special-header text-center text-lowercase">
+          Which reforms does your candidate support?
+        </h2>
         <AddressForm onAddressGeocode={this.locateCandidates} />
       </div>
     </div>

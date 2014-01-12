@@ -113,6 +113,10 @@ span.helper, small.helper {
   @include form-error-message($body-font-color)
 }
 
+.text-lowercase {
+  text-transform: lowercase;
+}
+
 .ac-candidate {
   margin-bottom: 1rem;
   border-bottom: 1px solid $secondary-color;
