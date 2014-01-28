@@ -77,7 +77,8 @@ var CandidateLocator = React.createClass({
       url: locateDistrictURL,
       success: function(data) {
         if (data.count > 0) {
-          this.setState({districts: data.results[0]});
+          this.setState({state: data.results[0].state});
+          this.setState({district: data.results[0].district});
         }
       }.bind(this)
     });
@@ -95,7 +96,12 @@ var CandidateLocator = React.createClass({
     });
   },
   getInitialState: function() {
-    return {legislators: [], districts: [], reformers: []};
+    return {
+      legislators: [],
+      state: '',
+      district: '',
+      reformers: []
+    };
   },
   componentWillMount: function() {
 
@@ -126,10 +132,20 @@ var CandidateLocator = React.createClass({
       </div>
     </div>
     <div className="row">
-      <div className="large-12 columns">
+      <div className="large-6 medium-8 columns">
         <h2 className="subheader">
           {this.state.legislators.length > 0 ? 'United States Congress' : ''}
         </h2>
+      </div>
+      <div className="large-6 medium-4 columns">
+        <h2>
+            {this.state.state ? this.state.state : ''}
+            {this.state.district ? ", District " + this.state.district : ''}
+        </h2>
+      </div>
+    </div>
+    <div className="row">
+      <div className="large-12 columns">
         <LegislatorList
           legislators={this.state.legislators}
           reformers={this.state.reformers}
@@ -139,8 +155,8 @@ var CandidateLocator = React.createClass({
     <div className="row">
       <div className="large-12 columns">
         <District
-          state={this.state.districts.state}
-          district={this.state.districts.district}
+          state={this.state.state}
+          district={this.state.district}
           legislators={this.state.legislators}
         />
       </div>
@@ -388,9 +404,15 @@ var District = React.createClass({
     return (
       <div>
         <div className="row">
-          <div className="large-12 columns">
+          <div className="large-6 medium-8 columns">
             <h2 className="special-header subheader">
               {this.state.cycle ? 'Election ' + this.state.cycle : ''}
+            </h2>
+          </div>
+          <div className="large-6 medium-4 columns">
+            <h2>
+                {this.props.state ? this.props.state : ''}
+                {this.props.district ? ", District " + this.props.district : ''}
             </h2>
           </div>
         </div>
