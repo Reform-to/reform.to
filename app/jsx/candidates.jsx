@@ -98,6 +98,17 @@ var CandidateLocator = React.createClass({
     return {legislators: [], districts: [], reformers: []};
   },
   componentWillMount: function() {
+
+    // Locate the candidates for the users's current location
+    if (Modernizr.geolocation) {
+      self = this;
+      navigator.geolocation.getCurrentPosition(function (position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        self.locateCandidates({ latitude: lat, longitude: lng });
+      });
+    }
+
     // Display results for a default location
     var lat = window.ENV.SITE.latitude;
     var lng = window.ENV.SITE.longitude;
