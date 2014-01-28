@@ -10,7 +10,8 @@ var App = React.createClass({
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
       '/reforms': this.setState.bind(this, {page: 'reforms'}, null),
-      '/candidates': this.setState.bind(this, {page: 'candidates'}, null)
+      '/candidates': this.setState.bind(this, {page: 'candidates'}, null),
+      '/about': this.setState.bind(this, {page: 'about'}, null)
     });
     router.init();
   },
@@ -20,12 +21,29 @@ var App = React.createClass({
       content = <CandidateLocator />
     } else if (this.state.page === 'reforms') {
       content = <Reforms />
-    } else if (this.state.page === 'candidates') {
+    } if (this.state.page === 'candidates') {
       content = <PledgeTaker />
+    } else if (this.state.page === 'about') {
+      content = <AboutPage />
     }
     return (
       <div>
         {content}
+      </div>
+    );
+  }
+});
+
+var AboutPage = React.createClass({
+  render: function() {
+    return (
+      <div className="ac-about">
+        <div className="row">
+            <div className="large-6 large-offset-3 medium-10 medium-offset-1 columns">
+              <h4 className="subheader text-center">About</h4>
+              <p><a href="/">Reform.to</a> tracks members of Congress as well as candidates, and highlights their support for specific <a href="/#reforms">legislative and constitutional reforms</a> aimed at fighting the corrupting influence of money in politics.</p>
+            </div>
+        </div>
       </div>
     );
   }
