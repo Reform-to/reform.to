@@ -9,8 +9,8 @@ var App = React.createClass({
   componentDidMount: function() {
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
-      '/reforms': this.setState.bind(this, {page: 'reforms', editing: false}, null),
-      '/candidates': this.setState.bind(this, {page: 'candidates', editing: false}, null)
+      '/reforms': this.setState.bind(this, {page: 'reforms'}, null),
+      '/candidates': this.setState.bind(this, {page: 'candidates'}, null)
     });
     router.init();
   },
