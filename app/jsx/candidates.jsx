@@ -1094,18 +1094,44 @@ var Reforms = React.createClass({
     $.ajax({
       url: reformsURL,
       success: function(data) {
-        this.setState({ reforms: data.reforms });
+
+        // Organize the reforms by type
+        var reforms_by_type = {};
+
+        data.reforms.forEach(function(element, index, array) {
+          var version = element['1.0'];
+          var type = version.reform_type;
+
+          // Create an object to hold reforms for this type
+          if (!reforms_by_type.hasOwnProperty(type)) {
+            reforms_by_type[type] = { type: type, reforms: [] }
+          }
+
+          reforms_by_type[type].reforms.push(element);
+
+        });
+
+        // Turn the Object back into a plain array
+        var reforms = [];
+        for (key in reforms_by_type) {
+          reforms.push(reforms_by_type[key]);
+        }
+
+        this.setState({ reforms: reforms });
       }.bind(this)
     });
 
     return { reforms: [] };
   },
   render: function() {
+    var reformsListNodes = this.state.reforms.map(function (reformList) {
+      return <ReformsList key={reformList.type} reforms={reformList.reforms} />
+    });
     return (
       <div className="ac-reforms">
         <div className="row">
           <div className="large-6 large-offset-3 medium-10 medium-offset-1 columns">
-            <ReformsList reforms={this.state.reforms} />
+            {reformsListNodes}
           </div>
         </div>
       </div>
@@ -1133,7 +1159,7 @@ var ReformsList = React.createClass({
     });
     return (
       <div className="ac-reform-list">
-        <h4 className="subheader text-center">Reforms</h4>
+        <h4 className="subheader text-center">{this.props.key} Reforms</h4>
         {reformNodes}
       </div>
     );
