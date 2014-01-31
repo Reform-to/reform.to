@@ -1130,7 +1130,7 @@ var Reforms = React.createClass({
     return (
       <div className="ac-reforms">
         <div className="row">
-          <div className="large-6 large-offset-3 medium-10 medium-offset-1 columns">
+          <div className="large-8 large-offset-2 medium-10 medium-offset-1 columns">
             {reformsListNodes}
           </div>
         </div>
@@ -1155,6 +1155,7 @@ var ReformsList = React.createClass({
         sponsor={version.sponsor}
         billId={version.bill_id}
         url={version.url}
+        status={version.reform_status}
         />
     });
     return (
@@ -1168,9 +1169,18 @@ var ReformsList = React.createClass({
 
 var Reform = React.createClass({
   render: function() {
+    statusStyle = {
+      textTransform: "uppercase",
+    };
     return (
       <div>
-        <h3>{this.props.title}</h3>
+        <h3>
+          {this.props.title}
+          {' '}
+          <small style={statusStyle}>
+            {this.props.status}
+          </small>
+        </h3>
         <p>
           <strong>
             {this.props.description}.{' '}
