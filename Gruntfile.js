@@ -29,6 +29,17 @@ module.exports = function(grunt) {
       }
     },
 
+    preprocess: {
+      dev: {
+        src : 'app/index.html', dest : 'tmp/result/index.html',
+        options: { context: { dist: false } }
+      },
+      dist: {
+        src : 'app/index.html', dest : 'tmp/result/index.html',
+        options: { context: { dist: true } }
+      }
+    },
+
     concat: {
       dev: {
         src: ['config/environment.js', 'config/environments/development.js'],
@@ -62,6 +73,7 @@ module.exports = function(grunt) {
         ]
       },
       app: {
+      /*
         files: [
           {
             expand: true,
@@ -70,6 +82,7 @@ module.exports = function(grunt) {
             dest: 'tmp/result'
           }
         ]
+        */
       },
       dist: {
         files: [
@@ -103,7 +116,7 @@ module.exports = function(grunt) {
 
       app: {
         files: 'app/index.html',
-        tasks: ['copy:app']
+        tasks: ['preprocess:dev']
       },
 
       assets: {
@@ -127,9 +140,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'copy:app', 'react', 'sass']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'react', 'sass']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'concat:dev']);
   grunt.registerTask('server', ['clean:tmp', 'build', 'concat:dev', 'connect', 'watch']);
-  grunt.registerTask('dist', ['clean', 'build', 'concat:dist', 'copy:dist']);
+  grunt.registerTask('dist', ['clean', 'build', 'preprocess:dist', 'concat:dist', 'copy:dist']);
 
 }

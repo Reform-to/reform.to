@@ -66,8 +66,13 @@
     <script>window.jQuery || document.write('<script src="/vendor/jquery/jquery.min.js"><\/script>')</script>
     <script src="/vendor/foundation/js/foundation.min.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <!-- @if dist=false -->
+    <script src="/vendor/director/build/director.js"></script>
+    <script src="/vendor/react/react-with-addons.js"></script>
+    <!-- @endif --><!-- @if dist=true -->
     <script src="/vendor/director/build/director.min.js"></script>
     <script src="/vendor/react/react-with-addons.min.js"></script>
+    <!-- @endif -->
     <script src="/js/config.js"></script>
     <script src="/js/app.js"></script>
     <script src="/js/main.js"></script>
