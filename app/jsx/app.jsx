@@ -1200,7 +1200,7 @@ var Reform = React.createClass({
 
 React.renderComponent(
     <App />,
-    document.getElementById('ac-candidates')
+    document.getElementById('ac-application')
 );
 
 function toTitleCase(str) {

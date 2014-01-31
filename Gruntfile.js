@@ -24,7 +24,7 @@ module.exports = function(grunt) {
     react: {
       main: {
         files: {
-            'tmp/result/js/candidates.js': 'app/jsx/candidates.jsx'
+            'tmp/result/js/app.js': 'app/jsx/app.jsx'
         }
       }
     },
