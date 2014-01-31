@@ -6,7 +6,7 @@ var App = React.createClass({
   getInitialState: function() {
     return {page: 'home'};
   },
-  componentDidMount: function() {
+  componentWillMount: function() {
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
       '/reforms': this.setState.bind(this, {page: 'reforms'}, null),
