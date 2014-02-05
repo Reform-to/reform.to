@@ -6,10 +6,17 @@ var App = React.createClass({
   getInitialState: function() {
     return {page: 'home'};
   },
+  navigateToReform: function(id) {
+    this.setState({page: 'reforms', identifier: id});
+  },
   componentWillMount: function() {
+    self = this;
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
-      '/reforms': this.setState.bind(this, {page: 'reforms'}, null),
+      '/reforms': {
+        '/:id': this.navigateToReform.bind(this),
+        '': this.setState.bind(this, {page: 'reforms'}, null)
+      },
       '/candidates': this.setState.bind(this, {page: 'candidates'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
     });
@@ -24,6 +31,8 @@ var App = React.createClass({
       />
     } else if (this.state.page === 'reforms') {
       content = <Reforms />
+    } else if (this.state.page === 'reform') {
+      content = <Reforms reform={this.props.identifier} />
     } if (this.state.page === 'candidates') {
       content = <PledgeTaker />
     } else if (this.state.page === 'about') {
@@ -1153,6 +1162,7 @@ var ReformsList = React.createClass({
         sponsor={version.sponsor}
         billId={version.bill_id}
         url={version.url}
+        slug={version.slug}
         status={version.reform_status}
         />
     });
@@ -1170,12 +1180,15 @@ var Reform = React.createClass({
     statusStyle = {
       textTransform: "uppercase",
     };
-    var url = $('<a>', { href:this.props.url } )[0];
-    var hostname = url.hostname;
+    var resource = "#reforms/" + this.props.slug;
+    var a = $('<a>', { href:this.props.url } )[0];
+    var hostname = a.hostname;
     return (
       <div>
         <h3>
-          {this.props.title}
+          <a href={resource}>
+            {this.props.title}
+          </a>
           {' '}
           <small style={statusStyle}>
             {this.props.status}
@@ -1186,10 +1199,11 @@ var Reform = React.createClass({
             {this.props.description}.{' '}
           </strong>
           {this.props.sponsor.name ? "Sponsored by " + this.props.sponsor.name + '.'  : ''}{' '}
+          <strong>
           <a href={this.props.url}>
             {this.props.url ? hostname : ''}
           </a>
-            {this.props.url ? "." : ''}
+          </strong>
         </p>
         <hr/>
       </div>
