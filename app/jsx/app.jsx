@@ -18,7 +18,10 @@ var App = React.createClass({
   render: function() {
     var content;
     if (this.state.page === 'home') {
-      content = <CandidateLocator />
+      content = <CandidateLocator
+        latitude={this.props.latitude}
+        longitude={this.props.longitude}
+      />
     } else if (this.state.page === 'reforms') {
       content = <Reforms />
     } if (this.state.page === 'candidates') {
@@ -116,8 +119,8 @@ var CandidateLocator = React.createClass({
     }
 
     // Display results for a default location
-    var lat = window.ENV.SITE.latitude;
-    var lng = window.ENV.SITE.longitude;
+    var lat = this.props.latitude;
+    var lng = this.props.longitude;
     this.locateCandidates({ latitude: lat, longitude: lng });
   },
   render: function() {
@@ -1198,10 +1201,21 @@ var Reform = React.createClass({
 });
 
 
+/**
+ * Main
+ */
+
 React.renderComponent(
-    <App />,
+    <App
+      latitude={window.ENV.SITE.latitude}
+      longitude={window.ENV.SITE.longitude}
+    />,
     document.getElementById('ac-application')
 );
+
+/**
+ * Utilities
+ */
 
 function toTitleCase(str) {
       return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
