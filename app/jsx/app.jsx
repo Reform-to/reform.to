@@ -4,15 +4,21 @@
 
 var App = React.createClass({
   getInitialState: function() {
-    return {page: 'home'};
+    return { page: 'home' };
+  },
+  navigateToLocation: function(lat, lng) {
+    this.setState({page: 'home', latitude: lat, longitude: lng});
   },
   navigateToReform: function(id) {
     this.setState({page: 'reforms', identifier: id});
   },
   componentWillMount: function() {
-    self = this;
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
+      '/home': {
+        "/(.*),(.*)": this.navigateToLocation.bind(this),
+        '': this.setState.bind(this, this.getInitialState(), null),
+      },
       '/reforms': {
         '/:id': this.navigateToReform.bind(this),
         '': this.setState.bind(this, {page: 'reforms'}, null)
@@ -20,14 +26,20 @@ var App = React.createClass({
       '/candidates': this.setState.bind(this, {page: 'candidates'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
     });
+    router.configure({ strict: false });
     router.init();
   },
   render: function() {
     var content;
+
+    // Read the location from state with props as the fallback
+    var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
+    var lng = this.state.longitude ? this.state.longitude : this.props.longitude;
+
     if (this.state.page === 'home') {
       content = <CandidateLocator
-        latitude={this.props.latitude}
-        longitude={this.props.longitude}
+        latitude={lat}
+        longitude={lng}
       />
     } else if (this.state.page === 'reforms') {
       content = <Reforms />
