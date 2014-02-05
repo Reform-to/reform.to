@@ -23,7 +23,7 @@ var App = React.createClass({
         '/:id': this.navigateToReform.bind(this),
         '': this.setState.bind(this, {page: 'reforms'}, null)
       },
-      '/candidates': this.setState.bind(this, {page: 'candidates'}, null),
+      '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
     });
     router.configure({ strict: false });
@@ -45,7 +45,7 @@ var App = React.createClass({
       content = <Reforms />
     } else if (this.state.page === 'reform') {
       content = <Reforms reform={this.props.identifier} />
-    } if (this.state.page === 'candidates') {
+    } if (this.state.page === 'pledges') {
       content = <PledgeTaker />
     } else if (this.state.page === 'about') {
       content = <AboutPage />
