@@ -107,20 +107,15 @@ var CandidateLocator = React.createClass({
     };
   },
   componentWillMount: function() {
-
-    // Locate the candidates for the users's current location
-    if (Modernizr.geolocation) {
-      self = this;
-      navigator.geolocation.getCurrentPosition(function (position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        self.locateCandidates({ latitude: lat, longitude: lng });
-      });
-    }
-
     // Display results for a default location
     var lat = this.props.latitude;
     var lng = this.props.longitude;
+    this.locateCandidates({ latitude: lat, longitude: lng });
+  },
+  componentWillReceiveProps: function(nextProps) {
+    // Update results if the location changes
+    var lat = nextProps.latitude;
+    var lng = nextProps.longitude;
     this.locateCandidates({ latitude: lat, longitude: lng });
   },
   render: function() {
@@ -1205,13 +1200,26 @@ var Reform = React.createClass({
  * Main
  */
 
-React.renderComponent(
+// Render the main application first using the default location
+
+var Application = React.renderComponent(
     <App
       latitude={window.ENV.SITE.latitude}
       longitude={window.ENV.SITE.longitude}
     />,
     document.getElementById('ac-application')
 );
+
+// Attempt to update the location using the geolocation API
+
+if (Modernizr.geolocation) {
+  navigator.geolocation.getCurrentPosition(function (position) {
+    Application.setProps({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    });
+  });
+}
 
 /**
  * Utilities
