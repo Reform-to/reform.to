@@ -12,6 +12,9 @@ var App = React.createClass({
   navigateToReform: function(id) {
     this.setState({page: 'reforms', identifier: id});
   },
+  navigateToLegislator: function(id) {
+    this.setState({page: 'legislators', identifier: id});
+  },
   componentWillMount: function() {
     var router = Router({
       '/': this.setState.bind(this, this.getInitialState(), null),
@@ -22,6 +25,9 @@ var App = React.createClass({
       '/reforms': {
         '/:id': this.navigateToReform.bind(this),
         '': this.setState.bind(this, {page: 'reforms'}, null)
+      },
+      '/legislators': {
+        '/:id': this.navigateToLegislator.bind(this),
       },
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
@@ -44,7 +50,9 @@ var App = React.createClass({
     } else if (this.state.page === 'reforms') {
       content = <Reforms />
     } else if (this.state.page === 'reform') {
-      content = <Reforms reform={this.props.identifier} />
+      content = <Reforms reform={this.state.identifier} />
+    } else if (this.state.page === 'legislators') {
+      content = <LegislatorProfile bioguideId={this.state.identifier} />
     } if (this.state.page === 'pledges') {
       content = <PledgeTaker />
     } else if (this.state.page === 'about') {
@@ -253,6 +261,53 @@ var AddressForm = React.createClass({
         </small>
       </fieldset>
     </form>
+    );
+  }
+});
+
+var LegislatorProfile = React.createClass({
+  getInitialState: function() {
+    return {
+      legislators: [],
+    };
+  },
+  componentWillMount: function() {
+    var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
+    var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
+
+    var legislatorQuery = {
+      apikey: apiKey,
+      bioguide_id: this.props.bioguideId
+    }
+
+    var locateLegislatorsURL =
+      sunlightAPI + '/legislators' + "?" + $.param(legislatorQuery);
+
+    $.ajax({
+      url: locateLegislatorsURL,
+      success: function(data) {
+        this.setState({legislators: data.results});
+      }.bind(this)
+    });
+  },
+  render: function() {
+    return(
+      <div>
+      <div className="row">
+        <div className="large-6 medium-8 columns">
+          <h2 className="subheader">
+            {this.state.legislators.length > 0 ? 'United States Congress' : ''}
+          </h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="large-12 columns">
+          <LegislatorList
+            legislators={this.state.legislators}
+          />
+        </div>
+      </div>
+      </div>
     );
   }
 });
