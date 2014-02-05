@@ -1170,6 +1170,8 @@ var Reform = React.createClass({
     statusStyle = {
       textTransform: "uppercase",
     };
+    var url = $('<a>', { href:this.props.url } )[0];
+    var hostname = url.hostname;
     return (
       <div>
         <h3>
@@ -1185,7 +1187,7 @@ var Reform = React.createClass({
           </strong>
           {this.props.sponsor.name ? "Sponsored by " + this.props.sponsor.name + '.'  : ''}{' '}
           <a href={this.props.url}>
-            {this.props.url ? "Learn More" : ''}
+            {this.props.url ? hostname : ''}
           </a>
             {this.props.url ? "." : ''}
         </p>
