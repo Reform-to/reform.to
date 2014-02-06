@@ -120,6 +120,22 @@ span.helper, small.helper {
   @include form-error-message($body-font-color)
 }
 
+.list-commas {
+  margin-left: 0;
+  list-style: none outside none;
+}
+
+.list-commas > li {
+  display: inline;
+}
+
+.list-commas > li:after {
+  content: ", ";
+}
+.list-commas > li:last-child:after {
+  content: ".";
+}
+
 .text-lowercase {
   text-transform: lowercase;
 }
