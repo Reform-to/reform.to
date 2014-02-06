@@ -109,7 +109,7 @@ var App = React.createClass({
         longitude={lng}
       />
     } else if (this.state.page === 'reforms') {
-      content = <Reforms reforms={this.state.reforms}/>
+      content = <Reforms reforms={this.state.reforms} bills={this.state.bills}/>
     } else if (this.state.page === 'reform') {
       var slug = this.state.identifier;
       var reforms = this.state.reforms.filter(function(r) {
@@ -117,7 +117,7 @@ var App = React.createClass({
         return slug === version.slug;
       });
 
-      content = <Reforms reforms={reforms} />
+      content = <Reforms reforms={reforms} bills={this.state.bills} />
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile bioguideId={this.state.identifier} />
     } if (this.state.page === 'pledges') {
@@ -1239,9 +1239,22 @@ var Reforms = React.createClass({
     // Organize the reforms by type
     var reforms_by_type = {};
 
+    var self = this;
     this.props.reforms.forEach(function(element, index, array) {
       var version = element['1.0'];
       var type = version.reform_type;
+      var billId = version.bill_id;
+
+      // Attach a congress bill to the element if one exists
+      if (self.props.bills) {
+        var bill = $.grep(
+          self.props.bills,
+          function(b) {
+            return b.bill_id === billId;
+          }
+        )[0];
+        element.bill = bill;
+      }
 
       // Create an object to hold reforms for this type
       if (!reforms_by_type.hasOwnProperty(type)) {
@@ -1291,6 +1304,7 @@ var ReformsList = React.createClass({
         url={version.url}
         slug={version.slug}
         status={version.reform_status}
+        bill={reform.bill}
         />
     });
     return (
@@ -1304,6 +1318,19 @@ var ReformsList = React.createClass({
 
 var Reform = React.createClass({
   render: function() {
+    var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
+    var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
+      var legislator = cosponsor.legislator;
+      return <Cosponsor
+        key={legislator.bioguide_id}
+        firstName={legislator.first_name}
+        lastName={legislator.last_name}
+        title={legislator.title}
+        state={legislator.state}
+        district={legislator.district}
+        party={legislator.party}
+      />
+    }) : '';
     statusStyle = {
       textTransform: "uppercase",
     };
@@ -1333,7 +1360,21 @@ var Reform = React.createClass({
           </strong>
         </p>
         <hr/>
+        <ul className="list-commas">
+          <dt><strong className="subheader">{cosponsors_count ? "Co-Sponsors" : ''}</strong></dt>
+          {cosponsorNodes}
+        </ul>
       </div>
+    );
+  }
+});
+
+var Cosponsor = React.createClass({
+  render: function() {
+    var fullName = this.props.firstName + " " + this.props.lastName;
+    var link = "#legislators/" + this.props.key;
+    return (
+      <li><a href={link}>{fullName}</a> ({this.props.party}-{this.props.state})</li>
     );
   }
 });
