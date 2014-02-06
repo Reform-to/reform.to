@@ -1331,6 +1331,14 @@ var Reform = React.createClass({
         party={legislator.party}
       />
     }) : '';
+    var sponsorName = this.props.sponsor.name;
+    var sponsorLink = '';
+
+    var billHasSponsor = this.props.bill && this.props.bill.sponsor;
+    if (billHasSponsor) {
+      sponsorLink = "#legislators/" + this.props.bill.sponsor.bioguide_id;
+    }
+
     statusStyle = {
       textTransform: "uppercase",
     };
@@ -1352,7 +1360,12 @@ var Reform = React.createClass({
           <strong>
             {this.props.description}.{' '}
           </strong>
-          {this.props.sponsor.name ? "Sponsored by " + this.props.sponsor.name + '.'  : ''}{' '}
+          {sponsorName ? "Sponsored by " : ''}
+          <a href={sponsorLink}>
+          {sponsorLink ? sponsorName : ''}
+          </a>
+          {sponsorLink ? '' : sponsorName}
+          {sponsorName ? ". " : ''}
           <strong>
           <a href={this.props.url}>
             {this.props.url ? hostname : ''}
