@@ -6,15 +6,61 @@ var App = React.createClass({
   getInitialState: function() {
     var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
 
+    var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
+    var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
+
     var self = this;
     $.ajax({
       url: reformsURL,
       success: function(data) {
+        var billIds = data.reforms.map(function(reform) {
+          var version = reform['1.0'];
+          if (version.bill_id) {
+            return version.bill_id;
+          }
+        }).filter(function(n) { return n; });
+
+        var billFields = [
+          "bill_id",
+          "bill_type",
+          "number",
+          "congress",
+          "chamber",
+          "introduced_on",
+          "official_title",
+          "popular_title",
+          "short_title",
+          "summary",
+          "summary_short",
+          "urls",
+          "sponsor_id",
+          "sponsor",
+          "cosponsor_ids",
+          "cosponsors_count",
+          "cosponsors"
+        ];
+
+        var billQuery = {
+          apikey: apiKey,
+          "bill_id__in": billIds.join('|'),
+          fields: billFields.join()
+        };
+
+        var findBillsURL =
+          sunlightAPI + "/bills" + "?" + $.param(billQuery);
+
+        $.ajax({
+          url: findBillsURL,
+          success: function(data) {
+            self.setState({ bills: data.results });
+          }.bind(self)
+        });
+
         self.setState({ reforms: data.reforms });
       }.bind(this)
     });
 
-    return { page: 'home', reforms: [] };
+    return { page: 'home', reforms: [], bills: [] };
   },
   navigateToLocation: function(lat, lng) {
     this.setState({page: 'home', latitude: lat, longitude: lng});
