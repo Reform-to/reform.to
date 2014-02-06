@@ -361,14 +361,12 @@ var Legislator = React.createClass({
     var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
     var photoResource = '/img/100x125/'+ this.props.key + '.jpg';
     var image = congressPhotosAPI + photoResource;
-    var resource = "legislators";
     return (
       <div className="ac-candidate">
       <div className="row">
       <div className="large-6 medium-8 columns">
         <Avatar party={this.props.party} image={image} />
         <CandidateName
-          id={this.props.key}
           title={this.props.title}
           firstName={this.props.firstName}
           lastName={this.props.lastName}
@@ -376,7 +374,7 @@ var Legislator = React.createClass({
           state={this.props.state}
           district={this.props.district}
           isReformer={this.props.isReformer}
-          resource={resource}
+          bioguideId={this.props.key}
         />
       </div>
       <div className="small-6 medium-2 columns">
@@ -568,19 +566,14 @@ var CandidateList = React.createClass({
 
       var bioguideId = fecBioMap.hasOwnProperty(fecId) ? fecBioMap[fecId] : null;
 
-      var id = bioguideId ? bioguideId : fecId;
-      var resource = bioguideId ? "legislators" : "candidates";
-
       return <Candidate
         key={fecId}
-        id={id}
         firstName={firstName}
         lastName={lastName}
         party={party}
         state={state}
         district={district}
         bioguideId={bioguideId}
-        resource={resource}
       />
     });
     return (
@@ -606,13 +599,12 @@ var Candidate = React.createClass({
           <div className="medium-12 columns">
           <Avatar party={this.props.party} image={image} />
             <CandidateName
-              id={this.props.id}
               firstName={this.props.firstName}
               lastName={this.props.lastName}
               party={this.props.party}
               state={this.props.state}
               district={this.props.district}
-              resource={this.props.resource}
+              bioguideId={this.props.bioguideId}
             />
           </div>
         </div>
@@ -642,14 +634,22 @@ var CandidateName = React.createClass({
   },
   render: function() {
     var nameClass = this.props.isReformer ? 'name special-header' : 'name'
-    var link = "#" + this.props.resource + "/" + this.props.id;
+
+    var link = '';
+    if (this.props.bioguideId) {
+      link = "#legislators/" + this.props.bioguideId;
+    }
+
+    var fullName = this.props.firstName + " " + this.props.lastName;
+
     return (
       <div>
       <h3 className={nameClass}>
         <span className="title">{this.props.title}</span> {' '}
         <a href={link}>
-          {this.props.firstName} {' '} {this.props.lastName} {' '}
+          {link ? fullName : ''}
         </a>
+          {!link ? fullName : ''}
       </h3>
       <span className="details">
         {this.props.party}-{this.props.state}
