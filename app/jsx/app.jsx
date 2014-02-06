@@ -160,13 +160,17 @@ var CandidateLocator = React.createClass({
     // Display results for a default location
     var lat = this.props.latitude;
     var lng = this.props.longitude;
-    this.locateCandidates({ latitude: lat, longitude: lng });
+    if (lat && lng) {
+      this.locateCandidates({ latitude: lat, longitude: lng });
+    }
   },
   componentWillReceiveProps: function(nextProps) {
     // Update results if the location changes
     var lat = nextProps.latitude;
     var lng = nextProps.longitude;
-    this.locateCandidates({ latitude: lat, longitude: lng });
+    if (lat && lng) {
+      this.locateCandidates({ latitude: lat, longitude: lng });
+    }
   },
   render: function() {
     return (
@@ -439,61 +443,63 @@ var District = React.createClass({
     this.setState({fecBioMap: fecBioMap});
 
     // Look up current candidates for this state and district
-    var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
-    var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+    if (props.state && props.district) {
+      var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
+      var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
 
-    var query = {
-      'api-key': apiKey
-    };
-    var cycle = window.ENV.ELECTIONS.cycle;
-    var state = props.state;
-    var district = props.district;
+      var query = {
+        'api-key': apiKey
+      };
+      var cycle = window.ENV.ELECTIONS.cycle;
+      var state = props.state;
+      var district = props.district;
 
-    var houseURI = nytimesAPI
-      + cycle + '/seats/' + state + '/house/' + district
-      + '.json?' + $.param(query);
+      var houseURI = nytimesAPI
+        + cycle + '/seats/' + state + '/house/' + district
+        + '.json?' + $.param(query);
 
-    $.ajax({
-      url: houseURI,
-      dataType: 'jsonp',
-      success: function(data) {
-        if (data.status == "OK") {
-          this.setState({
-            cycle: data.cycle,
-            state: data.state,
-            district: data.district,
-            congressional: data.results
-          });
-        }
-      }.bind(this),
-      error: function() {
-          // Wipe state on API error
-          this.setState({
-            congressional: []
-          });
-      }.bind(this),
-    });
+      $.ajax({
+        url: houseURI,
+        dataType: 'jsonp',
+        success: function(data) {
+          if (data.status == "OK") {
+            this.setState({
+              cycle: data.cycle,
+              state: data.state,
+              district: data.district,
+              congressional: data.results
+            });
+          }
+        }.bind(this),
+        error: function() {
+            // Wipe state on API error
+            this.setState({
+              congressional: []
+            });
+        }.bind(this),
+      });
 
-    var senateURI = nytimesAPI
-      + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
+      var senateURI = nytimesAPI
+        + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
 
-    $.ajax({
-      url: senateURI,
-      dataType: 'jsonp',
-      success: function(data) {
-        if (data.status == "OK") {
-          this.setState({
-            senatorial: data.results
-          });
-        }
-      }.bind(this),
-      error: function() {
-          // Wipe state on API error
-          this.setState({
-            senatorial: []
-          });
-      }.bind(this),
-    });
+      $.ajax({
+        url: senateURI,
+        dataType: 'jsonp',
+        success: function(data) {
+          if (data.status == "OK") {
+            this.setState({
+              senatorial: data.results
+            });
+          }
+        }.bind(this),
+        error: function() {
+            // Wipe state on API error
+            this.setState({
+              senatorial: []
+            });
+        }.bind(this),
+      });
+    }
 
   },
   render: function() {
@@ -1294,10 +1300,7 @@ var Reform = React.createClass({
 // Render the main application first using the default location
 
 var Application = React.renderComponent(
-    <App
-      latitude={window.ENV.SITE.latitude}
-      longitude={window.ENV.SITE.longitude}
-    />,
+    <App />,
     document.getElementById('ac-application')
 );
 
