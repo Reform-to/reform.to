@@ -4,23 +4,33 @@
 
 var App = React.createClass({
   getInitialState: function() {
-    return { page: 'home' };
+    var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
+
+    var self = this;
+    $.ajax({
+      url: reformsURL,
+      success: function(data) {
+        self.setState({ reforms: data.reforms });
+      }.bind(this)
+    });
+
+    return { page: 'home', reforms: [] };
   },
   navigateToLocation: function(lat, lng) {
     this.setState({page: 'home', latitude: lat, longitude: lng});
   },
   navigateToReform: function(id) {
-    this.setState({page: 'reforms', identifier: id});
+    this.setState({page: 'reform', identifier: id});
   },
   navigateToLegislator: function(id) {
     this.setState({page: 'legislators', identifier: id});
   },
   componentWillMount: function() {
     var router = Router({
-      '/': this.setState.bind(this, this.getInitialState(), null),
+      '/': this.setState.bind(this, {page: 'home'}, null),
       '/home': {
         "/(.*),(.*)": this.navigateToLocation.bind(this),
-        '': this.setState.bind(this, this.getInitialState(), null),
+        '': this.setState.bind(this, {page: 'home'}, null),
       },
       '/reforms': {
         '/:id': this.navigateToReform.bind(this),
@@ -32,7 +42,6 @@ var App = React.createClass({
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
     });
-    router.configure({ strict: false });
     router.init();
   },
   render: function() {
@@ -48,13 +57,19 @@ var App = React.createClass({
         longitude={lng}
       />
     } else if (this.state.page === 'reforms') {
-      content = <Reforms />
+      content = <Reforms reforms={this.state.reforms}/>
     } else if (this.state.page === 'reform') {
-      content = <Reforms reform={this.state.identifier} />
+      var slug = this.state.identifier;
+      var reforms = this.state.reforms.filter(function(r) {
+        var version = r['1.0'];
+        return slug === version.slug;
+      });
+
+      content = <Reforms reforms={reforms} />
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile bioguideId={this.state.identifier} />
     } if (this.state.page === 'pledges') {
-      content = <PledgeTaker />
+      content = <PledgeTaker reforms={this.state.reforms} />
     } else if (this.state.page === 'about') {
       content = <AboutPage />
     }
@@ -651,24 +666,13 @@ var CandidateName = React.createClass({
 });
 
 var PledgeTaker = React.createClass({
+  getInitialState: function() {
+    return { reforms: [] };
+  },
   fillInCandidate: function(candidate) {
     this.setState(candidate);
   },
   fillInReforms: function(reforms) {
-  },
-  getInitialState: function() {
-    var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
-
-    $.ajax({
-      url: reformsURL,
-      success: function(data) {
-        this.setState({ reforms: data.reforms });
-      }.bind(this)
-    });
-
-    return {
-      reforms: [],
-    };
   },
   render: function() {
     var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
@@ -679,7 +683,7 @@ var PledgeTaker = React.createClass({
         <div className="large-12 columns">
           <form className="congress-form" data-abide method="post" action={addReformersURL}>
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
-            <ReformsFieldset reforms={this.state.reforms} onReformsSelect={this.fillInReforms} />
+            <ReformsFieldset reforms={this.props.reforms} onReformsSelect={this.fillInReforms} />
             <ContactFieldset
               firstName={this.state.firstName}
               middleName={this.state.middleName}
@@ -1173,43 +1177,30 @@ var ContactFieldset = React.createClass({
 });
 
 var Reforms = React.createClass({
-  getInitialState: function() {
-    var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
+  render: function() {
+    // Organize the reforms by type
+    var reforms_by_type = {};
 
-    $.ajax({
-      url: reformsURL,
-      success: function(data) {
+    this.props.reforms.forEach(function(element, index, array) {
+      var version = element['1.0'];
+      var type = version.reform_type;
 
-        // Organize the reforms by type
-        var reforms_by_type = {};
+      // Create an object to hold reforms for this type
+      if (!reforms_by_type.hasOwnProperty(type)) {
+        reforms_by_type[type] = { type: type, reforms: [] }
+      }
 
-        data.reforms.forEach(function(element, index, array) {
-          var version = element['1.0'];
-          var type = version.reform_type;
+      reforms_by_type[type].reforms.push(element);
 
-          // Create an object to hold reforms for this type
-          if (!reforms_by_type.hasOwnProperty(type)) {
-            reforms_by_type[type] = { type: type, reforms: [] }
-          }
-
-          reforms_by_type[type].reforms.push(element);
-
-        });
-
-        // Turn the Object back into a plain array
-        var reforms = [];
-        for (key in reforms_by_type) {
-          reforms.push(reforms_by_type[key]);
-        }
-
-        this.setState({ reforms: reforms });
-      }.bind(this)
     });
 
-    return { reforms: [] };
-  },
-  render: function() {
-    var reformsListNodes = this.state.reforms.map(function (reformList) {
+    // Turn the Object back into a plain array
+    var reforms = [];
+    for (key in reforms_by_type) {
+      reforms.push(reforms_by_type[key]);
+    }
+
+    var reformsListNodes = reforms.map(function (reformList) {
       return <ReformsList key={reformList.type} reforms={reformList.reforms} />
     });
     return (
