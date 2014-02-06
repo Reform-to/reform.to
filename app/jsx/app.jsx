@@ -43,6 +43,12 @@ var App = React.createClass({
       '/about': this.setState.bind(this, {page: 'about'}, null)
     });
     router.init();
+
+    // If we enter the site at the base URL, update the route
+    //  to "#home" for consistency and better back-button behavior
+    if (router.getRoute(0) === "") {
+      router.setRoute("home");
+    }
   },
   render: function() {
     var content;
