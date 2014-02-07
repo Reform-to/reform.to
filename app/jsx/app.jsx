@@ -91,9 +91,9 @@ var App = React.createClass({
     router.init();
 
     // If we enter the site at the base URL, update the route
-    //  to "#home" for consistency and better back-button behavior
+    //  to "home" for consistency and better back-button behavior
     if (router.getRoute(0) === "") {
-      router.setRoute("home");
+      router.setRoute("/home");
     }
   },
   render: function() {
@@ -140,7 +140,7 @@ var AboutPage = React.createClass({
         <div className="row">
             <div className="large-6 large-offset-3 medium-10 medium-offset-1 columns">
               <h4 className="subheader text-center">About</h4>
-              <p><a href="/">Reform.to</a> tracks members of Congress as well as candidates, and highlights their support for specific <a href="/#reforms">legislative and constitutional reforms</a> aimed at fighting the corrupting influence of money in politics.</p>
+              <p><a href="/">Reform.to</a> tracks members of Congress as well as candidates, and highlights their support for specific <a href="#/reforms">legislative and constitutional reforms</a> aimed at fighting the corrupting influence of money in politics.</p>
             </div>
         </div>
       </div>
@@ -695,7 +695,7 @@ var CandidateName = React.createClass({
 
     var link = '';
     if (this.props.bioguideId) {
-      link = "#legislators/" + this.props.bioguideId;
+      link = "#/legislators/" + this.props.bioguideId;
     }
 
     var fullName = this.props.firstName + " " + this.props.lastName;
@@ -713,7 +713,7 @@ var CandidateName = React.createClass({
         {this.props.party}-{this.props.state}
         {this.props.district ? ", District " + this.props.district : ''} { ' ' }
         <span className="subheader">
-        <a href="/#reforms">
+        <a href="#/reforms">
         {this.props.isReformer ? " -  Reformer" : ''}
         </a>
         </span>
@@ -1336,13 +1336,13 @@ var Reform = React.createClass({
 
     var billHasSponsor = this.props.bill && this.props.bill.sponsor;
     if (billHasSponsor) {
-      sponsorLink = "#legislators/" + this.props.bill.sponsor.bioguide_id;
+      sponsorLink = "#/legislators/" + this.props.bill.sponsor.bioguide_id;
     }
 
     statusStyle = {
       textTransform: "uppercase",
     };
-    var resource = "#reforms/" + this.props.slug;
+    var resource = "#/reforms/" + this.props.slug;
     var a = $('<a>', { href:this.props.url } )[0];
     var hostname = a.hostname;
     return (
@@ -1385,7 +1385,7 @@ var Reform = React.createClass({
 var Cosponsor = React.createClass({
   render: function() {
     var fullName = this.props.firstName + " " + this.props.lastName;
-    var link = "#legislators/" + this.props.key;
+    var link = "#/legislators/" + this.props.key;
     return (
       <li><a href={link}>{fullName}</a> ({this.props.party}-{this.props.state})</li>
     );
