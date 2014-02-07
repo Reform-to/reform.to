@@ -1334,6 +1334,7 @@ var Reform = React.createClass({
         party={legislator.party}
       />
     }) : '';
+    var official_title = this.props.bill ? this.props.bill.official_title : '';
     var sponsorName = this.props.sponsor.name;
     var sponsorLink = '';
 
@@ -1376,6 +1377,10 @@ var Reform = React.createClass({
           </strong>
         </p>
         <hr/>
+        <ul className="list-commas">
+          <dt><strong className="subheader">{official_title ? "Official Title" : ''}</strong></dt>
+          <li>{official_title}</li>
+        </ul>
         <ul className="list-commas">
           <dt><strong className="subheader">{cosponsors_count ? "Co-Sponsors" : ''}</strong></dt>
           {cosponsorNodes}
