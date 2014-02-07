@@ -132,8 +132,9 @@ span.helper, small.helper {
 .list-commas > li:after {
   content: ", ";
 }
+
 .list-commas > li:last-child:after {
-  content: ".";
+  content: "";
 }
 
 .text-lowercase {
