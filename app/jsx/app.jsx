@@ -62,28 +62,28 @@ var App = React.createClass({
 
     return { page: 'home', reforms: [], bills: [] };
   },
-  navigateToLocation: function(lat, lng) {
+  navigateToLocation: function(empty, lat, lng) {
     this.setState({page: 'home', latitude: lat, longitude: lng});
   },
-  navigateToReform: function(id) {
+  navigateToReform: function(empty, id) {
     this.setState({page: 'reform', identifier: id});
   },
-  navigateToLegislator: function(id) {
+  navigateToLegislator: function(empty, id) {
     this.setState({page: 'legislators', identifier: id});
   },
   componentWillMount: function() {
     var router = Router({
       '/': this.setState.bind(this, {page: 'home'}, null),
       '/home': {
-        "/(.*),(.*)": this.navigateToLocation.bind(this),
+        "/(.*),(.*)": this.navigateToLocation.bind(this, null),
         '': this.setState.bind(this, {page: 'home'}, null),
       },
       '/reforms': {
-        '/:id': this.navigateToReform.bind(this),
+        '/:id': this.navigateToReform.bind(this, null),
         '': this.setState.bind(this, {page: 'reforms'}, null)
       },
       '/legislators': {
-        '/:id': this.navigateToLegislator.bind(this),
+        '/:id': this.navigateToLegislator.bind(this, null),
       },
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
