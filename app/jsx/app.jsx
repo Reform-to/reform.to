@@ -87,6 +87,9 @@ var App = React.createClass({
       },
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
+    }).configure({
+      // Reset the scroll position every time a route is entered
+      on: function() { $('html,body').scrollTop(0); }
     });
     router.init();
 
