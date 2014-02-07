@@ -225,7 +225,7 @@ span.helper, small.helper {
   }
 }
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dppx) {
 .ac-logo {
   .ac-icon {
     background-image: url('../img/icon-2x.png');
