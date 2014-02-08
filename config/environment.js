@@ -14,12 +14,12 @@ window.ENV = {
         endpoint: "/vendor/congress-photos/"
       },
       REFORMS: {
-        endpoint: 'http://reforms.fabricatorz.com/us/b2/'
+        endpoint: 'http://reforms.fabricatorz.com/us/b4/'
       }
     },
     SUNLIGHT: {
       CONGRESS: {
-        endpoint: "http://congress.api.sunlightfoundation.com/",
+        endpoint: "https://congress.api.sunlightfoundation.com/",
         apiKey: "574712f76976437cb98767c4a2622588"
       }
     },

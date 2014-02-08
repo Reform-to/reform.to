@@ -14,9 +14,8 @@ var App = React.createClass({
       url: reformsURL,
       success: function(data) {
         var billIds = data.reforms.map(function(reform) {
-          var version = reform['1.0'];
-          if (version.bill_id) {
-            return version.bill_id;
+          if (reform.bill_id) {
+            return reform.bill_id;
           }
         }).filter(function(n) { return n; });
 
@@ -116,8 +115,7 @@ var App = React.createClass({
     } else if (this.state.page === 'reform') {
       var slug = this.state.identifier;
       var reforms = this.state.reforms.filter(function(r) {
-        var version = r['1.0'];
-        return slug === version.slug;
+        return slug === r.slug;
       });
 
       content = <Reforms reforms={reforms} bills={this.state.bills} />
@@ -185,17 +183,6 @@ var CandidateLocator = React.createClass({
       }.bind(this)
     });
 
-    var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
-
-    $.ajax({
-      url: reformsURL,
-      success: function(data) {
-        var bioguideIds = data.reformers.map(function (reformer) {
-          return reformer.bioguide_id;
-        });
-        this.setState({ reformers: bioguideIds });
-      }.bind(this)
-    });
   },
   getInitialState: function() {
     return {
@@ -1125,7 +1112,6 @@ var ReformsFieldset = React.createClass({
           </strong>
         </label>
         {this.props.reforms.map(function (reform, i) {
-          var version = reform['1.0'];
           return (
             <div key={i}>
               <label htmlFor={'form-checkbox-reform-' + reform.id}>
@@ -1137,7 +1123,7 @@ var ReformsFieldset = React.createClass({
                 value={reform.id}
                 onChange={this.selectReforms}
               />{' '}
-              <strong>{version.title}.</strong> {' '} <em>{version.description}</em>
+              <strong>{reform.title}.</strong> {' '} <em>{reform.description}</em>
               </label>
             </div>
           )
@@ -1243,12 +1229,11 @@ var Reforms = React.createClass({
     var reforms_by_type = {};
 
     var self = this;
-    this.props.reforms.forEach(function(element, index, array) {
-      var version = element['1.0'];
-      var type = version.reform_type;
-      var billId = version.bill_id;
+    this.props.reforms.forEach(function(reform, index, array) {
+      var type = reform.reform_type;
+      var billId = reform.bill_id;
 
-      // Attach a congress bill to the element if one exists
+      // Attach a congress bill to the reform if one exists
       if (self.props.bills) {
         var bill = $.grep(
           self.props.bills,
@@ -1256,7 +1241,7 @@ var Reforms = React.createClass({
             return b.bill_id === billId;
           }
         )[0];
-        element.bill = bill;
+        reform.bill = bill;
       }
 
       // Create an object to hold reforms for this type
@@ -1264,7 +1249,7 @@ var Reforms = React.createClass({
         reforms_by_type[type] = { type: type, reforms: [] }
       }
 
-      reforms_by_type[type].reforms.push(element);
+      reforms_by_type[type].reforms.push(reform);
 
     });
 
@@ -1297,16 +1282,15 @@ var ReformsList = React.createClass({
   },
   render: function() {
     var reformNodes = this.props.reforms.map(function (reform) {
-      var version = reform['1.0'];
       return <Reform
         key={reform.id}
-        title={version.title}
-        description={version.description}
-        sponsor={version.sponsor}
-        billId={version.bill_id}
-        url={version.url}
-        slug={version.slug}
-        status={version.reform_status}
+        title={reform.title}
+        description={reform.description}
+        sponsor={reform.sponsor}
+        billId={reform.bill_id}
+        url={reform.url}
+        slug={reform.slug}
+        status={reform.reform_status}
         bill={reform.bill}
         />
     });
@@ -1335,7 +1319,8 @@ var Reform = React.createClass({
       />
     }) : '';
     var official_title = this.props.bill ? this.props.bill.official_title : '';
-    var sponsorName = this.props.sponsor.name;
+    var sponsor = this.props.sponsor;
+    var sponsorName = [sponsor.title, sponsor.first_name, sponsor.last_name].join(" ");
     var sponsorLink = '';
 
     var billHasSponsor = this.props.bill && this.props.bill.sponsor;
