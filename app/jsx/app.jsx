@@ -1326,6 +1326,8 @@ var Reform = React.createClass({
     var billHasSponsor = this.props.bill && this.props.bill.sponsor;
     if (billHasSponsor) {
       sponsorLink = "#/legislators/" + this.props.bill.sponsor.bioguide_id;
+    } else if (sponsor.website) {
+      sponsorLink = sponsor.website;
     }
 
     statusStyle = {
