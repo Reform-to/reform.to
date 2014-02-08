@@ -114,11 +114,13 @@ var App = React.createClass({
       content = <Reforms reforms={this.state.reforms} bills={this.state.bills}/>
     } else if (this.state.page === 'reform') {
       var slug = this.state.identifier;
-      var reforms = this.state.reforms.filter(function(r) {
+      var reform = this.state.reforms.filter(function(r) {
         return slug === r.slug;
-      });
+      })[0];
 
-      content = <Reforms reforms={reforms} bills={this.state.bills} />
+      if (reform) {
+        content = <ReformProfile reform={reform} bills={this.state.bills} />
+      }
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile bioguideId={this.state.identifier} />
     } if (this.state.page === 'pledges') {
@@ -1275,11 +1277,6 @@ var Reforms = React.createClass({
 });
 
 var ReformsList = React.createClass({
-  getInitialState: function() {
-    return { reforms: [] }
-  },
-  componentWillReceiveProps: function(props) {
-  },
   render: function() {
     var reformNodes = this.props.reforms.map(function (reform) {
       return <Reform
@@ -1303,22 +1300,49 @@ var ReformsList = React.createClass({
   }
 });
 
+var ReformProfile = React.createClass({
+  render: function() {
+    var reform = this.props.reform;
+    var billId = reform.bill_id;
+
+    // Attach a congress bill to the reform if one exists
+    if (this.props.bills) {
+      var bill = $.grep(
+        this.props.bills,
+        function(b) {
+          return b.bill_id === billId;
+        }
+      )[0];
+    } else {
+      var bill = null;
+    }
+
+    return (
+      <div className="ac-reforms">
+        <div className="row">
+          <div className="large-8 large-offset-2 medium-10 medium-offset-1 columns">
+            <h4 className="subheader text-center">{reform.reform_type} Reforms</h4>
+            <Reform
+              key={reform.id}
+              title={reform.title}
+              description={reform.description}
+              sponsor={reform.sponsor}
+              billId={reform.bill_id}
+              url={reform.url}
+              slug={reform.slug}
+              status={reform.reform_status}
+              bill={reform.bill}
+            />
+            <Bill bill={bill} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
 var Reform = React.createClass({
   render: function() {
-    var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
-    var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
-      var legislator = cosponsor.legislator;
-      return <Cosponsor
-        key={legislator.bioguide_id}
-        firstName={legislator.first_name}
-        lastName={legislator.last_name}
-        title={legislator.title}
-        state={legislator.state}
-        district={legislator.district}
-        party={legislator.party}
-      />
-    }) : '';
-    var official_title = this.props.bill ? this.props.bill.official_title : '';
     var sponsor = this.props.sponsor;
     var sponsorName = [sponsor.title, sponsor.first_name, sponsor.last_name].join(" ");
     var sponsorLink = '';
@@ -1364,6 +1388,29 @@ var Reform = React.createClass({
           </strong>
         </p>
         <hr/>
+      </div>
+    );
+  }
+});
+
+var Bill = React.createClass({
+  render: function() {
+    var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
+    var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
+      var legislator = cosponsor.legislator;
+      return <Cosponsor
+        key={legislator.bioguide_id}
+        firstName={legislator.first_name}
+        lastName={legislator.last_name}
+        title={legislator.title}
+        state={legislator.state}
+        district={legislator.district}
+        party={legislator.party}
+      />
+    }) : '';
+    var official_title = this.props.bill ? this.props.bill.official_title : '';
+    return (
+      <div>
         <ul className="list-commas">
           <dt><strong className="subheader">{official_title ? "Official Title" : ''}</strong></dt>
           <li>{official_title}</li>
