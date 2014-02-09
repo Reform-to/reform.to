@@ -1362,15 +1362,32 @@ var ReformProfile = React.createClass({
 
 var Reform = React.createClass({
   render: function() {
-    var sponsor = this.props.sponsor;
-    var sponsorName = [sponsor.title, sponsor.first_name, sponsor.last_name].join(" ");
 
-    var sponsorLink;
+    var sponsorLine;
     var billHasSponsor = this.props.bill && this.props.bill.sponsor;
     if (billHasSponsor) {
-      sponsorLink = "#/legislators/" + this.props.bill.sponsor.bioguide_id;
-    } else if (sponsor.website) {
-      sponsorLink = sponsor.website;
+      var legislator = this.props.bill.sponsor;
+      sponsorLine = <TitleNamePartyState
+        key={legislator.bioguide_id}
+        title={legislator.title}
+        firstName={legislator.first_name}
+        lastName={legislator.last_name}
+        state={legislator.state}
+        district={legislator.district}
+        party={legislator.party}
+      />
+    } else {
+      var sponsor = this.props.sponsor;
+      var sponsorName = [
+        sponsor.title,
+        sponsor.first_name,
+        sponsor.last_name
+      ].filter(function(n) { return n; }).join(" ");
+      if (sponsor.website) {
+        sponsorLine = <a href={sponsor.website}>{sponsorName}</a>
+      } else {
+        sponsorLine = sponsorName;
+      }
     }
 
     statusStyle = {
@@ -1394,12 +1411,9 @@ var Reform = React.createClass({
           <strong>
             {this.props.description}.{' '}
           </strong>
-          {sponsorName ? "Sponsored by " : ''}
-          <a href={sponsorLink}>
-          {sponsorLink ? sponsorName : ''}
-          </a>
-          {sponsorLink ? '' : sponsorName}
-          {sponsorName ? ". " : ''}
+          {sponsorLine ? "Sponsored by" : ''} {' '}
+          {sponsorLine}
+          {sponsorLine ? '.' : ''} {' '}
           <strong>
           <a href={this.props.url}>
             {this.props.url ? hostname : ''}
@@ -1417,19 +1431,17 @@ var Bill = React.createClass({
     var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
     var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
       var legislator = cosponsor.legislator;
-      return <Cosponsor
+      return <li><TitleNamePartyState
         key={legislator.bioguide_id}
         firstName={legislator.first_name}
         lastName={legislator.last_name}
-        title={legislator.title}
         state={legislator.state}
         district={legislator.district}
         party={legislator.party}
-      />
+      /></li>
     }) : '';
     var official_title = this.props.bill ? this.props.bill.official_title : '';
     var short_title = this.props.bill ? this.props.bill.short_title : '';
-    //var text_link = "#/reforms/" + this.props.slug + "/text";
     var text_link = this.props.bill ? this.props.bill.last_version.urls.html : '';
     return (
       <div>
@@ -1454,12 +1466,14 @@ var Bill = React.createClass({
   }
 });
 
-var Cosponsor = React.createClass({
+var TitleNamePartyState = React.createClass({
   render: function() {
-    var fullName = this.props.firstName + " " + this.props.lastName;
+    var fullName = [
+      this.props.title, this.props.firstName, this.props.lastName
+    ].join(" ");
     var link = "#/legislators/" + this.props.key;
     return (
-      <li><a href={link}>{fullName}</a> ({this.props.party}-{this.props.state})</li>
+      <span><a href={link}>{fullName}</a> ({this.props.party}-{this.props.state})</span>
     );
   }
 });
