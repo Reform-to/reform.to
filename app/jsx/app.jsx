@@ -1302,7 +1302,7 @@ var Reforms = React.createClass({
     return (
       <div className="ac-reforms">
         <div className="row">
-          <div className="large-8 large-offset-2 medium-10 medium-offset-1 columns">
+          <div className="large-12 columns">
             {reformsListNodes}
           </div>
         </div>
@@ -1328,7 +1328,7 @@ var ReformsList = React.createClass({
     });
     return (
       <div className="ac-reform-list">
-        <h4 className="subheader text-center">{this.props.key} Reforms</h4>
+        <h4 className="subheader">{this.props.key} Reforms</h4>
         {reformNodes}
       </div>
     );
@@ -1354,8 +1354,8 @@ var ReformProfile = React.createClass({
     return (
       <div className="ac-reforms">
         <div className="row">
-          <div className="large-8 large-offset-2 medium-10 medium-offset-1 columns">
-            <h4 className="subheader text-center">{reform.reform_type} Reforms</h4>
+          <div className="large-12 columns">
+            <h4 className="subheader">{reform.reform_type} Reforms</h4>
             <Reform
               key={reform.id}
               title={reform.title}
