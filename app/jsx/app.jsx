@@ -125,7 +125,11 @@ var App = React.createClass({
         content = <ReformProfile reform={reform} bills={this.state.bills} />
       }
     } else if (this.state.page === 'legislators') {
-      content = <LegislatorProfile bioguideId={this.state.identifier} />
+      content = <LegislatorProfile
+        bioguideId={this.state.identifier}
+        reforms={this.state.reforms}
+        bills={this.state.bills}
+      />
     } if (this.state.page === 'pledges') {
       content = <PledgeTaker reforms={this.state.reforms} />
     } else if (this.state.page === 'about') {
@@ -372,6 +376,8 @@ var LegislatorProfile = React.createClass({
         <div className="large-12 columns">
           <LegislatorList
             legislators={this.state.legislators}
+            reforms={this.props.reforms}
+            bills={this.props.bills}
           />
         </div>
       </div>
