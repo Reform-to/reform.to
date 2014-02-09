@@ -36,7 +36,8 @@ var App = React.createClass({
           "sponsor",
           "cosponsor_ids",
           "cosponsors_count",
-          "cosponsors"
+          "cosponsors",
+          "last_version"
         ];
 
         var billQuery = {
@@ -1333,7 +1334,7 @@ var ReformProfile = React.createClass({
               status={reform.reform_status}
               bill={reform.bill}
             />
-            <Bill bill={bill} />
+            <Bill bill={bill} slug={reform.slug}/>
           </div>
         </div>
       </div>
@@ -1409,11 +1410,22 @@ var Bill = React.createClass({
       />
     }) : '';
     var official_title = this.props.bill ? this.props.bill.official_title : '';
+    var short_title = this.props.bill ? this.props.bill.short_title : '';
+    //var text_link = "#/reforms/" + this.props.slug + "/text";
+    var text_link = this.props.bill ? this.props.bill.last_version.urls.html : '';
     return (
       <div>
         <ul className="list-commas">
           <dt><strong className="subheader">{official_title ? "Official Title" : ''}</strong></dt>
           <li>{official_title}</li>
+        </ul>
+        <ul className="list-commas">
+          <dt><strong className="subheader">{short_title ? "Full Text" : ''}</strong></dt>
+          <li>
+            <a href={text_link}>
+              {short_title}
+            </a>
+          </li>
         </ul>
         <ul className="list-commas">
           <dt><strong className="subheader">{cosponsors_count ? "Co-Sponsors" : ''}</strong></dt>
