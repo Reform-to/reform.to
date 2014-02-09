@@ -341,6 +341,8 @@ var LegislatorProfile = React.createClass({
   getInitialState: function() {
     return {
       legislators: [],
+      reforms: [],
+      bills: []
     };
   },
   componentWillMount: function() {
@@ -363,6 +365,18 @@ var LegislatorProfile = React.createClass({
     });
   },
   render: function() {
+    var bioguideId = this.props.bioguideId;
+    var bills = this.props.bills.filter(function(b) {
+      var isSponsor = b.sponsor_id === bioguideId;
+      var isCosponsor = $.inArray(bioguideId, b.cosponsor_ids) >= 0;
+      return isSponsor || isCosponsor;
+    });
+    var bill_ids = bills.map(function(b) {
+      return b.bill_id;
+    });
+    var reforms = this.props.reforms.filter(function(r) {
+      return $.inArray(r.bill_id, bill_ids) >= 0;
+    });
     return(
       <div>
       <div className="row">
@@ -381,6 +395,7 @@ var LegislatorProfile = React.createClass({
           />
         </div>
       </div>
+      <Reforms reforms={reforms} bills={bills}/>
       </div>
     );
   }
