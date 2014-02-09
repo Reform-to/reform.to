@@ -1326,6 +1326,7 @@ var ReformProfile = React.createClass({
     var billId = reform.bill_id;
 
     // Attach a congress bill to the reform if one exists
+    var bill;
     if (this.props.bills) {
       var bill = $.grep(
         this.props.bills,
@@ -1333,8 +1334,6 @@ var ReformProfile = React.createClass({
           return b.bill_id === billId;
         }
       )[0];
-    } else {
-      var bill = null;
     }
 
     return (
@@ -1351,7 +1350,7 @@ var ReformProfile = React.createClass({
               url={reform.url}
               slug={reform.slug}
               status={reform.reform_status}
-              bill={reform.bill}
+              bill={bill}
             />
             <Bill bill={bill} slug={reform.slug}/>
           </div>
@@ -1365,8 +1364,8 @@ var Reform = React.createClass({
   render: function() {
     var sponsor = this.props.sponsor;
     var sponsorName = [sponsor.title, sponsor.first_name, sponsor.last_name].join(" ");
-    var sponsorLink = '';
 
+    var sponsorLink;
     var billHasSponsor = this.props.bill && this.props.bill.sponsor;
     if (billHasSponsor) {
       sponsorLink = "#/legislators/" + this.props.bill.sponsor.bioguide_id;
