@@ -110,6 +110,8 @@ var App = React.createClass({
       content = <CandidateLocator
         latitude={lat}
         longitude={lng}
+        reforms={this.state.reforms}
+        bills={this.state.bills}
       />
     } else if (this.state.page === 'reforms') {
       content = <Reforms reforms={this.state.reforms} bills={this.state.bills}/>
@@ -192,7 +194,8 @@ var CandidateLocator = React.createClass({
       legislators: [],
       state: '',
       district: '',
-      reformers: []
+      reforms: [],
+      bills: []
     };
   },
   componentWillMount: function() {
@@ -239,7 +242,8 @@ var CandidateLocator = React.createClass({
       <div className="large-12 columns">
         <LegislatorList
           legislators={this.state.legislators}
-          reformers={this.state.reformers}
+          reforms={this.props.reforms}
+          bills={this.props.bills}
         />
       </div>
     </div>
@@ -378,9 +382,18 @@ var LegislatorProfile = React.createClass({
 
 var LegislatorList = React.createClass({
   render: function() {
-    var reformers = this.props.reformers;
+    var bills = this.props.bills ? this.props.bills : [];
+
+    // Merge all sponsor and co-sponsor IDs into one array
+    var sponsor_ids = [].concat.apply([], bills.map(function (bill) {
+      return $.merge([bill.sponsor_id], bill.cosponsor_ids);
+    }));
+
     var legislatorNodes = this.props.legislators.map(function (legislator) {
-      var isReformer = $.inArray(legislator.bioguide_id, reformers) >= 0;
+
+      // Check if this Legislator is in the list of Reformers
+      var isReformer = $.inArray(legislator.bioguide_id, sponsor_ids) >= 0;
+
       return <Legislator
         key={legislator.bioguide_id}
         firstName={legislator.first_name}
