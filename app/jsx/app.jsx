@@ -926,32 +926,60 @@ var CandidacyFieldset = React.createClass({
     this.locateCandidates($.extend(this.state, { district: event.target.value }));
   },
   selectLegislator: function(event) {
-    var legislator = this.state.legislators[event.target.value];
     this.setState({ legislator_key: event.target.value });
-    this.setState({ bioguide_id: legislator.bioguide_id });
+    if (event.target.value >= 0) {
+      var legislator = this.state.legislators[event.target.value];
+      this.setState({ bioguide_id: legislator.bioguide_id });
 
-    this.props.onCandidateSelect({
-      firstName: legislator.first_name,
-      middleName: legislator.middle_name,
-      lastName: legislator.last_name,
-      suffix: legislator.name_suffix,
-      state: legislator.state,
-    });
+      this.props.onCandidateSelect({
+        bioguideId: legislator.bioguide_id,
+        firstName: legislator.first_name,
+        middleName: legislator.middle_name,
+        lastName: legislator.last_name,
+        suffix: legislator.name_suffix,
+        state: legislator.state,
+        district: legislator.district,
+      });
+    } else {
+      this.props.onCandidateSelect({
+        bioguideId: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        suffix: '',
+        state: '',
+        district: '',
+      });
+    }
   },
   selectCandidate: function(event) {
-    var candidate = this.state.candidates[event.target.value];
     this.setState({ candidate_key: event.target.value });
-    this.setState({ fec_id: candidate.candidate.id });
+    if (event.target.value >= 0) {
+      var candidate = this.state.candidates[event.target.value];
+      this.setState({ fec_id: candidate.candidate.id });
 
-    var names = candidate.candidate.name.split(',');
-    var lastName = names[0];
-    var firstName = names[1];
+      var names = candidate.candidate.name.split(',');
+      var lastName = names[0];
+      var firstName = names[1];
 
-    this.props.onCandidateSelect({
-      firstName: firstName,
-      lastName: lastName,
-      state: this.state.state
-    });
+      this.props.onCandidateSelect({
+        fecId: candidate.candidate.id,
+        firstName: firstName,
+        lastName: lastName,
+        middleName: '',
+        state: this.state.state
+      });
+    } else {
+      this.props.onCandidateSelect({
+        fecId: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        suffix: '',
+        state: '',
+        district: '',
+      });
+    }
   },
   render: function() {
     var cx = React.addons.classSet;
@@ -1088,6 +1116,7 @@ var CandidacyFieldset = React.createClass({
                 </option>
               )
             }, this)}
+            <option value="-1">Other</option>
             </select>
             </div>
             <input
@@ -1118,6 +1147,7 @@ var CandidacyFieldset = React.createClass({
                 </option>
               )
             }, this)}
+            <option value="-1">Other</option>
             </select>
             </div>
             <input
