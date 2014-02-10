@@ -755,7 +755,12 @@ var PledgeTaker = React.createClass({
     return { reforms: [] };
   },
   fillInCandidate: function(candidate) {
-    this.setState(candidate);
+    this.setState({
+      firstName: candidate.firstName,
+      middleName: candidate.middleName,
+      lastName: candidate.lastName,
+      suffix: candidate.suffix
+    });
   },
   fillInReforms: function(reforms) {
   },
@@ -774,7 +779,6 @@ var PledgeTaker = React.createClass({
               middleName={this.state.middleName}
               lastName={this.state.lastName}
               suffix={this.state.suffix}
-              state={this.state.state}
             />
           </form>
         </div>
@@ -932,23 +936,17 @@ var CandidacyFieldset = React.createClass({
       this.setState({ bioguide_id: legislator.bioguide_id });
 
       this.props.onCandidateSelect({
-        bioguideId: legislator.bioguide_id,
         firstName: legislator.first_name,
         middleName: legislator.middle_name,
         lastName: legislator.last_name,
-        suffix: legislator.name_suffix,
-        state: legislator.state,
-        district: legislator.district,
+        suffix: legislator.name_suffix
       });
     } else {
       this.props.onCandidateSelect({
-        bioguideId: '',
         firstName: '',
         middleName: '',
         lastName: '',
-        suffix: '',
-        state: '',
-        district: '',
+        suffix: ''
       });
     }
   },
@@ -963,15 +961,12 @@ var CandidacyFieldset = React.createClass({
       var firstName = names[1];
 
       this.props.onCandidateSelect({
-        fecId: candidate.candidate.id,
         firstName: firstName,
         lastName: lastName,
-        middleName: '',
-        state: this.state.state
+        middleName: ''
       });
     } else {
       this.props.onCandidateSelect({
-        fecId: '',
         firstName: '',
         middleName: '',
         lastName: '',
@@ -1215,8 +1210,7 @@ var ContactFieldset = React.createClass({
       firstName: props.firstName,
       middleName: props.middleName,
       lastName: props.lastName,
-      suffix: props.suffix,
-      state: props.state
+      suffix: props.suffix
     });
   },
   render: function() {
