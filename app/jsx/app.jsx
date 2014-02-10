@@ -102,6 +102,18 @@ var App = React.createClass({
   render: function() {
     var content;
 
+    // Combine the reforms and bills data into one set
+    var reforms;
+    if (this.state.bills) {
+      var bills = this.state.bills;
+      reforms = this.state.reforms.map(function (r) {
+        r.bill = $.grep(bills, function(b) { return b.bill_id === r.bill_id; })[0];
+        return r;
+      });
+    } else {
+      reforms = this.state.reforms;
+    }
+
     // Read the location from state with props as the fallback
     var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
     var lng = this.state.longitude ? this.state.longitude : this.props.longitude;
@@ -110,14 +122,14 @@ var App = React.createClass({
       content = <CandidateLocator
         latitude={lat}
         longitude={lng}
-        reforms={this.state.reforms}
+        reforms={reforms}
         bills={this.state.bills}
       />
     } else if (this.state.page === 'reforms') {
-      content = <Reforms reforms={this.state.reforms} bills={this.state.bills}/>
+      content = <Reforms reforms={reforms} />
     } else if (this.state.page === 'reform') {
       var slug = this.state.identifier;
-      var reform = this.state.reforms.filter(function(r) {
+      var reform = reforms.filter(function(r) {
         return slug === r.slug;
       })[0];
 
@@ -127,11 +139,11 @@ var App = React.createClass({
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile
         bioguideId={this.state.identifier}
-        reforms={this.state.reforms}
+        reforms={reforms}
         bills={this.state.bills}
       />
     } if (this.state.page === 'pledges') {
-      content = <PledgeTaker reforms={this.state.reforms} />
+      content = <PledgeTaker reforms={reforms} />
     } else if (this.state.page === 'about') {
       content = <AboutPage />
     }
@@ -395,7 +407,7 @@ var LegislatorProfile = React.createClass({
           />
         </div>
       </div>
-      <Reforms reforms={reforms} bills={bills}/>
+      <Reforms reforms={reforms} />
       </div>
     );
   }
@@ -1298,18 +1310,6 @@ var Reforms = React.createClass({
     var self = this;
     this.props.reforms.forEach(function(reform, index, array) {
       var type = reform.reform_type;
-      var billId = reform.bill_id;
-
-      // Attach a congress bill to the reform if one exists
-      if (self.props.bills) {
-        var bill = $.grep(
-          self.props.bills,
-          function(b) {
-            return b.bill_id === billId;
-          }
-        )[0];
-        reform.bill = bill;
-      }
 
       // Create an object to hold reforms for this type
       if (!reforms_by_type.hasOwnProperty(type)) {
@@ -1373,17 +1373,14 @@ var ReformsList = React.createClass({
 var ReformProfile = React.createClass({
   render: function() {
     var reform = this.props.reform;
-    var billId = reform.bill_id;
 
-    // Attach a congress bill to the reform if one exists
     var bill;
-    if (this.props.bills) {
-      var bill = $.grep(
-        this.props.bills,
-        function(b) {
-          return b.bill_id === billId;
-        }
-      )[0];
+    if (reform.bill_id) {
+      bill = <Bill
+        key={reform.bill_id}
+        bill={reform.bill}
+        slug={reform.slug}
+      />
     }
 
     return (
@@ -1400,9 +1397,9 @@ var ReformProfile = React.createClass({
               url={reform.url}
               slug={reform.slug}
               status={reform.reform_status}
-              bill={bill}
+              bill={reform.bill}
             />
-            <Bill bill={bill} slug={reform.slug}/>
+            {bill}
           </div>
         </div>
       </div>
