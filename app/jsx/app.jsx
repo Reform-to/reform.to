@@ -771,6 +771,11 @@ var PledgeTaker = React.createClass({
       <div className="ac-pledge-taker">
       <div className="row">
         <div className="large-12 columns">
+          <div className="panel callout">
+            <h4 className="subheader">Take the Pledge</h4>
+            Are you a member of Congress or a candidate in the next election? Please tell us
+            what reform you are willing to support.
+          </div>
           <form className="congress-form" data-abide method="post" action={addReformersURL}>
             <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
             <ReformsFieldset reforms={this.props.reforms} onReformsSelect={this.fillInReforms} />
