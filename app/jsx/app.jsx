@@ -976,8 +976,6 @@ var CandidacyFieldset = React.createClass({
         middleName: '',
         lastName: '',
         suffix: '',
-        state: '',
-        district: '',
       });
       this.setState({ fec_id: '' });
     }
