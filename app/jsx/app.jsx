@@ -126,7 +126,7 @@ var App = React.createClass({
         bills={this.state.bills}
       />
     } else if (this.state.page === 'reforms') {
-      content = <Reforms reforms={reforms} />
+      content = <ReformsIndex reforms={reforms} />
     } else if (this.state.page === 'reform') {
       var slug = this.state.identifier;
       var reform = reforms.filter(function(r) {
@@ -1302,6 +1302,25 @@ var ContactFieldset = React.createClass({
   }
 });
 
+var ReformsIndex = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <Reforms reforms={this.props.reforms} />
+        <div className="row">
+          <div className="large-12 columns">
+            <div className="panel callout">
+              <h4 className="subheader">Suggest a Reform</h4>
+              This is just the beginning. If you have suggestions for reform,
+              please contact us at <a href="mailto:info@reform.to">info@reform.to</a>.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
 var Reforms = React.createClass({
   render: function() {
     // Organize the reforms by type
@@ -1334,11 +1353,6 @@ var Reforms = React.createClass({
         <div className="row">
           <div className="large-12 columns">
             {reformsListNodes}
-            <div className="panel callout">
-              <h4 className="subheader">Suggest a Reform</h4>
-              This is just the beginning. If you have suggestions for reform,
-              please contact us at <a href="mailto:info@reform.to">info@reform.to</a>.
-            </div>
           </div>
         </div>
       </div>
