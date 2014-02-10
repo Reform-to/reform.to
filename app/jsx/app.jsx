@@ -958,11 +958,14 @@ var CandidacyFieldset = React.createClass({
     }
   },
   selectCandidate: function(event) {
-    this.setState({ candidate_key: event.target.value });
-    if (event.target.value >= 0) {
-      var candidate = this.state.candidates[event.target.value];
-      this.setState({ fec_id: candidate.candidate.id });
+    var fecId = event.target.value;
+    this.setState({ fecId: fecId});
 
+    var candidate = this.state.candidates.filter(function(c) {
+      return c.candidate.id == fecId;
+    })[0];
+
+    if (candidate) {
       var names = candidate.candidate.name.split(',');
       var lastName = names[0];
       var firstName = names[1];
@@ -979,7 +982,6 @@ var CandidacyFieldset = React.createClass({
         lastName: '',
         suffix: '',
       });
-      this.setState({ fec_id: '' });
     }
   },
   render: function() {
@@ -1104,7 +1106,7 @@ var CandidacyFieldset = React.createClass({
                 </option>
               )
             }, this)}
-            <option value="Other">Other</option>
+            <option value="N/A">Not Listed</option>
             </select>
             </div>
           </div>
@@ -1120,24 +1122,20 @@ var CandidacyFieldset = React.createClass({
             <select
               id="form-select-candidate"
               onChange={this.selectCandidate}
-              value={this.state.candidate_key}
+              value={this.state.fecId}
+              name="fec_id"
             >
             <option value="">Select Your Name...</option>
             {this.state.candidates.map(function (candidate, i) {
               return (
-                <option value={i} key={i}>
+                <option value={candidate.candidate.id} key={candidate.candidate.id}>
                   {candidate.candidate.name}
                 </option>
               )
             }, this)}
-            <option value="-1">Other</option>
+            <option value="N/A">Not Listed</option>
             </select>
             </div>
-            <input
-              type="hidden"
-              name="fec_id"
-              value={this.state.fec_id}
-            />
           </div>
         </div>
       </fieldset>
