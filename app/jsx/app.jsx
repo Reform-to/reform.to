@@ -1329,6 +1329,11 @@ var Reforms = React.createClass({
         <div className="row">
           <div className="large-12 columns">
             {reformsListNodes}
+            <div className="panel callout">
+              <h4 className="subheader">Suggest a Reform</h4>
+              This is just the beginning. If you have suggestions for reform,
+              please contact us at <a href="mailto:info@reform.to">info@reform.to</a>.
+            </div>
           </div>
         </div>
       </div>
