@@ -1189,8 +1189,7 @@ var ContactFieldset = React.createClass({
       firstName: '',
       middleName: '',
       lastName: '',
-      suffix: '',
-      state: '',
+      suffix: ''
     };
   },
   componentWillReceiveProps: function(props) {
@@ -1200,6 +1199,18 @@ var ContactFieldset = React.createClass({
       lastName: props.lastName,
       suffix: props.suffix
     });
+  },
+  changeFirstName: function(event) {
+    this.setState( {firstName: event.target.value} );
+  },
+  changeMiddleName: function(event) {
+    this.setState( {middleName: event.target.value} );
+  },
+  changeLastName: function(event) {
+    this.setState( {lastName: event.target.value} );
+  },
+  changeSuffix: function(event) {
+    this.setState( {suffix: event.target.value} );
   },
   render: function() {
     var submitStyle = {
@@ -1217,6 +1228,7 @@ var ContactFieldset = React.createClass({
               id="contact-form-first-name"
               ref="contactFirstName"
               value={this.state.firstName}
+              onChange={this.changeFirstName}
             />
           </div>
           <div className="large-3 medium-3 columns">
@@ -1227,6 +1239,7 @@ var ContactFieldset = React.createClass({
               id="contact-form-middle-name"
               ref="contactMiddleName"
               value={this.state.middleName}
+              onChange={this.changeMiddleName}
             />
           </div>
           <div className="large-4 medium-4 columns">
@@ -1237,6 +1250,7 @@ var ContactFieldset = React.createClass({
               id="contact-form-last-name"
               ref="contactLastName"
               value={this.state.lastName}
+              onChange={this.changeLastName}
             />
           </div>
           <div className="large-2 medium-2 columns">
@@ -1247,6 +1261,7 @@ var ContactFieldset = React.createClass({
               id="contact-form-suffix"
               ref="contactSuffix"
               value={this.state.suffix}
+              onChange={this.changeSuffix}
             />
           </div>
         </div>
