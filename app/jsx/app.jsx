@@ -919,10 +919,18 @@ var CandidacyFieldset = React.createClass({
     // Reset the district if the state changes
     this.setState({ district: '' });
     this.setState({ state: event.target.value });
+    // Reset the legislators
+    this.setState({ legislators: [], legislator_key: '' });
+    // Reset the candidates
+    this.setState({ candidates: [], candidate_key: '' });
     this.locateCandidates($.extend(this.state, { state: event.target.value }));
   },
   selectDistrict: function(event) {
     this.setState({ district: event.target.value });
+    // Reset the legislators
+    this.setState({ legislators: [], legislator_key: '' });
+    // Reset the candidates
+    this.setState({ candidates: [], candidate_key: '' });
     this.locateCandidates($.extend(this.state, { district: event.target.value }));
   },
   selectLegislator: function(event) {
