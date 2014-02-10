@@ -898,7 +898,7 @@ var CandidacyFieldset = React.createClass({
   selectRole: function(event) {
     this.setState({ role: event.target.value });
     // Reset the legislators
-    this.setState({ legislators: [], legislator_key: '' });
+    this.setState({ legislators: [], bioguideId: '' });
     // Reset the candidates
     this.setState({ candidates: [], candidate_key: '' });
    // Merge old and new state and look up candidate
@@ -908,7 +908,7 @@ var CandidacyFieldset = React.createClass({
     // Reset the district
     this.setState({ district: '' });
     // Reset the legislators
-    this.setState({ legislators: [], legislator_key: '' });
+    this.setState({ legislators: [], bioguideId: '' });
     // Reset the candidates
     this.setState({ candidates: [], candidate_key: '' });
 
@@ -920,7 +920,7 @@ var CandidacyFieldset = React.createClass({
     this.setState({ district: '' });
     this.setState({ state: event.target.value });
     // Reset the legislators
-    this.setState({ legislators: [], legislator_key: '' });
+    this.setState({ legislators: [], bioguideId: '' });
     // Reset the candidates
     this.setState({ candidates: [], candidate_key: '' });
     this.locateCandidates($.extend(this.state, { state: event.target.value }));
@@ -928,17 +928,20 @@ var CandidacyFieldset = React.createClass({
   selectDistrict: function(event) {
     this.setState({ district: event.target.value });
     // Reset the legislators
-    this.setState({ legislators: [], legislator_key: '' });
+    this.setState({ legislators: [], bioguideId: '' });
     // Reset the candidates
     this.setState({ candidates: [], candidate_key: '' });
     this.locateCandidates($.extend(this.state, { district: event.target.value }));
   },
   selectLegislator: function(event) {
-    this.setState({ legislator_key: event.target.value });
-    if (event.target.value >= 0) {
-      var legislator = this.state.legislators[event.target.value];
-      this.setState({ bioguide_id: legislator.bioguide_id });
+    var bioguideId = event.target.value;
+    this.setState({ bioguideId: bioguideId});
 
+    var legislator = this.state.legislators.filter(function(l) {
+      return l.bioguide_id == bioguideId;
+    })[0];
+
+    if (legislator) {
       this.props.onCandidateSelect({
         firstName: legislator.first_name,
         middleName: legislator.middle_name,
@@ -952,7 +955,6 @@ var CandidacyFieldset = React.createClass({
         lastName: '',
         suffix: ''
       });
-      this.setState({ bioguide_id: '' });
     }
   },
   selectCandidate: function(event) {
@@ -1089,26 +1091,22 @@ var CandidacyFieldset = React.createClass({
             <select
               id="form-select-legislator"
               onChange={this.selectLegislator}
-              value={this.state.legislator_key}
+              value={this.state.bioguideId}
+              name="bioguide_id"
             >
             <option value="">Select Your Name...</option>
             {this.state.legislators.map(function (legislator, i) {
               return (
-                <option value={i} key={i}>
+                <option value={legislator.bioguide_id} key={legislator.bioguide_id}>
                   {legislator.title} {' '}
                   {legislator.first_name} {' '} {legislator.last_name},{' '}
                   {legislator.party}-{legislator.state}
                 </option>
               )
             }, this)}
-            <option value="-1">Other</option>
+            <option value="Other">Other</option>
             </select>
             </div>
-            <input
-              type="hidden"
-              name="bioguide_id"
-              value={this.state.bioguide_id}
-            />
           </div>
         </div>
         <div className="row">
