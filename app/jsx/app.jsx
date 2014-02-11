@@ -1524,8 +1524,7 @@ var Bill = React.createClass({
     var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
     var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
       var legislator = cosponsor.legislator;
-      return <li><TitleNamePartyState
-        key={legislator.bioguide_id}
+      return <li key={legislator.bioguide_id}><TitleNamePartyState
         firstName={legislator.first_name}
         lastName={legislator.last_name}
         state={legislator.state}
