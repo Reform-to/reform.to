@@ -102,9 +102,16 @@ var App = React.createClass({
     this.router = router;
   },
   componentWillReceiveProps: function(nextProps) {
-    if (nextProps.latitude && nextProps.longitude) {
-      this.router.setRoute("/home/" + nextProps.latitude + "," + nextProps.longitude);
+    // Only route to the new location if the current location state is undefined
+    // and we are on the home page
+    if (this.state.page == "home" && !this.state.latitude && !this.state.longitude) {
+      if (nextProps.latitude && nextProps.longitude) {
+        this.router.setRoute("/home/" + nextProps.latitude + "," + nextProps.longitude);
+      }
     }
+  },
+  routeToLocation: function(coords) {
+    this.router.setRoute("/home/" + coords.latitude + "," + coords.longitude);
   },
   render: function() {
     var content;
@@ -121,16 +128,13 @@ var App = React.createClass({
       reforms = this.state.reforms;
     }
 
-    // Read the location from state with props as the fallback
-    var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
-    var lng = this.state.longitude ? this.state.longitude : this.props.longitude;
-
     if (this.state.page === 'home') {
-      content = <CandidateLocator
-        latitude={lat}
-        longitude={lng}
+      content = <HomePage
+        latitude={this.state.latitude}
+        longitude={this.state.longitude}
         reforms={reforms}
         bills={this.state.bills}
+        onUpdateLocation={this.routeToLocation}
       />
     } else if (this.state.page === 'reforms') {
       content = <ReformsIndex reforms={reforms} />
@@ -163,6 +167,32 @@ var App = React.createClass({
   }
 });
 
+var HomePage = React.createClass({
+  updateLocation: function(coords) {
+    this.props.onUpdateLocation(coords);
+  },
+  render: function() {
+    return (
+      <div>
+      <div className="row">
+        <div className="large-12 columns">
+          <h2 className="subheader special-header text-center text-lowercase">
+            What reform does your candidate support?
+          </h2>
+          <AddressForm onAddressGeocode={this.updateLocation} />
+        </div>
+      </div>
+      <CandidatePicker
+        latitude={this.props.latitude}
+        longitude={this.props.longitude}
+        reforms={this.props.reforms}
+        bills={this.props.bills}
+      />
+      </div>
+    );
+  }
+});
+
 var AboutPage = React.createClass({
   render: function() {
     return (
@@ -178,7 +208,7 @@ var AboutPage = React.createClass({
   }
 });
 
-var CandidateLocator = React.createClass({
+var CandidatePicker = React.createClass({
   locateCandidates: function(coords) {
     var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
     var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
@@ -240,28 +270,7 @@ var CandidateLocator = React.createClass({
   },
   render: function() {
     return (
-    <div className="ac-candidate-locator">
-    <div className="row">
-      <div className="large-12 columns">
-        <h2 className="subheader special-header text-center text-lowercase">
-          What reform does your candidate support?
-        </h2>
-        <AddressForm onAddressGeocode={this.locateCandidates} />
-      </div>
-    </div>
-    <div className="row">
-      <div className="large-6 medium-8 columns">
-        <h2 className="subheader">
-          {this.state.legislators.length > 0 ? 'United States Congress' : ''}
-        </h2>
-      </div>
-      <div className="large-6 medium-4 columns">
-        <h2>
-            {this.state.state ? this.state.state : ''}
-            {this.state.district ? ", District " + this.state.district : ''}
-        </h2>
-      </div>
-    </div>
+    <div className="ac-candidate-picker">
     <div className="row">
       <div className="large-12 columns">
         <LegislatorList
