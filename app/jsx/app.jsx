@@ -138,6 +138,7 @@ var App = React.createClass({
       }
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile
+        key={this.state.identifier}
         bioguideId={this.state.identifier}
         reforms={reforms}
         bills={this.state.bills}
