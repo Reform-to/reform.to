@@ -98,6 +98,13 @@ var App = React.createClass({
     if (router.getRoute(0) === "") {
       router.setRoute("/home");
     }
+
+    this.router = router;
+  },
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.latitude && nextProps.longitude) {
+      this.router.setRoute("/home/" + nextProps.latitude + "," + nextProps.longitude);
+    }
   },
   render: function() {
     var content;
