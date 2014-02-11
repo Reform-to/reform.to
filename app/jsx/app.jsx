@@ -389,6 +389,29 @@ var LegislatorProfile = React.createClass({
     var reforms = this.props.reforms.filter(function(r) {
       return $.inArray(r.bill_id, bill_ids) >= 0;
     });
+
+    var legislatorName;
+
+    if (this.state.legislators.length) {
+      var legislator = this.state.legislators[0];
+      legislatorName = <FullTitleLastName
+        title={legislator.title}
+        gender={legislator.gender}
+        lastName={legislator.last_name}
+      />
+    }
+
+    var callOut;
+    var callToAction;
+    var callOutStyle = 'panel';
+    if (reforms.length) {
+      callOut = "is a Reformer!";
+      callOutStyle = 'panel callout';
+      callToAction = "";
+    } else {
+      callOut = "has not supported any Reforms.";
+      callToAction = "Contact your Legislators today and urge them to support essential reform."
+    }
     return(
       <div>
       <div className="row">
@@ -405,6 +428,14 @@ var LegislatorProfile = React.createClass({
             reforms={this.props.reforms}
             bills={this.props.bills}
           />
+        </div>
+      </div>
+      <div className="row">
+        <div className="large-12 columns">
+          <div className={callOutStyle}>
+            <h4 className="subheader text-center">{legislatorName} {' '} {callOut}</h4>
+            <p className="text-center">{callToAction}</p>
+          </div>
         </div>
       </div>
       <Reforms reforms={reforms} />
@@ -1523,6 +1554,35 @@ var Bill = React.createClass({
           {cosponsorNodes}
         </ul>
       </div>
+    );
+  }
+});
+
+var FullTitleLastName = React.createClass({
+  render: function() {
+    var title;
+    switch (this.props.title) {
+      case "Rep":
+        if (this.props.gender == "F") {
+          title = "Congresswoman";
+        } else {
+          title = "Congressman";
+        }
+        break;
+      case "Sen":
+        title = "Senator"
+        break;
+      case "Del":
+        title = "Delegate";
+        break;
+    }
+
+    var fullName = [
+      title, this.props.lastName
+    ].join(" ");
+
+    return (
+        <span>{fullName}</span>
     );
   }
 });
