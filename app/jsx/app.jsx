@@ -1527,6 +1527,7 @@ var Reform = React.createClass({
       var legislator = this.props.bill.sponsor;
       sponsorLine = <TitleNamePartyState
         key={legislator.bioguide_id}
+        biguideId={legislator.bioguide_id}
         title={legislator.title}
         firstName={legislator.first_name}
         lastName={legislator.last_name}
@@ -1590,6 +1591,7 @@ var Bill = React.createClass({
     var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
       var legislator = cosponsor.legislator;
       return <li key={legislator.bioguide_id}><TitleNamePartyState
+        bioguideId={legislator.bioguide_id}
         firstName={legislator.first_name}
         lastName={legislator.last_name}
         state={legislator.state}
@@ -1657,7 +1659,7 @@ var TitleNamePartyState = React.createClass({
     var fullName = [
       this.props.title, this.props.firstName, this.props.lastName
     ].join(" ");
-    var link = "#/legislators/" + this.props.key;
+    var link = "#/legislators/" + this.props.bioguideId;
     return (
       <span><a href={link}>{fullName}</a> ({this.props.party}-{this.props.state})</span>
     );
