@@ -161,8 +161,34 @@ var App = React.createClass({
     }
     return (
       <div>
+        <Navigation />
         {content}
       </div>
+    );
+  }
+});
+
+var Navigation = React.createClass({
+  render: function() {
+    return (
+    <nav className="top-bar" data-topbar>
+      <ul className="title-area">
+        <li className="name">
+        <h1 className="subheader"><a href="#/home">Reform.to</a></h1>
+        </li>
+        <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+      </ul>
+      <section className="top-bar-section">
+        <ul className="right">
+          <li className="divider"></li>
+          <li className="active"><a href="#/pledges">Take the Pledge <i className="fa fa-chevron-right"></i></a></li>
+        </ul>
+        <ul className="left">
+          <li><a href="#/reforms">Reforms</a></li>
+          <li><a href="#/about">About</a></li>
+        </ul>
+      </section>
+    </nav>
     );
   }
 });
