@@ -285,8 +285,10 @@ var CandidatePicker = React.createClass({
       url: locateDistrictURL,
       success: function(data) {
         if (data.count > 0) {
-          this.setState({state: data.results[0].state});
-          this.setState({district: data.results[0].district});
+          this.setState({
+            state: data.results[0].state,
+            district: data.results[0].district
+          });
         }
       }.bind(this)
     });
