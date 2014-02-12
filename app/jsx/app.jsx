@@ -164,6 +164,7 @@ var App = React.createClass({
         <Navigation
           latitude={this.state.latitude}
           longitude={this.state.longitude}
+          page={this.state.page}
         />
         {content}
       </div>
@@ -177,6 +178,17 @@ var Navigation = React.createClass({
     var lng = this.props.longitude;
     var coords = lat && lng ? [lat,lng].join(',') : '';
     var homeLink = "#/home/" + coords;
+
+    var nextLink;
+    var nextTitle;
+    if (this.props.page === "pledges") {
+      nextLink = homeLink;
+      nextTitle = "Find Your Candidate";
+    } else {
+      nextLink = "#/pledges";
+      nextTitle = "Take the Pledge";
+    }
+
     return (
     <nav className="top-bar" data-topbar>
       <ul className="title-area">
@@ -188,7 +200,7 @@ var Navigation = React.createClass({
       <section className="top-bar-section">
         <ul className="right">
           <li className="divider"></li>
-          <li className="active"><a href="#/pledges">Take the Pledge <i className="fa fa-chevron-right"></i></a></li>
+          <li className="active"><a href={nextLink}>{nextTitle}{' '} <i className="fa fa-chevron-right"></i></a></li>
         </ul>
         <ul className="left">
           <li><a href="#/reforms">Reforms</a></li>
