@@ -313,7 +313,7 @@ var CandidatePicker = React.createClass({
     // Update results if the location changes
     var lat = nextProps.latitude;
     var lng = nextProps.longitude;
-    if (lat && lng) {
+    if (lat != this.props.latitude && lng != this.props.longitude) {
       this.locateCandidates({ latitude: lat, longitude: lng });
     }
   },
