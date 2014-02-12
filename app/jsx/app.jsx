@@ -161,7 +161,10 @@ var App = React.createClass({
     }
     return (
       <div>
-        <Navigation />
+        <Navigation
+          latitude={this.state.latitude}
+          longitude={this.state.longitude}
+        />
         {content}
       </div>
     );
@@ -170,11 +173,15 @@ var App = React.createClass({
 
 var Navigation = React.createClass({
   render: function() {
+    var lat = this.props.latitude;
+    var lng = this.props.longitude;
+    var coords = lat && lng ? [lat,lng].join(',') : '';
+    var homeLink = "#/home/" + coords;
     return (
     <nav className="top-bar" data-topbar>
       <ul className="title-area">
         <li className="name">
-        <h1 className="subheader"><a href="#/home">Reform.to</a></h1>
+        <h1 className="subheader"><a href={homeLink}>Reform.to</a></h1>
         </li>
         <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
       </ul>
