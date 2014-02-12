@@ -128,10 +128,14 @@ var App = React.createClass({
       reforms = this.state.reforms;
     }
 
+    // Read the location from state with props as the fallback
+    var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
+    var lng = this.state.longitude ? this.state.longitude : this.props.longitude;
+
     if (this.state.page === 'home') {
       content = <HomePage
-        latitude={this.state.latitude}
-        longitude={this.state.longitude}
+        latitude={lat}
+        longitude={lng}
         reforms={reforms}
         bills={this.state.bills}
         onUpdateLocation={this.routeToLocation}
@@ -162,8 +166,8 @@ var App = React.createClass({
     return (
       <div>
         <Navigation
-          latitude={this.state.latitude}
-          longitude={this.state.longitude}
+          latitude={lat}
+          longitude={lng}
           page={this.state.page}
         />
         {content}
