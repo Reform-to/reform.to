@@ -629,7 +629,7 @@ var District = React.createClass({
     this.setState({fecBioMap: fecBioMap});
 
     // Look up current candidates for this state and district
-    if (props.state && props.district) {
+    if (props.state != this.props.state && props.district != this.props.district) {
       var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
       var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
 
