@@ -177,7 +177,7 @@ var Navigation = React.createClass({
     var lat = this.props.latitude;
     var lng = this.props.longitude;
     var coords = lat && lng ? [lat,lng].join(',') : '';
-    var homeLink = "#/home/" + coords;
+    var homeLink = coords ? "#/home/" + coords : "#/home";
 
     var nextLink;
     var nextTitle;
