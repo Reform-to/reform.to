@@ -549,11 +549,13 @@ var Legislator = React.createClass({
     var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
     var photoResource = '/img/100x125/'+ this.props.key + '.jpg';
     var image = congressPhotosAPI + photoResource;
+
+    var badge = this.props.isReformer ? "ac-badge" : '';
     return (
       <div className="ac-candidate">
       <div className="row">
       <div className="large-6 medium-8 columns">
-        <Avatar party={this.props.party} image={image} />
+        <Avatar party={this.props.party} image={image} badge={badge}/>
         <CandidateName
           title={this.props.title}
           firstName={this.props.firstName}
@@ -809,10 +811,12 @@ var Avatar = React.createClass({
     var avatarStyle = {
       backgroundImage: 'url(' + this.props.image + ')'
     };
+    var badgeClass = "badge " + this.props.badge;
     return (
       <div
         className={"show-for-medium-up avatar img-circle " + avatarClass }
         style={avatarStyle}>
+        <div className={badgeClass}></div>
       </div>
     );
   }
