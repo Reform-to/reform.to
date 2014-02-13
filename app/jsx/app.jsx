@@ -867,40 +867,145 @@ var CandidateName = React.createClass({
 
 var PledgeTaker = React.createClass({
   getInitialState: function() {
-    return { reforms: [] };
+    return { reforms: [], submitted: false, confirmed: false, reformError: '' };
   },
-  fillInCandidate: function(candidate) {
+  fillInCandidacy: function(candidacy) {
     this.setState({
-      firstName: candidate.firstName,
-      middleName: candidate.middleName,
-      lastName: candidate.lastName,
-      suffix: candidate.suffix
+      role: candidacy.role,
+      chamber: candidacy.chamber,
+      state: candidacy.state,
+      district: candidacy.district
+    });
+  },
+  fillInIds: function(ids) {
+    this.setState({
+      bioguideId: ids.bioguideId,
+      fecId: ids.fecId
     });
   },
   fillInReforms: function(reforms) {
+    this.setState({
+      reforms: reforms
+    });
+    // If the user has selected at least one reform, unset any errors
+    if (reforms.length > 0) {
+      this.setState({ reformError: '' });
+    }
   },
-  render: function() {
+  fillInNames: function(names) {
+    this.setState({
+      firstName: names.firstName,
+      middleName: names.middleName,
+      lastName: names.lastName,
+      suffix: names.suffix
+    });
+  },
+  handleSubmit: function() {
+    var supportsReform = this.state.reforms.length > 0;
+    if (!supportsReform) {
+      this.setState({ reformError: "(You must support at least one reform.)" });
+    }
+
     var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
     var addReformersURL = reformersAPI + '/reformers/add';
+
+    var contactForm = this.refs.contactForm.refs;
+    var email = contactForm.contactEmail.getDOMNode().value.trim();
+    if (email && supportsReform) {
+      this.setState({ email: email });
+
+      var data = {
+        bioguide_id: this.state.bioguideId,
+        fec_id: this.state.fecId,
+        email: email,
+        first_name: this.state.firstName,
+        middle_name: this.state.middleName,
+        last_name: this.state.lastName,
+        suffix: this.state.suffix,
+        role: this.state.role,
+        chamber: this.state.chamber,
+        state: this.state.state,
+        district: this.state.district,
+        reforms: this.state.reforms
+      }
+
+      this.setState({ submitted: true});
+
+      var self = this;
+      $.ajax({
+        type: "POST",
+        url: addReformersURL,
+        data: data,
+        success: function(data) {
+          self.setState({ confirmed: true});
+        },
+        dataType: "json"
+      });
+
+      $('html,body').scrollTop(0);
+    }
+    return false;
+  },
+  render: function() {
+    var pledgeStyle = this.state.confirmed ? { display: 'none' } : {};
+    var confirmStyle = this.state.confirmed ? {} : { display: 'none' };
+    var contactEmail = this.state.email ? this.state.email : "your email address";
+
+    var reforms = this.props.reforms;
+
     return (
       <div className="ac-pledge-taker">
       <div className="row">
         <div className="large-12 columns">
+          <div style={pledgeStyle}>
           <div className="panel callout">
             <h4 className="subheader">Take the Pledge</h4>
             Are you a member of Congress or a candidate in the next election? Please tell us
             what reform you are willing to support.
           </div>
-          <form className="congress-form" data-abide method="post" action={addReformersURL}>
-            <CandidacyFieldset onCandidateSelect={this.fillInCandidate} />
-            <ReformsFieldset reforms={this.props.reforms} onReformsSelect={this.fillInReforms} />
+          <form className="congress-form" data-abide="ajax" onSubmit={this.handleSubmit}>
+            <CandidacyFieldset
+              onCandidacyChange={this.fillInCandidacy}
+              onIdChange={this.fillInIds}
+              onNameChange={this.fillInNames}
+            />
+            <ReformsFieldset
+              reforms={this.props.reforms}
+              error={this.state.reformError}
+              onReformsSelect={this.fillInReforms}
+            />
             <ContactFieldset
+              ref="contactForm"
               firstName={this.state.firstName}
               middleName={this.state.middleName}
               lastName={this.state.lastName}
               suffix={this.state.suffix}
+              onNameChange={this.fillInNames}
+              submitted={this.state.submitted}
             />
           </form>
+          </div>
+          <div style={confirmStyle}>
+          <div className="panel callout">
+            <h4 className="subheader">Pledge Recieved</h4>
+            Thank you for supporting essential reform!
+          </div>
+            <fieldset>
+              <legend>4. Review Your Pledge</legend>
+              <ol>
+                {this.state.reforms.map(function (r, i) {
+                  var reform = reforms[r];
+                  return (
+                    <li key={i}><strong>{reform.title}</strong></li>
+                  );
+                }, this)}
+              </ol>
+            </fieldset>
+            <fieldset>
+              <legend>5. Await Confirmation</legend>
+              <p>We will contact you at {contactEmail} to verify your pledge. If you should have any questions please get in touch with us at <a href="mailto:info@reform.to">info@reform.to</a>.</p>
+            </fieldset>
+          </div>
         </div>
       </div>
       </div>
@@ -910,7 +1015,16 @@ var PledgeTaker = React.createClass({
 
 var CandidacyFieldset = React.createClass({
   getInitialState: function() {
-    return { role: '', party: '', chamber: '', state: '', district: '', legislators: [], candidates: []};
+    return {
+      role: '',
+      chamber: '',
+      state: '',
+      district: '',
+      bioguideId: '',
+      fecId: '',
+      legislators: [],
+      candidates: []
+    };
   },
   locateCandidates: function(candidacy) {
 
@@ -1016,42 +1130,96 @@ var CandidacyFieldset = React.createClass({
     }
   },
   selectRole: function(event) {
-    this.setState({ role: event.target.value });
-    // Reset the legislators
-    this.setState({ legislators: [], bioguideId: '' });
-    // Reset the candidates
-    this.setState({ candidates: [], candidate_key: '' });
-   // Merge old and new state and look up candidate
-    this.locateCandidates($.extend(this.state, { role: event.target.value }));
+    // Define the candidacy details when the role changes
+    var candidacy = {
+      role: event.target.value,
+      chamber: this.state.chamber,
+      state: this.state.state,
+      district: this.state.district
+    };
+    var ids = {
+      bioguideId: '',
+      fecId: ''
+    };
+    this.setState(candidacy);
+    this.setState(ids);
+
+    // Reset the legislators and candidate lists
+    this.setState({ legislators: [], candidates: [] });
+
+   // Look up candidate and inform the parent
+    this.locateCandidates(candidacy);
+    this.props.onCandidacyChange(candidacy);
+    this.props.onIdChange(ids);
   },
   selectChamber: function(event) {
-    // Reset the district
-    this.setState({ district: '' });
-    // Reset the legislators
-    this.setState({ legislators: [], bioguideId: '' });
-    // Reset the candidates
-    this.setState({ candidates: [], candidate_key: '' });
+    // Define the candidacy details when the chamber changes
+    var candidacy = {
+      role: this.state.role,
+      chamber: event.target.value,
+      state: this.state.state,
+      district: ''
+    };
+    var ids = {
+      bioguideId: '',
+      fecId: ''
+    };
+    this.setState(candidacy);
+    this.setState(ids);
 
-    this.setState({ chamber: event.target.value });
-    this.locateCandidates($.extend(this.state, { chamber: event.target.value }));
+    // Reset the legislators and candidate lists
+    this.setState({ legislators: [], candidates: [] });
+
+   // Look up candidate and inform the parent
+    this.locateCandidates(candidacy);
+    this.props.onCandidacyChange(candidacy);
+    this.props.onIdChange(ids);
   },
   selectState: function(event) {
-    // Reset the district if the state changes
-    this.setState({ district: '' });
-    this.setState({ state: event.target.value });
-    // Reset the legislators
-    this.setState({ legislators: [], bioguideId: '' });
-    // Reset the candidates
-    this.setState({ candidates: [], candidate_key: '' });
-    this.locateCandidates($.extend(this.state, { state: event.target.value }));
+    // Define the candidacy details when the state changes
+    var candidacy = {
+      role: this.state.role,
+      chamber: this.state.chamber,
+      state: event.target.value,
+      district: ''
+    };
+    var ids = {
+      bioguideId: '',
+      fecId: ''
+    };
+    this.setState(candidacy);
+    this.setState(ids);
+
+    // Reset the legislators and candidate lists
+    this.setState({ legislators: [], candidates: [] });
+
+   // Look up candidate and inform the parent
+    this.locateCandidates(candidacy);
+    this.props.onCandidacyChange(candidacy);
+    this.props.onIdChange(ids);
   },
   selectDistrict: function(event) {
-    this.setState({ district: event.target.value });
-    // Reset the legislators
-    this.setState({ legislators: [], bioguideId: '' });
-    // Reset the candidates
-    this.setState({ candidates: [], candidate_key: '' });
-    this.locateCandidates($.extend(this.state, { district: event.target.value }));
+    // Define the candidacy details when the district changes
+    var candidacy = {
+      role: this.state.role,
+      chamber: this.state.chamber,
+      state: this.state.state,
+      district: event.target.value
+    };
+    var ids = {
+      bioguideId: '',
+      fecId: ''
+    };
+    this.setState(candidacy);
+    this.setState(ids);
+
+    // Reset the legislators and candidate lists
+    this.setState({ legislators: [], candidates: [] });
+
+   // Look up candidate and inform the parent
+    this.locateCandidates(candidacy);
+    this.props.onCandidacyChange(candidacy);
+    this.props.onIdChange(ids);
   },
   selectLegislator: function(event) {
     var bioguideId = event.target.value;
@@ -1062,14 +1230,20 @@ var CandidacyFieldset = React.createClass({
     })[0];
 
     if (legislator) {
-      this.props.onCandidateSelect({
+      this.props.onIdChange({
+        bioguideId: bioguideId
+      });
+      this.props.onNameChange({
         firstName: legislator.first_name,
         middleName: legislator.middle_name,
         lastName: legislator.last_name,
         suffix: legislator.name_suffix
       });
     } else {
-      this.props.onCandidateSelect({
+      this.props.onIdChange({
+        bioguideId: ''
+      });
+      this.props.onNameChange({
         firstName: '',
         middleName: '',
         lastName: '',
@@ -1090,13 +1264,19 @@ var CandidacyFieldset = React.createClass({
       var lastName = names[0];
       var firstName = names[1];
 
-      this.props.onCandidateSelect({
+      this.props.onIdChange({
+        fecId: fecId
+      });
+      this.props.onNameChange({
         firstName: firstName,
         lastName: lastName,
         middleName: ''
       });
     } else {
-      this.props.onCandidateSelect({
+      this.props.onIdChange({
+        fecId: ''
+      });
+      this.props.onNameChange({
         firstName: '',
         middleName: '',
         lastName: '',
@@ -1120,7 +1300,7 @@ var CandidacyFieldset = React.createClass({
     });
     return (
       <fieldset>
-        <legend>State Your Position</legend>
+        <legend>1. State Your Position</legend>
         <label><strong>I am a...</strong></label>
         <div className="row">
           <div className="large-3 columns">
@@ -1271,13 +1451,19 @@ var ReformsFieldset = React.createClass({
     this.props.onReformsSelect(reforms);
   },
   render: function() {
+    var error = this.props.error ? this.props.error : '';
+    var labelClass = this.props.error ? "error" : '';
     return (
       <fieldset className="form-fieldset-reforms">
-        <legend>Select Reforms</legend>
-        <label>
+        <legend>2. Select Reforms</legend>
+        <label className={labelClass}>
           <strong>
             {this.props.reforms.length > 0 ? 'I support...' : ''}
+            {' '}
           </strong>
+          <span>
+          {error}
+          </span>
         </label>
         {this.props.reforms.map(function (reform, i) {
           return (
@@ -1302,41 +1488,39 @@ var ReformsFieldset = React.createClass({
 });
 
 var ContactFieldset = React.createClass({
-  getInitialState: function() {
-    return {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      suffix: ''
-    };
-  },
-  componentWillReceiveProps: function(props) {
-    this.setState({
-      firstName: props.firstName,
-      middleName: props.middleName,
-      lastName: props.lastName,
-      suffix: props.suffix
-    });
-  },
+  // Form values are bound to props, so send any user inputs back to the parent
   changeFirstName: function(event) {
-    this.setState( {firstName: event.target.value} );
+    // Combine the new value with the current values for the other inputs
+    this.props.onNameChange($.extend(this.props, {firstName: event.target.value}));
   },
   changeMiddleName: function(event) {
-    this.setState( {middleName: event.target.value} );
+    this.props.onNameChange($.extend(this.props, {middleName: event.target.value}));
   },
   changeLastName: function(event) {
-    this.setState( {lastName: event.target.value} );
+    this.props.onNameChange($.extend(this.props, {lastName: event.target.value}));
   },
   changeSuffix: function(event) {
-    this.setState( {suffix: event.target.value} );
+    this.props.onNameChange($.extend(this.props, {suffix: event.target.value}));
   },
   render: function() {
-    var submitStyle = {
-      width: '100%'
-    };
+    // For any null props, set the corresponding input value to an
+    // empty string. Otherwise old values may persist.
+    var firstName = this.props.firstName ? this.props.firstName : '';
+    var middleName = this.props.middleName ? this.props.middleName : '';
+    var lastName = this.props.lastName ? this.props.lastName : '';
+    var suffix = this.props.suffix ? this.props.suffix : '';
+
+    var submitButton;
+    if (this.props.submitted) {
+      submitButton = <button className="button expand tiny" disabled>Sending...</button>
+
+    } else {
+      submitButton = <button className="button expand tiny">I do so pledge</button>
+    }
+
     return (
       <fieldset>
-        <legend>Sign the Pledge</legend>
+        <legend>3. Sign the Pledge</legend>
         <div className="row">
           <div className="large-3 medium-3 columns">
             <label htmlFor="contact-form-first-name">First Name</label>
@@ -1345,7 +1529,7 @@ var ContactFieldset = React.createClass({
               name="first_name"
               id="contact-form-first-name"
               ref="contactFirstName"
-              value={this.state.firstName}
+              value={firstName}
               onChange={this.changeFirstName}
             />
           </div>
@@ -1356,7 +1540,7 @@ var ContactFieldset = React.createClass({
               name="middle_name"
               id="contact-form-middle-name"
               ref="contactMiddleName"
-              value={this.state.middleName}
+              value={middleName}
               onChange={this.changeMiddleName}
             />
           </div>
@@ -1367,7 +1551,7 @@ var ContactFieldset = React.createClass({
               name="last_name"
               id="contact-form-last-name"
               ref="contactLastName"
-              value={this.state.lastName}
+              value={lastName}
               onChange={this.changeLastName}
             />
           </div>
@@ -1378,7 +1562,7 @@ var ContactFieldset = React.createClass({
               name="suffix"
               id="contact-form-suffix"
               ref="contactSuffix"
-              value={this.state.suffix}
+              value={suffix}
               onChange={this.changeSuffix}
             />
           </div>
@@ -1390,14 +1574,14 @@ var ContactFieldset = React.createClass({
               type="email"
               name="email"
               id="contact-form-email"
-              ref="contact-email"
+              ref="contactEmail"
               required="required"
             />
             <small className="error">A valid email address is required.</small>
           </div>
           <div className="large-7 medium-7 columns">
             <label htmlFor="contact-form-button">Submit</label>
-            <button style={submitStyle} className="button tiny">I do so pledge</button>
+            {submitButton}
           </div>
         </div>
       </fieldset>
