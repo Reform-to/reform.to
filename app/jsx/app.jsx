@@ -987,7 +987,7 @@ var PledgeTaker = React.createClass({
           </div>
           <div style={confirmStyle}>
           <div className="panel callout">
-            <h4 className="subheader">Pledge Recieved</h4>
+            <h4 className="subheader">Pledge Received</h4>
             Thank you for supporting essential reform!
           </div>
             <fieldset>
