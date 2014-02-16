@@ -556,7 +556,7 @@ var Legislator = React.createClass({
     var photoResource = '/img/100x125/'+ this.props.key + '.jpg';
     var image = congressPhotosAPI + photoResource;
 
-    var badge = this.props.isReformer ? "ac-badge" : '';
+    var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
     return (
       <div className="ac-candidate">
       <div className="row">
