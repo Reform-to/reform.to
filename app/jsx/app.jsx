@@ -380,14 +380,22 @@ var AddressForm = React.createClass({
 
     var address = this.refs.address.getDOMNode().value.trim();
 
-    var geocoder = new google.maps.Geocoder();
+    var googleMapsAPI = window.ENV.API.GOOGLE.MAPS.endpoint;
+
+    var geocodeQuery = {
+      region: 'US',
+      address: address,
+      sensor: false
+    }
+
+    var geocodeAddressURL = googleMapsAPI + "?" + $.param(geocodeQuery);
+
     self = this;
-    geocoder.geocode(
-      {
-        address: address,
-        region: 'US'
-      },
-      function(results, status) {
+    $.ajax({
+      url: geocodeAddressURL,
+      success: function(data) {
+        var results = data.results;
+        var status = data.status;
         if (status === 'OK') {
           self.setState({
             addressHelper: 'Found... ' + results[0].formatted_address
@@ -402,8 +410,8 @@ var AddressForm = React.createClass({
 
           if (country.length > 0) {
             var location = results[0].geometry.location;
-            var lat = location.lat();
-            var lng = location.lng();
+            var lat = location.lat;
+            var lng = location.lng;
             self.props.onAddressGeocode({latitude: lat, longitude: lng});
           } else {
             self.setState({
@@ -412,8 +420,8 @@ var AddressForm = React.createClass({
             self.setState({addressStatus: 'error'});
           }
         }
-      }
-    );
+      }.bind(this)
+    });
 
     return false;
   },
