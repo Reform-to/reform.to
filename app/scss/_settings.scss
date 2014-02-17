@@ -114,7 +114,7 @@ $success-color: #43AC6A;
 
 // Accordion
 
-// $include-html-accordion-classes: $include-html-classes;
+$include-html-accordion-classes: false;
 
 // $accordion-navigation-padding: rem-calc(16);
 // $accordion-navigation-bg-color: #efefef  ;
@@ -129,7 +129,7 @@ $success-color: #43AC6A;
 
 // Alert Boxes
 
-// $include-html-alert-classes: $include-html-classes;
+$include-html-alert-classes: false;
 
 // We use this to control alert padding.
 // $alert-padding-top: rem-calc(14);
@@ -177,7 +177,7 @@ $success-color: #43AC6A;
 
 // Breadcrumbs
 
-// $include-html-nav-classes: $include-html-classes;
+$include-html-nav-classes: false;
 
 // We use this to set the background color for the breadcrumb container.
 // $crumb-bg: lighten($secondary-color, 5%);
@@ -215,7 +215,7 @@ $success-color: #43AC6A;
 
 // Clearing
 
-// $include-html-clearing-classes: $include-html-classes;
+$include-html-clearing-classes: false;
 
 // We use these to set the background colors for parts of Clearing.
 // $clearing-bg: #333;
@@ -316,7 +316,7 @@ $success-color: #43AC6A;
 
 // Flex Video
 
-// $include-html-media-classes: $include-html-classes;
+$include-html-media-classes: false;
 
 // We use these to control video container padding and margins
 // $flex-video-padding-top: rem-calc(25);
@@ -393,7 +393,7 @@ $legend-font-size: $header-font-size;
 
 // Inline Lists
 
-// $include-html-inline-list-classes: $include-html-classes;
+$include-html-inline-list-classes: false;
 
 // We use this to control the margins and padding of the inline list.
 // $inline-list-top-margin: 0;
@@ -414,7 +414,7 @@ $legend-font-size: $header-font-size;
 
 // Joyride
 
-// $include-html-joyride-classes: $include-html-classes;
+$include-html-joyride-classes: false;
 
 // Controlling default Joyride styles
 // $joyride-tip-bg: #333;
@@ -468,7 +468,7 @@ $legend-font-size: $header-font-size;
 
 // Labels
 
-// $include-html-label-classes: $include-html-classes;
+$include-html-label-classes: false;
 
 // We use these to style the labels
 // $label-padding: rem-calc(4 8 6);
@@ -483,7 +483,7 @@ $legend-font-size: $header-font-size;
 
 // Magellan
 
-// $include-html-magellan-classes: $include-html-classes;
+$include-html-magellan-classes: false;
 
 // $magellan-bg: #fff;
 // $magellan-padding: 10px;
@@ -549,7 +549,7 @@ $legend-font-size: $header-font-size;
 
 // Orbit
 
-// $include-html-orbit-classes: $include-html-classes;
+$include-html-orbit-classes: false;
 
 // We use these to control the caption styles
 // $orbit-container-bg: none;
@@ -586,7 +586,7 @@ $legend-font-size: $header-font-size;
 
 // Pagination
 
-// $include-html-nav-classes: $include-html-classes;
+$include-html-nav-classes: false;
 
 // We use these to control the pagination container
 // $pagination-height: rem-calc(24);
@@ -642,7 +642,7 @@ $legend-font-size: $header-font-size;
 
 // Pricing Tables
 
-// $include-html-pricing-classes: $include-html-classes;
+$include-html-pricing-classes: false;
 
 // We use this to control the border color
 // $price-table-border: solid 1px #ddd;
@@ -718,7 +718,7 @@ $legend-font-size: $header-font-size;
 
 // Reveal
 
-// $include-html-reveal-classes: $include-html-classes;
+$include-html-reveal-classes: false;
 
 // We use these to control the style of the reveal overlay.
 // $reveal-overlay-bg: rgba(#000, .45);
@@ -843,7 +843,7 @@ $legend-font-size: $header-font-size;
 
 // Tables
 
-// $include-html-table-classes: $include-html-classes;
+$include-html-table-classes: false;
 
 // These control the background color for the table and even rows
 // $table-bg: #fff;
@@ -875,7 +875,7 @@ $legend-font-size: $header-font-size;
 // TABS
 //
 
-// $include-html-tabs-classes: $include-html-classes;
+$include-html-tabs-classes: false;
 
 // $tabs-navigation-padding: rem-calc(16);
 // $tabs-navigation-bg-color: #efefef  ;
@@ -910,7 +910,7 @@ $legend-font-size: $header-font-size;
 // TOOLTIPS
 //
 
-// $include-html-tooltip-classes: $include-html-classes;
+$include-html-tooltip-classes: false;
 
 // $has-tip-border-bottom: dotted 1px #ccc;
 // $has-tip-font-weight: bold;
