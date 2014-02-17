@@ -323,6 +323,19 @@ var CandidatePicker = React.createClass({
     return (
     <div className="ac-candidate-picker">
     <div className="row">
+      <div className="large-6 medium-8 columns">
+        <h2 className="subheader">
+          {this.state.legislators.length > 0 ? 'United States Congress' : ''}
+        </h2>
+      </div>
+      <div className="large-6 medium-4 columns">
+        <h2>
+          {this.state.state ? this.state.state : ''}
+          {this.state.district ? ", District " + this.state.district : ''}
+        </h2>
+      </div>
+    </div>
+    <div className="row">
       <div className="large-12 columns">
         <LegislatorList
           legislators={this.state.legislators}
