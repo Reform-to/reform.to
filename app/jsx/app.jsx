@@ -519,7 +519,13 @@ var LegislatorProfile = React.createClass({
           </div>
         </div>
       </div>
-      <Reforms reforms={reforms} />
+      <div className="row">
+        <div className="large-12 columns">
+          <hr/>
+          <h2 className="subheader">{reforms.length > 0 ? "Sponsored Reform" : ""}</h2>
+          <Reforms reforms={reforms} />
+        </div>
+      </div>
       </div>
     );
   }
@@ -1677,7 +1683,7 @@ var ReformsList = React.createClass({
     });
     return (
       <div className="ac-reform-list">
-        <h4 className="subheader">{this.props.key} Reforms</h4>
+        <h4 className="subheader">{this.props.key} Reform</h4>
         {reformNodes}
       </div>
     );
