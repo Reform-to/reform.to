@@ -1913,7 +1913,7 @@ var Application = React.renderComponent(
 
 // Attempt to update the location using the geolocation API
 
-if (Modernizr.geolocation) {
+if ('geolocation' in navigator) {
   navigator.geolocation.getCurrentPosition(function (position) {
     Application.setProps({
       latitude: position.coords.latitude,
