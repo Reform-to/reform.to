@@ -177,6 +177,19 @@ var App = React.createClass({
 });
 
 var Navigation = React.createClass({
+  getInitialState: function() {
+    return ({
+      expanded: true
+    });
+  },
+  toggleTopbar: function() {
+    this.setState({ expanded: !this.state.expanded });
+    return false;
+  },
+  componentWillReceiveProps: function(nextProps) {
+    // Close the menu when the component refreshes
+    this.setState({ expanded: false });
+  },
   render: function() {
     var lat = this.props.latitude;
     var lng = this.props.longitude;
@@ -193,13 +206,14 @@ var Navigation = React.createClass({
       nextTitle = "Take the Pledge";
     }
 
+    var navClass = "top-bar" + (this.state.expanded ? " expanded" : '');
     return (
-    <nav className="top-bar" data-topbar>
+    <nav className={navClass} data-topbar>
       <ul className="title-area">
         <li className="name">
         <h1 className="subheader"><a href={homeLink}>Reform.to</a></h1>
         </li>
-        <li className="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        <li className="toggle-topbar menu-icon"><a href="#" onClick={this.toggleTopbar}><span>Menu</span></a></li>
       </ul>
       <section className="top-bar-section">
         <ul className="right">
@@ -886,7 +900,7 @@ var CandidateName = React.createClass({
 
 var PledgeTaker = React.createClass({
   getInitialState: function() {
-    return { reforms: [], submitted: false, confirmed: false, reformError: '' };
+    return { reforms: [], submitted: false, confirmed: false, reformError: '', emailError: false };
   },
   fillInCandidacy: function(candidacy) {
     this.setState({
@@ -930,6 +944,11 @@ var PledgeTaker = React.createClass({
 
     var contactForm = this.refs.contactForm.refs;
     var email = contactForm.contactEmail.getDOMNode().value.trim();
+
+    if (!email) {
+      this.setState({ emailError: true });
+    }
+
     if (email && supportsReform) {
       this.setState({ email: email });
 
@@ -1001,6 +1020,7 @@ var PledgeTaker = React.createClass({
               suffix={this.state.suffix}
               onNameChange={this.fillInNames}
               submitted={this.state.submitted}
+              emailError={this.state.emailError}
             />
           </form>
           </div>
@@ -1537,6 +1557,8 @@ var ContactFieldset = React.createClass({
       submitButton = <button className="button expand tiny">I do so pledge</button>
     }
 
+    emailClass = this.props.emailError ? "error" : '';
+
     return (
       <fieldset>
         <legend>3. Sign the Pledge</legend>
@@ -1588,6 +1610,7 @@ var ContactFieldset = React.createClass({
         </div>
         <div className="row">
           <div className="large-5 medium-5 columns">
+            <div className={emailClass}>
             <label htmlFor="contact-form-email">Email <small>required</small></label>
             <input
               type="email"
@@ -1597,6 +1620,7 @@ var ContactFieldset = React.createClass({
               required="required"
             />
             <small className="error">A valid email address is required.</small>
+            </div>
           </div>
           <div className="large-7 medium-7 columns">
             <label htmlFor="contact-form-button">Submit</label>
