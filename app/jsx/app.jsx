@@ -9,7 +9,6 @@ var App = React.createClass({
     var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
     var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
 
-    var self = this;
     $.ajax({
       url: reformsURL,
       success: function(data) {
@@ -49,11 +48,11 @@ var App = React.createClass({
         $.ajax({
           url: findBillsURL,
           success: function(data) {
-            self.setState({ bills: data.results });
-          }.bind(self)
+            this.setState({ bills: data.results });
+          }.bind(this)
         });
 
-        self.setState({ reforms: data.reforms });
+        this.setState({ reforms: data.reforms });
       }.bind(this)
     });
 
@@ -388,14 +387,13 @@ var AddressForm = React.createClass({
 
     var geocodeAddressURL = googleMapsAPI + "?" + $.param(geocodeQuery);
 
-    self = this;
     $.ajax({
       url: geocodeAddressURL,
       success: function(data) {
         var results = data.results;
         var status = data.status;
         if (status === 'OK') {
-          self.setState({
+          this.setState({
             addressHelper: 'Found... ' + results[0].formatted_address
           });
 
@@ -410,12 +408,12 @@ var AddressForm = React.createClass({
             var location = results[0].geometry.location;
             var lat = location.lat;
             var lng = location.lng;
-            self.props.onAddressGeocode({latitude: lat, longitude: lng});
+            this.props.onAddressGeocode({latitude: lat, longitude: lng});
           } else {
-            self.setState({
+            this.setState({
               addressHelper:'No information for ' + results[0].formatted_address
             });
-            self.setState({addressStatus: 'error'});
+            this.setState({addressStatus: 'error'});
           }
         }
       }.bind(this)
@@ -775,8 +773,6 @@ var CandidateList = React.createClass({
       var district = this.props.district.replace(/\b0+/g, "");
     }
 
-    var self = this;
-
     var candidateNodes = _.map(this.props.candidates, function (candidate) {
       // Take the first letter of the party name only
       var party = candidate.candidate.party.substring(0, 1);
@@ -788,7 +784,7 @@ var CandidateList = React.createClass({
 
       // Check if candidate has a bioguide id
       var fecId = candidate.candidate.id;
-      var legislator = _.find(self.props.legislators, function(l) {
+      var legislator = _.find(this.props.legislators, function(l) {
         return _.contains(l.fec_ids, fecId)
       });
       var bioguideId = legislator ? legislator.bioguide_id : null;
@@ -802,7 +798,7 @@ var CandidateList = React.createClass({
         district={district}
         bioguideId={bioguideId}
       />
-    });
+    }.bind(this));
     return (
       <div className="ac-candidate-list">
         {candidateNodes}
@@ -965,14 +961,13 @@ var PledgeTaker = React.createClass({
 
       this.setState({ submitted: true});
 
-      var self = this;
       $.ajax({
         type: "POST",
         url: addReformersURL,
         data: data,
         success: function(data) {
-          self.setState({ confirmed: true});
-        },
+          this.setState({ confirmed: true});
+        }.bind(this),
         dataType: "json"
       });
 
