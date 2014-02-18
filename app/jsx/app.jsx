@@ -13,11 +13,8 @@ var App = React.createClass({
     $.ajax({
       url: reformsURL,
       success: function(data) {
-        var billIds = data.reforms.map(function(reform) {
-          if (reform.bill_id) {
-            return reform.bill_id;
-          }
-        }).filter(function(n) { return n; });
+        // Get all the bill_id's from any reforms that have one
+        var billIds = _.compact(_.pluck(data.reforms, 'bill_id'));
 
         var billFields = [
           "bill_id",
@@ -120,10 +117,11 @@ var App = React.createClass({
     var reforms;
     if (this.state.bills) {
       var bills = this.state.bills;
-      reforms = this.state.reforms.map(function (r) {
-        r.bill = $.grep(bills, function(b) { return b.bill_id === r.bill_id; })[0];
+      reforms = _.map(this.state.reforms, function(r) {
+        r.bill = _.find(bills, function(b) { return b.bill_id === r.bill_id });
         return r;
       });
+
     } else {
       reforms = this.state.reforms;
     }
@@ -144,9 +142,9 @@ var App = React.createClass({
       content = <ReformsIndex reforms={reforms} />
     } else if (this.state.page === 'reform') {
       var slug = this.state.identifier;
-      var reform = reforms.filter(function(r) {
+      var reform = _.find(reforms, function(r) {
         return slug === r.slug;
-      })[0];
+      });
 
       if (reform) {
         content = <ReformProfile reform={reform} bills={this.state.bills} />
@@ -401,14 +399,14 @@ var AddressForm = React.createClass({
             addressHelper: 'Found... ' + results[0].formatted_address
           });
 
-          var country = $.grep(
+          var country = _.find(
             results[0].address_components,
             function(component) {
-              return $.inArray('country', component.types) > -1;
+              return _.contains(component.types, 'country');
             }
           );
 
-          if (country.length > 0) {
+          if (country) {
             var location = results[0].geometry.location;
             var lat = location.lat;
             var lng = location.lng;
@@ -481,16 +479,15 @@ var LegislatorProfile = React.createClass({
   },
   render: function() {
     var bioguideId = this.props.bioguideId;
-    var bills = this.props.bills.filter(function(b) {
+    var bills = _.filter(this.props.bills, function(b) {
       var isSponsor = b.sponsor_id === bioguideId;
-      var isCosponsor = $.inArray(bioguideId, b.cosponsor_ids) >= 0;
+      var isCosponsor = _.contains(b.cosponsor_ids, bioguideId);
       return isSponsor || isCosponsor;
     });
-    var bill_ids = bills.map(function(b) {
-      return b.bill_id;
-    });
-    var reforms = this.props.reforms.filter(function(r) {
-      return $.inArray(r.bill_id, bill_ids) >= 0;
+
+    var bill_ids = _.pluck(bills, "bill_id");
+    var reforms = _.filter(this.props.reforms, function(r) {
+      return _.contains(bill_ids, r.bill_id);
     });
 
     var legislatorName;
@@ -528,8 +525,8 @@ var LegislatorProfile = React.createClass({
         <div className="large-12 columns">
           <LegislatorList
             legislators={this.state.legislators}
-            reforms={this.props.reforms}
-            bills={this.props.bills}
+            reforms={reforms}
+            bills={bills}
           />
         </div>
       </div>
@@ -558,14 +555,15 @@ var LegislatorList = React.createClass({
     var bills = this.props.bills ? this.props.bills : [];
 
     // Merge all sponsor and co-sponsor IDs into one array
-    var sponsor_ids = [].concat.apply([], bills.map(function (bill) {
-      return $.merge([bill.sponsor_id], bill.cosponsor_ids);
-    }));
+    var sponsor_ids = _.uniq(_.union(
+      _.pluck(bills, 'sponsor_id'),
+      _.flatten(bills, false, 'cosponsor_ids')
+    ));
 
-    var legislatorNodes = this.props.legislators.map(function (legislator) {
+    var legislatorNodes = _.map(this.props.legislators, (function (legislator) {
 
       // Check if this Legislator is in the list of Reformers
-      var isReformer = $.inArray(legislator.bioguide_id, sponsor_ids) >= 0;
+      var isReformer = _.contains(sponsor_ids, legislator.bioguide_id);
 
       return <Legislator
         key={legislator.bioguide_id}
@@ -582,7 +580,7 @@ var LegislatorList = React.createClass({
         facebook={legislator.facebook_id}
         isReformer={isReformer}
         />
-    });
+    }));
     return (
       <div className="ac-legislator-list">
         {legislatorNodes}
@@ -654,20 +652,10 @@ var District = React.createClass({
       district: [],
       congressional: [],
       senatorial: [],
-      legislators: [],
-      fecBioMap: []
+      legislators: []
     };
   },
   componentWillReceiveProps: function(props) {
-
-    // Use the legislators list to map fec_ids to bioguide_ids
-    var fecBioMap = {};
-    props.legislators.forEach(function(legislator) {
-        legislator.fec_ids.forEach(function(fecId) {
-          fecBioMap[fecId] = legislator.bioguide_id;
-        });
-    });
-    this.setState({fecBioMap: fecBioMap});
 
     // Look up current candidates for this state and district
     if (props.state != this.props.state && props.district != this.props.district) {
@@ -756,7 +744,7 @@ var District = React.createClass({
               chamber="House"
               district={this.state.district}
               cycle={this.state.cycle}
-              fecBioMap={this.state.fecBioMap}
+              legislators={this.props.legislators}
             />
           </div>
           <div className="medium-6 columns">
@@ -768,7 +756,7 @@ var District = React.createClass({
               state={this.props.state}
               chamber="Senate"
               cycle={this.state.cycle}
-              fecBioMap={this.state.fecBioMap}
+              legislators={this.props.legislators}
             />
           </div>
         </div>
@@ -782,15 +770,14 @@ var CandidateList = React.createClass({
     var state = this.props.state;
 
     // Remove any leading zero from the district number, if it exists
+    var district;
     if (this.props.district !== undefined && this.props.district.length > 0) {
       var district = this.props.district.replace(/\b0+/g, "");
-    } else {
-      var district = null;
     }
 
     var self = this;
 
-    var candidateNodes = this.props.candidates.map(function (candidate) {
+    var candidateNodes = _.map(this.props.candidates, function (candidate) {
       // Take the first letter of the party name only
       var party = candidate.candidate.party.substring(0, 1);
 
@@ -801,9 +788,10 @@ var CandidateList = React.createClass({
 
       // Check if candidate has a bioguide id
       var fecId = candidate.candidate.id;
-      var fecBioMap = self.props.fecBioMap;
-
-      var bioguideId = fecBioMap.hasOwnProperty(fecId) ? fecBioMap[fecId] : null;
+      var legislator = _.find(self.props.legislators, function(l) {
+        return _.contains(l.fec_ids, fecId)
+      });
+      var bioguideId = legislator ? legislator.bioguide_id : null;
 
       return <Candidate
         key={fecId}
@@ -1018,6 +1006,7 @@ var PledgeTaker = React.createClass({
             />
             <ReformsFieldset
               reforms={this.props.reforms}
+              checked={this.state.reforms}
               error={this.state.reformError}
               onReformsSelect={this.fillInReforms}
             />
@@ -1041,7 +1030,7 @@ var PledgeTaker = React.createClass({
             <fieldset>
               <legend>4. Review Your Pledge</legend>
               <ol>
-                {this.state.reforms.map(function (r, i) {
+                {_.map(this.state.reforms, function (r, i) {
                   var reform = reforms[r];
                   return (
                     <li key={i}><strong>{reform.title}</strong></li>
@@ -1273,9 +1262,9 @@ var CandidacyFieldset = React.createClass({
     var bioguideId = event.target.value;
     this.setState({ bioguideId: bioguideId});
 
-    var legislator = this.state.legislators.filter(function(l) {
+    var legislator = _.find(this.state.legislators, function(l) {
       return l.bioguide_id == bioguideId;
-    })[0];
+    });
 
     if (legislator) {
       this.props.onIdChange({
@@ -1303,9 +1292,9 @@ var CandidacyFieldset = React.createClass({
     var fecId = event.target.value;
     this.setState({ fecId: fecId});
 
-    var candidate = this.state.candidates.filter(function(c) {
+    var candidate = _.find(this.state.candidates, function(c) {
       return c.candidate.id == fecId;
-    })[0];
+    });
 
     if (candidate) {
       var names = candidate.candidate.name.split(',');
@@ -1346,10 +1335,7 @@ var CandidacyFieldset = React.createClass({
     var candidateSelectClasses = cx({
       'hide': this.state.candidates.length === 0
     });
-    var districtNums = [];
-    for (var i = 1; i <= 55; i++) {
-      districtNums.push(i);
-    }
+    var districtNums = _.range(1, 56);
     return (
       <fieldset>
         <legend>1. State Your Position</legend>
@@ -1414,7 +1400,7 @@ var CandidacyFieldset = React.createClass({
                 name="state"
               >
                 <option value="">State...</option>
-                {this.props.states.map(function(s) {
+                {_.map(this.props.states, function(s) {
                   return (
                     <option key={s.abbr} value={s.abbr}>{s.name}</option>
                   );
@@ -1431,7 +1417,7 @@ var CandidacyFieldset = React.createClass({
               >
                 <option value="">District...</option>
                 <option value="0">At Large</option>
-                {districtNums.map(function(i) {
+                {_.map(districtNums, function(i) {
                   return (
                     <option key={i} value={i}>{i}</option>
                   );
@@ -1457,7 +1443,7 @@ var CandidacyFieldset = React.createClass({
               name="bioguide_id"
             >
             <option value="">Select Your Name...</option>
-            {this.state.legislators.map(function (legislator, i) {
+            {_.map(this.state.legislators, function (legislator, i) {
               return (
                 <option value={legislator.bioguide_id} key={legislator.bioguide_id}>
                   {legislator.title} {' '}
@@ -1486,7 +1472,7 @@ var CandidacyFieldset = React.createClass({
               name="fec_id"
             >
             <option value="">Select Your Name...</option>
-            {this.state.candidates.map(function (candidate, i) {
+            {_.map(this.state.candidates, function (candidate, i) {
               return (
                 <option value={candidate.candidate.id} key={candidate.candidate.id}>
                   {candidate.candidate.name}
@@ -1505,14 +1491,17 @@ var CandidacyFieldset = React.createClass({
 
 var ReformsFieldset = React.createClass({
   selectReforms: function(event) {
-    var reforms = $('input[name="reforms[]"]:checked').map(function(_, el) {
-      return $(el).val();
-    }).get();
+    // Get the value of the reform which was clicked
+    var target = _.parseInt(event.target.value);
+    // Get the symmetric difference between the target and reforms that were checked
+    var reforms = _.xor([target], this.props.checked);
+    // Send the selection back to the parent
     this.props.onReformsSelect(reforms);
   },
   render: function() {
     var error = this.props.error ? this.props.error : '';
     var labelClass = this.props.error ? "error" : '';
+
     return (
       <fieldset className="form-fieldset-reforms">
         <legend>2. Select Reforms</legend>
@@ -1525,7 +1514,8 @@ var ReformsFieldset = React.createClass({
           {error}
           </span>
         </label>
-        {this.props.reforms.map(function (reform, i) {
+        {_.map(this.props.reforms, function (reform, i) {
+          check = _.contains(this.props.checked, reform.id) ? "checked" : '';
           return (
             <div key={i}>
               <label htmlFor={'form-checkbox-reform-' + reform.id}>
@@ -1536,6 +1526,7 @@ var ReformsFieldset = React.createClass({
                 className="form-checkbox-reform"
                 value={reform.id}
                 onChange={this.selectReforms}
+                checked={check}
               />{' '}
               <strong>{reform.title}.</strong> {' '} <em>{reform.description}</em>
               </label>
@@ -1551,16 +1542,16 @@ var ContactFieldset = React.createClass({
   // Form values are bound to props, so send any user inputs back to the parent
   changeFirstName: function(event) {
     // Combine the new value with the current values for the other inputs
-    this.props.onNameChange($.extend(this.props, {firstName: event.target.value}));
+    this.props.onNameChange(_.assign(this.props, {firstName: event.target.value}));
   },
   changeMiddleName: function(event) {
-    this.props.onNameChange($.extend(this.props, {middleName: event.target.value}));
+    this.props.onNameChange(_.assign(this.props, {middleName: event.target.value}));
   },
   changeLastName: function(event) {
-    this.props.onNameChange($.extend(this.props, {lastName: event.target.value}));
+    this.props.onNameChange(_.assign(this.props, {lastName: event.target.value}));
   },
   changeSuffix: function(event) {
-    this.props.onNameChange($.extend(this.props, {suffix: event.target.value}));
+    this.props.onNameChange(_.assign(this.props, {suffix: event.target.value}));
   },
   render: function() {
     // For any null props, set the corresponding input value to an
@@ -1674,30 +1665,13 @@ var ReformsIndex = React.createClass({
 
 var Reforms = React.createClass({
   render: function() {
-    // Organize the reforms by type
-    var reforms_by_type = {};
-
-    var self = this;
-    this.props.reforms.forEach(function(reform, index, array) {
-      var type = reform.reform_type;
-
-      // Create an object to hold reforms for this type
-      if (!reforms_by_type.hasOwnProperty(type)) {
-        reforms_by_type[type] = { type: type, reforms: [] }
-      }
-
-      reforms_by_type[type].reforms.push(reform);
-
+    // Group the reforms by type
+    var groups = _.groupBy(this.props.reforms, function(reform) {
+      return reform.reform_type;
     });
 
-    // Turn the Object back into a plain array
-    var reforms = [];
-    for (key in reforms_by_type) {
-      reforms.push(reforms_by_type[key]);
-    }
-
-    var reformsListNodes = reforms.map(function (reformList) {
-      return <ReformsList key={reformList.type} reforms={reformList.reforms} />
+    var reformsListNodes = _.mapValues(groups, function(reforms, type) {
+      return <ReformsList key={type} reforms={reforms} />
     });
     return (
       <div className="ac-reforms">
@@ -1713,7 +1687,7 @@ var Reforms = React.createClass({
 
 var ReformsList = React.createClass({
   render: function() {
-    var reformNodes = this.props.reforms.map(function (reform) {
+    var reformNodes = _.map(this.props.reforms, function (reform) {
       return <Reform
         key={reform.id}
         title={reform.title}
@@ -1790,16 +1764,12 @@ var Reform = React.createClass({
         party={legislator.party}
       />
     } else {
-      var sponsor = this.props.sponsor;
-      var sponsorName = [
-        sponsor.title,
-        sponsor.first_name,
-        sponsor.last_name
-      ].filter(function(n) { return n; }).join(" ");
-      if (sponsor.website) {
-        sponsorLine = <a href={sponsor.website}>{sponsorName}</a>
+      var s = this.props.sponsor;
+      var name = _.compact([s.title, s.first_name, s.last_name]).join(" ");
+      if (s.website) {
+        sponsorLine = <a href={s.website}>{name}</a>
       } else {
-        sponsorLine = sponsorName;
+        sponsorLine = name;
       }
     }
 
@@ -1842,7 +1812,7 @@ var Reform = React.createClass({
 var Bill = React.createClass({
   render: function() {
     var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
-    var cosponsorNodes = cosponsors_count ? this.props.bill.cosponsors.map(function (cosponsor) {
+    var cosponsorNodes = cosponsors_count ? _.map(this.props.bill.cosponsors, function (cosponsor) {
       var legislator = cosponsor.legislator;
       return <li key={legislator.bioguide_id}><TitleNamePartyState
         bioguideId={legislator.bioguide_id}
