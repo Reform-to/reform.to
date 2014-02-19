@@ -371,7 +371,6 @@ var CandidatePicker = React.createClass({
 
 var AddressForm = React.createClass({
   geocodeAddress: function() {
-    $(".address-form input").blur();
     this.setState({addressHelper: 'Searching...'});
     this.setState({addressStatus: 'helper'});
 
@@ -418,6 +417,9 @@ var AddressForm = React.createClass({
         }
       }.bind(this)
     });
+
+    // Remove focus from the address input
+    this.refs.address.getDOMNode().blur();
 
     return false;
   },
