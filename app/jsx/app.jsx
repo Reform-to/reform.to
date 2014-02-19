@@ -1694,10 +1694,8 @@ var BadgeProfile = React.createClass({
   render: function() {
     // Merge all reformers into one array
     var legislators = _.uniq(_.flatten(_.map(this.props.reforms, function(reform) {
-      var sponsor = reform.bill ? { legislator: reform.bill.sponsor } : [];
-      var cosponsors = reform.bill ? _.map(reform.bill.cosponsors, function(cosponsor) {
-        return cosponsor;
-      }) : [];
+      var sponsor = reform.bill ? reform.bill.sponsor : [];
+      var cosponsors = reform.bill ? _.pluck(reform.bill.cosponsors, 'legislator') : [];
       return cosponsors.concat(sponsor);
     }), true));
     return (
@@ -1907,14 +1905,13 @@ var Reform = React.createClass({
 var StatesLegislators = React.createClass({
   render: function() {
     // Sort and group Co-sponsors by State
-    sortByState = function(l) { return l.legislator.state_name; };
+    sortByState = function(l) { return l.state_name; };
     var legislatorsByState = _.groupBy(_.sortBy(this.props.legislators, sortByState), sortByState);
     legislatorNodes = _.mapValues(legislatorsByState, function(legislators, state) {
       return (
         <ul className="list-commas">
         <dt className="light-header" key={state}>{state}</dt>
-        {_.map(legislators, function (l) {
-          var legislator = l.legislator;
+        {_.map(legislators, function (legislator) {
           return <li key={legislator.bioguide_id}><TitleNamePartyState
             bioguideId={legislator.bioguide_id}
             firstName={legislator.first_name}
@@ -1941,7 +1938,8 @@ var Bill = React.createClass({
 
     var cosponsorNodes;
     if (cosponsors_count) {
-      cosponsorNodes = <StatesLegislators legislators={this.props.bill.cosponsors} />
+      var legislators = _.pluck(this.props.bill.cosponsors, 'legislator');
+      cosponsorNodes = <StatesLegislators legislators={legislators} />
     }
     var official_title = this.props.bill ? this.props.bill.official_title : '';
     var short_title = this.props.bill ? this.props.bill.short_title : '';
