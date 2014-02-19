@@ -1679,8 +1679,9 @@ var BadgesIndex = React.createClass({
                   <span className="minor" style={badgeStyle}>
                     <img src={badge.icon} alt={badge.name} />
                   </span>{' '}
-                  {badge.name}
+                  {badge.name} {' '}
                 </a>
+                <small>{badge.description}.</small>
               </h3>
             );
           })}
