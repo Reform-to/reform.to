@@ -1807,17 +1807,31 @@ var Reform = React.createClass({
 var Bill = React.createClass({
   render: function() {
     var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
-    var cosponsorNodes = cosponsors_count ? _.map(this.props.bill.cosponsors, function (cosponsor) {
-      var legislator = cosponsor.legislator;
-      return <li key={legislator.bioguide_id}><TitleNamePartyState
-        bioguideId={legislator.bioguide_id}
-        firstName={legislator.first_name}
-        lastName={legislator.last_name}
-        state={legislator.state}
-        district={legislator.district}
-        party={legislator.party}
-      /></li>
-    }) : '';
+
+    var cosponsorNodes;
+    if (cosponsors_count) {
+      // Sort and group Co-sponsors by State
+      sortByState = function(c) { return c.legislator.state_name; };
+      var cosponsorsByState = _.groupBy(_.sortBy(this.props.bill.cosponsors, sortByState), sortByState);
+      cosponsorNodes = _.mapValues(cosponsorsByState, function(cosponsors, state) {
+        return (
+          <ul className="list-commas">
+          <dt className="light-header" key={state}>{state}</dt>
+          {_.map(cosponsors, function (cosponsor) {
+            var legislator = cosponsor.legislator;
+            return <li key={legislator.bioguide_id}><TitleNamePartyState
+              bioguideId={legislator.bioguide_id}
+              firstName={legislator.first_name}
+              lastName={legislator.last_name}
+              state={legislator.state}
+              district={legislator.district}
+              party={legislator.party}
+            /></li>
+          })}
+          </ul>
+        );
+      });
+    }
     var official_title = this.props.bill ? this.props.bill.official_title : '';
     var short_title = this.props.bill ? this.props.bill.short_title : '';
     var text_link = this.props.bill ? this.props.bill.last_version.urls.html : '';
@@ -1839,6 +1853,7 @@ var Bill = React.createClass({
           <dt><strong className="subheader">{cosponsors_count ? "Co-Sponsors" : ''}</strong></dt>
           {cosponsorNodes}
         </ul>
+        <hr/>
       </div>
     );
   }
@@ -1880,7 +1895,10 @@ var TitleNamePartyState = React.createClass({
     ].join(" ");
     var link = "#/legislators/" + this.props.bioguideId;
     return (
-      <span><a href={link}>{fullName}</a> ({this.props.party}-{this.props.state})</span>
+      <span>
+        <a href={link}>{fullName}</a>{' '}
+        <span className="minor">({this.props.party}-{this.props.state})</span>
+      </span>
     );
   }
 });

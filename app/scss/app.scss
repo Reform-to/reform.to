@@ -95,6 +95,23 @@ html, body {
   color: $success-color;
 }
 
+.light-header {
+  color: $small-font-color;
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.muted {
+  color: $small-font-color;
+  font-weight: 300;
+}
+
+.minor {
+  font-size: 90%;
+}
+
+
 fieldset {
   legend {
       font-family: $legend-font-family;
