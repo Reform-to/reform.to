@@ -64,6 +64,9 @@ var App = React.createClass({
   navigateToReform: function(empty, id) {
     this.setState({page: 'reform', identifier: id});
   },
+  navigateToBadge: function(empty, id) {
+    this.setState({page: 'badge', identifier: id});
+  },
   navigateToLegislator: function(empty, id) {
     this.setState({page: 'legislators', identifier: id});
   },
@@ -80,6 +83,10 @@ var App = React.createClass({
       },
       '/legislators': {
         '/:id': this.navigateToLegislator.bind(this, null),
+      },
+      '/badges': {
+        '/:id': this.navigateToBadge.bind(this, null),
+        '': this.setState.bind(this, {page: 'badges'}, null)
       },
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
@@ -155,7 +162,18 @@ var App = React.createClass({
         reforms={reforms}
         bills={this.state.bills}
       />
-    } if (this.state.page === 'pledges') {
+    } else if (this.state.page === 'badges') {
+      content = <BadgesIndex badges={this.props.badges} />
+    } else if (this.state.page === 'badge') {
+      var slug = this.state.identifier;
+      var badge = _.find(this.props.badges, function(b) {
+        return slug === b.slug;
+      });
+      var reforms = _.filter(this.state.reforms, function(r) {
+        return _.contains(badge.reforms, r.id);
+      });
+      content = <BadgeProfile badge={badge} reforms={reforms} />
+    } else if (this.state.page === 'pledges') {
       content = <PledgeTaker reforms={reforms} states={this.props.states} />
     } else if (this.state.page === 'about') {
       content = <AboutPage />
@@ -219,6 +237,7 @@ var Navigation = React.createClass({
         </ul>
         <ul className="left">
           <li><a href="#/reforms">Reforms</a></li>
+          <li><a href="#/badges">Badges</a></li>
           <li><a href="#/about">About</a></li>
         </ul>
       </section>
@@ -1641,6 +1660,85 @@ var ContactFieldset = React.createClass({
   }
 });
 
+var BadgesIndex = React.createClass({
+  render: function() {
+    var badgeStyle = {
+      textTransform: "uppercase"
+    };
+    return (
+      <div className="row">
+        <div className="large-12 columns">
+          <h2 className="subheader special-header">
+            Badges
+          </h2>
+          {_.map(this.props.badges, function(badge) {
+            var link = "#/badges/" + badge.slug;
+            return (
+              <h3>
+                <a href={link}>
+                  <span className="minor" style={badgeStyle}>
+                    <img src={badge.icon} alt={badge.name} />
+                  </span>{' '}
+                  {badge.name}
+                </a>
+              </h3>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+});
+
+var BadgeProfile = React.createClass({
+  render: function() {
+    // Merge all reformers into one array
+    var legislators = _.uniq(_.flatten(_.map(this.props.reforms, function(reform) {
+      var sponsor = reform.bill ? { legislator: reform.bill.sponsor } : [];
+      var cosponsors = reform.bill ? _.map(reform.bill.cosponsors, function(cosponsor) {
+        return cosponsor;
+      }) : [];
+      return cosponsors.concat(sponsor);
+    }), true));
+    return (
+      <div>
+      <div className="row">
+        <div className="large-12 columns">
+          <p className="text-center">
+            <img src={this.props.badge.badge} alt={this.props.badge.name} />
+          </p>
+          <h2 className="subheader text-center">{this.props.badge.name}</h2>
+          <h4 className="text-center">
+            <em>{this.props.badge.description}</em>
+          </h4>
+        </div>
+      </div>
+      <div className="row">
+        <div className="large-12 columns">
+        <h4 className="subheader">
+          {this.props.reforms.length ? "Reforms" : ''}
+        </h4>
+        {_.map(this.props.reforms, function(reform) {
+          var resource = "#/reforms/" + reform.slug;
+          return (
+            <h3 key={reform.id}>
+              <a href={resource}>
+                {reform.title}
+              </a>
+            </h3>
+          );
+        })}
+        <h4 className="subheader">
+          {legislators.length ? "Reformers" : ''}
+        </h4>
+        <StatesLegislators legislators={legislators} />
+        </div>
+      </div>
+      </div>
+    );
+  }
+});
+
 var ReformsIndex = React.createClass({
   render: function() {
     return (
@@ -1923,10 +2021,31 @@ var TitleNamePartyState = React.createClass({
 
 var STATES = [ { "name": "Alabama", "abbr": "AL" }, { "name": "Alaska", "abbr": "AK" }, { "name": "American Samoa", "abbr": "AS" }, { "name": "Arizona", "abbr": "AZ" }, { "name": "Arkansas", "abbr": "AR" }, { "name": "California", "abbr": "CA" }, { "name": "Colorado", "abbr": "CO" }, { "name": "Connecticut", "abbr": "CT" }, { "name": "Delaware", "abbr": "DE" }, { "name": "District Of Columbia", "abbr": "DC" }, { "name": "Federated States Of Micronesia", "abbr": "FM" }, { "name": "Florida", "abbr": "FL" }, { "name": "Georgia", "abbr": "GA" }, { "name": "Guam", "abbr": "GU" }, { "name": "Hawaii", "abbr": "HI" }, { "name": "Idaho", "abbr": "ID" }, { "name": "Illinois", "abbr": "IL" }, { "name": "Indiana", "abbr": "IN" }, { "name": "Iowa", "abbr": "IA" }, { "name": "Kansas", "abbr": "KS" }, { "name": "Kentucky", "abbr": "KY" }, { "name": "Louisiana", "abbr": "LA" }, { "name": "Maine", "abbr": "ME" }, { "name": "Marshall Islands", "abbr": "MH" }, { "name": "Maryland", "abbr": "MD" }, { "name": "Massachusetts", "abbr": "MA" }, { "name": "Michigan", "abbr": "MI" }, { "name": "Minnesota", "abbr": "MN" }, { "name": "Mississippi", "abbr": "MS" }, { "name": "Missouri", "abbr": "MO" }, { "name": "Montana", "abbr": "MT" }, { "name": "Nebraska", "abbr": "NE" }, { "name": "Nevada", "abbr": "NV" }, { "name": "New Hampshire", "abbr": "NH" }, { "name": "New Jersey", "abbr": "NJ" }, { "name": "New Mexico", "abbr": "NM" }, { "name": "New York", "abbr": "NY" }, { "name": "North Carolina", "abbr": "NC" }, { "name": "North Dakota", "abbr": "ND" }, { "name": "Northern Mariana Islands", "abbr": "MP" }, { "name": "Ohio", "abbr": "OH" }, { "name": "Oklahoma", "abbr": "OK" }, { "name": "Oregon", "abbr": "OR" }, { "name": "Palau", "abbr": "PW" }, { "name": "Pennsylvania", "abbr": "PA" }, { "name": "Puerto Rico", "abbr": "PR" }, { "name": "Rhode Island", "abbr": "RI" }, { "name": "South Carolina", "abbr": "SC" }, { "name": "South Dakota", "abbr": "SD" }, { "name": "Tennessee", "abbr": "TN" }, { "name": "Texas", "abbr": "TX" }, { "name": "Utah", "abbr": "UT" }, { "name": "Vermont", "abbr": "VT" }, { "name": "Virgin Islands", "abbr": "VI" }, { "name": "Virginia", "abbr": "VA" }, { "name": "Washington", "abbr": "WA" }, { "name": "West Virginia", "abbr": "WV" }, { "name": "Wisconsin", "abbr": "WI" }, { "name": "Wyoming", "abbr": "WY" } ];
 
+var BADGES = [
+  {
+    name: "Anti-Corruption Pledge",
+    abbr: "ac",
+    slug: "anti-corruption",
+    badge: "/img/badges/ac-128x128.png",
+    icon: "/img/badges/ac-32x32.png",
+    reforms: [0, 1, 2, 3],
+    description: "Awarded to those courageous candidates who have pledged their support for essential reform"
+  },
+  {
+    name: "District of Corruption",
+    abbr: "dc",
+    slug: "district-of-corruption",
+    badge: "/img/badges/dc-128x128.png",
+    icon: "/img/badges/dc-32x32.png",
+    reforms: [],
+    description: "Reserved for candidates who have not yet stepped forward to support reform"
+  },
+];
+
 // Render the main application first using the default location
 
 var Application = React.renderComponent(
-    <App states={STATES} />,
+    <App states={STATES} badges={BADGES} />,
     document.getElementById('ac-application')
 );
 
