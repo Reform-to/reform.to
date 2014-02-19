@@ -562,9 +562,45 @@ var LegislatorProfile = React.createClass({
           <hr/>
           <h2 className="subheader">{reforms.length > 0 ? "Sponsored Reform" : ""}</h2>
           <Reforms reforms={reforms} />
+          <Thanks legislator={this.state.legislators[0]} reforms={reforms} />
         </div>
       </div>
       </div>
+    );
+  }
+});
+
+var Thanks = React.createClass({
+  render: function() {
+    var message;
+    if (this.props.legislator) {
+      var pronoun;
+      switch (this.props.legislator.gender) {
+        case 'F':
+          pronoun = "her";
+          break;
+        case 'M':
+          pronoun = "him";
+          break;
+        default:
+          pronoun = "them"
+      }
+      var message = "Let your candidate know you support " + pronoun;
+    }
+    var content;
+    if (this.props.legislator && this.props.reforms.length > 0) {
+      content = (
+        <div>
+        <h4 className="subheader special-header">{message}</h4>
+        <p>Call or email your candidate today, or get in touch using social media.</p>
+        <hr/>
+        </div>
+      );
+    }
+    return (
+        <div>
+          {content}
+        </div>
     );
   }
 });
