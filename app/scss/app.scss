@@ -111,8 +111,18 @@ html, body {
   font-size: 90%;
 }
 
-.panel.callout.tool {
-  background-color: $body-bg;
+.panel {
+  &.callout {
+    &.tool {
+      background-color: $body-bg;
+
+      a {
+        &.button {
+         color: $button-font-color;
+        }
+      }
+    }
+  }
 }
 
 

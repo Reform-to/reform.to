@@ -508,6 +508,9 @@ var LegislatorProfile = React.createClass({
     var reforms = _.filter(this.props.reforms, function(r) {
       return _.contains(bill_ids, r.bill_id);
     });
+    var unsupported = _.reject(this.props.reforms, function(r) {
+      return _.contains(bill_ids, r.bill_id);
+    });
 
     var legislatorName;
 
@@ -562,7 +565,7 @@ var LegislatorProfile = React.createClass({
           <hr/>
           <h2 className="subheader">{reforms.length > 0 ? "Sponsored Reform" : ""}</h2>
           <Reforms reforms={reforms} />
-          <Thanks legislator={this.state.legislators[0]} reforms={reforms} />
+          <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
         </div>
       </div>
       </div>
@@ -570,10 +573,67 @@ var LegislatorProfile = React.createClass({
   }
 });
 
-var Thanks = React.createClass({
+var Lobby = React.createClass({
+  getInitialState: function() {
+    return ({
+      medium: null
+    });
+  },
+  handleClick: function(event) {
+    var medium = event.target.firstChild.nodeValue;
+    var legislator = this.props.legislator;
+    if (legislator) {
+      var address;
+      var salutation;
+      switch (medium) {
+        case 'Call':
+          address = legislator.phone;
+          break;
+        case 'Email':
+          address = legislator.contact_form;
+          break;
+        case 'Write':
+          address = legislator.office + ", Washington, D.C.";
+          break;
+        case 'Fax':
+          address = legislator.fax;
+          break;
+      }
+      var instructions;
+      if (medium === 'Write') {
+        instructions = 'Write to';
+      } else if (medium === 'Email') {
+        instructions = 'Use the web form at';
+      } else {
+        instructions = medium;
+      }
+      var salutation;
+      if (medium == 'Call') {
+        salutation = 'Hi,';
+      } else {
+        salutation = ['Dear', legislator.title, legislator.last_name].join(" ") + ",";
+      }
+
+      var message;
+      if (this.props.reforms.length > 0) {
+        var reforms = _.pluck(this.props.reforms, 'title').join(", ");
+        message = "Thank you for supporting important reform like " + reforms + '.';
+      } else {
+
+      }
+      this.setState({
+        address: address,
+        medium: medium,
+        instructions: instructions,
+        salutation: salutation,
+        message: message
+      });
+    }
+    return false;
+  },
   render: function() {
     var message;
-    if (this.props.legislator) {
+    if (this.props.legislator && this.props.reforms.length > 0) {
       var pronoun;
       switch (this.props.legislator.gender) {
         case 'F':
@@ -585,14 +645,53 @@ var Thanks = React.createClass({
         default:
           pronoun = "them"
       }
-      var message = "Let your candidate know you support " + pronoun;
+      message = "Let your candidate know you support " + pronoun;
+    } else {
+      message = "Ask your candidate to support reform"
     }
+
+    var intro;
+    if (this.state.address) {
+      intro = <p>{this.state.salutation}<br/> {this.state.message} </p>
+    }
+
+    var lobby;
+    if (this.state.address) {
+      lobby = <div>
+            <p>Please consider supporting these reforms:</p>
+            <ul>
+            {_.map(this.props.unsupported, function(r) { return (<li key={r.id}>{r.title}</li>); }) }
+            </ul>
+            <p>You can find out more at <a href="http://reform.to/#/reforms">reform.to</a></p>
+            </div>
+    }
+    var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
+
     var content;
-    if (this.props.legislator && this.props.reforms.length > 0) {
+    if (this.props.legislator) {
       content = (
         <div>
-        <h4 className="subheader special-header">{message}</h4>
-        <p>Call or email your candidate today, or get in touch using social media.</p>
+        <div className="row">
+          <div className="large-12 columns">
+            <h4 className="subheader special-header">{message}</h4>
+          </div>
+        </div>
+        <div className="panel callout tool">
+        <div className="row">
+          <div className="large-1 medium-2 small-4 columns">
+            <span className="subheader">Lobby</span>
+          </div>
+          <div className="large-11 medium-10 small-9 columns">
+              <a href="#" className="button" onClick={this.handleClick}>Call</a>{' '}
+              <a href="#" className="button" onClick={this.handleClick}>Email</a>{' '}
+              <a href="#" className="button" onClick={this.handleClick}>Write</a>{' '}
+              <a href="#" className="button" onClick={this.handleClick}>Fax</a>{' '}
+              <p><strong>{this.state.instructions}</strong>{' '} {this.state.address}</p>
+              {intro}
+              {lobby}
+          </div>
+        </div>
+        </div>
         <hr/>
         </div>
       );
