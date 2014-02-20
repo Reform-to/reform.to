@@ -1693,12 +1693,6 @@ var BadgesIndex = React.createClass({
 
 var BadgeProfile = React.createClass({
   render: function() {
-    // Merge all reformers into one array
-    var legislators = _.uniq(_.flatten(_.map(this.props.reforms, function(reform) {
-      var sponsor = reform.bill ? reform.bill.sponsor : [];
-      var cosponsors = reform.bill ? _.pluck(reform.bill.cosponsors, 'legislator') : [];
-      return cosponsors.concat(sponsor);
-    }), true));
     return (
       <div>
       <div className="row">
@@ -1710,6 +1704,7 @@ var BadgeProfile = React.createClass({
           <h4 className="text-center">
             <em>{this.props.badge.description}</em>
           </h4>
+          <hr/>
         </div>
       </div>
       <div className="row">
@@ -1719,18 +1714,27 @@ var BadgeProfile = React.createClass({
         </h4>
         {_.map(this.props.reforms, function(reform) {
           var resource = "#/reforms/" + reform.slug;
+          var sponsor = reform.bill ? reform.bill.sponsor : [];
+          var cosponsors = reform.bill ? _.pluck(reform.bill.cosponsors, 'legislator') : [];
+          var legislators = cosponsors.concat(sponsor);
+          var sponsorCount = legislators.length;
           return (
+            <div>
             <h3 key={reform.id}>
               <a href={resource}>
                 {reform.title}
-              </a>
+              </a> {' '}
+              <span className="muted">
+                {sponsorCount === 0 ? '' : '(' + sponsorCount} {' '}
+                {sponsorCount === 1 ? 'sponsor)' : ''}
+                {sponsorCount > 1 ? 'sponsors)' : ''}
+              </span>
             </h3>
+            <StatesLegislators legislators={legislators} />
+            <hr/>
+            </div>
           );
         })}
-        <h4 className="subheader">
-          {legislators.length ? "Reformers" : ''}
-        </h4>
-        <StatesLegislators legislators={legislators} />
         </div>
       </div>
       </div>
