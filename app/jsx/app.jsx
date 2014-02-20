@@ -2028,16 +2028,16 @@ var BADGES = [
     badge: "/img/badges/ac-128x128.png",
     icon: "/img/badges/ac-32x32.png",
     reforms: [0, 1, 2, 3],
-    description: "Awarded to those courageous candidates who have pledged their support for essential reform"
+    description: "Candidates who have pledged to cosponsor legislation that would create fundamental reform"
   },
   {
-    name: "District of Corruption",
+    name: "Default 2 Corruption",
     abbr: "dc",
-    slug: "district-of-corruption",
+    slug: "default-2-corruption",
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
-    description: "Reserved for candidates who have not yet stepped forward to support reform"
+    description: "Candidates who have not pledged to cosponsor fundamental reform"
   },
 ];
 
