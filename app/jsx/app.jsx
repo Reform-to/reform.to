@@ -1000,13 +1000,18 @@ var Avatar = React.createClass({
       backgroundImage: 'url(' + this.props.image + ')'
     };
     var badgeClass = "badge " + this.props.badge;
-    var badgeLink = "/#/badges/" + this.props.badgeSlug;
+
+    var badgeLink;
+    if (this.props.badge) {
+      var badgeUrl = "/#/badges/" + this.props.badgeSlug;
+      badgeLink = <a className="badge-link" href={badgeLink}></a>
+    }
     return (
       <div
         className={"show-for-medium-up avatar img-circle " + avatarClass }
         style={avatarStyle}>
         <div className={badgeClass}> </div>
-        <a className="badge-link" href={badgeLink}></a>
+        {badgeLink}
       </div>
     );
   }
