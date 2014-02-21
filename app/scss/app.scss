@@ -192,6 +192,19 @@ span.helper, small.helper {
       z-index: 1000;
     }
 
+    .badge-link {
+      position: absolute;
+      height: 106px;
+      width: 36px;
+      bottom: -6px;
+      right: -2px;
+      z-index: 2000;
+    }
+
+    .badge-link:hover {
+      border-bottom: 2px solid $primary-color;
+    }
+
     .badge.ac-badge {
       background: url('/img/badges/ac-32x32.png');
     }
