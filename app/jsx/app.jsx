@@ -1004,7 +1004,7 @@ var Avatar = React.createClass({
     var badgeLink;
     if (this.props.badge) {
       var badgeUrl = "/#/badges/" + this.props.badgeSlug;
-      badgeLink = <a className="badge-link" href={badgeLink}></a>
+      badgeLink = <a className="badge-link" href={badgeUrl}></a>
     }
     return (
       <div
