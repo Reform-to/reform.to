@@ -750,11 +750,12 @@ var Legislator = React.createClass({
     var image = congressPhotosAPI + photoResource;
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
+    var badgeSlug = this.props.isReformer ? "anti-corruption" : "default-2-corruption";
     return (
       <div className="ac-candidate">
       <div className="row">
       <div className="large-6 medium-8 columns">
-        <Avatar party={this.props.party} image={image} badge={badge}/>
+        <Avatar party={this.props.party} image={image} badge={badge} badgeSlug={badgeSlug}/>
         <CandidateName
           title={this.props.title}
           firstName={this.props.firstName}
@@ -999,11 +1000,13 @@ var Avatar = React.createClass({
       backgroundImage: 'url(' + this.props.image + ')'
     };
     var badgeClass = "badge " + this.props.badge;
+    var badgeLink = "/#/badges/" + this.props.badgeSlug;
     return (
       <div
         className={"show-for-medium-up avatar img-circle " + avatarClass }
         style={avatarStyle}>
-        <div className={badgeClass}></div>
+        <div className={badgeClass}> </div>
+        <a className="badge-link" href={badgeLink}></a>
       </div>
     );
   }
