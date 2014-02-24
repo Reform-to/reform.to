@@ -686,7 +686,7 @@ var Lobby = React.createClass({
               <a href="#" className="button" onClick={this.handleClick}>Email</a>{' '}
               <a href="#" className="button" onClick={this.handleClick}>Write</a>{' '}
               <a href="#" className="button" onClick={this.handleClick}>Fax</a>{' '}
-              <p><strong>{this.state.instructions}</strong>{' '} {this.state.address}</p>
+              <p><strong>{this.state.address ? this.state.instructions : ''}</strong>{' '} {this.state.address}</p>
               {intro}
               {lobby}
           </div>
