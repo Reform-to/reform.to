@@ -607,6 +607,11 @@ var Lobby = React.createClass({
       } else {
         instructions = medium;
       }
+
+      if (!address) {
+        instructions = 'Not available';
+      }
+
       var salutation;
       if (medium == 'Call') {
         salutation = 'Hi,';
@@ -633,7 +638,8 @@ var Lobby = React.createClass({
   },
   render: function() {
     var message;
-    if (this.props.legislator && this.props.reforms.length > 0) {
+    var isReformer = this.props.reforms.length > 0;
+    if (this.props.legislator && isReformer) {
       var pronoun;
       switch (this.props.legislator.gender) {
         case 'F':
@@ -667,6 +673,13 @@ var Lobby = React.createClass({
     }
     var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
 
+    var resource = this.props.legislator ? 'legislators/' + this.props.legislator.bioguide_id : '';
+    var shareURIencoded = encodeURIComponent('http://reform.to/#/' + resource);
+
+    var legislatorTwitterHandle = this.props.legislator && this.props.legislator.twitter_id ? "@" + this.props.legislator.twitter_id : '';
+    var tweetMessage = isReformer ? "Thanks for supporting reform!" : "Please support essential reform";
+    var tweetText = encodeURIComponent(tweetMessage + " " + legislatorTwitterHandle);
+
     var content;
     if (this.props.legislator) {
       content = (
@@ -678,17 +691,28 @@ var Lobby = React.createClass({
         </div>
         <div className="panel callout tool">
         <div className="row">
-          <div className="large-1 medium-2 small-4 columns">
+          <div className="large-1 medium-2 small-12 columns">
             <span className="subheader">Lobby</span>
           </div>
-          <div className="large-11 medium-10 small-9 columns">
-              <a href="#" className="button" onClick={this.handleClick}>Call</a>{' '}
-              <a href="#" className="button" onClick={this.handleClick}>Email</a>{' '}
-              <a href="#" className="button" onClick={this.handleClick}>Write</a>{' '}
-              <a href="#" className="button" onClick={this.handleClick}>Fax</a>{' '}
-              <p><strong>{this.state.address ? this.state.instructions : ''}</strong>{' '} {this.state.address}</p>
-              {intro}
-              {lobby}
+          <div className="large-6 medium-10 small-12 columns">
+            <a href="#" className="button" onClick={this.handleClick}>Call</a>{' '}
+            <a href="#" className="button" onClick={this.handleClick}>Email</a>{' '}
+            <a href="#" className="button" onClick={this.handleClick}>Write</a>{' '}
+            <a href="#" className="button" onClick={this.handleClick}>Fax</a>{' '}
+          </div>
+          <div className="large-1 medium-2 small-12 columns">
+            <span className="subheader">Share</span>
+          </div>
+          <div className="large-4 medium-10 small-12 columns">
+          <a href={"https://www.facebook.com/sharer/sharer.php?u=" + shareURIencoded} className="button" target="_blank">Facebook</a>{' '}
+            <a href={"https://twitter.com/share?url=" + shareURIencoded + "&text=" + tweetText} className="button" target="_blank">Tweet</a>
+          </div>
+        </div>
+        <div className="row">
+          <div className="large-11 medium-10 small-12 columns large-offset-1 medium-offset-2">
+            <p><strong>{this.state.instructions}</strong>{' '} {this.state.address}</p>
+            {intro}
+            {lobby}
           </div>
         </div>
         </div>
