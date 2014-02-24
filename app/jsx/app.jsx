@@ -800,6 +800,62 @@ var Legislator = React.createClass({
 });
 
 var District = React.createClass({
+  locateCandidates: function(state, district) {
+    var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
+    var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+
+    var query = {
+      'api-key': apiKey
+    };
+    var cycle = window.ENV.ELECTIONS.cycle;
+
+    var houseURI = nytimesAPI
+      + cycle + '/seats/' + state + '/house/' + district
+      + '.json?' + $.param(query);
+
+    $.ajax({
+      url: houseURI,
+      dataType: 'jsonp',
+      success: function(data) {
+        if (data.status == "OK") {
+          this.setState({
+            cycle: data.cycle,
+            state: data.state,
+            district: data.district,
+            congressional: data.results
+          });
+        }
+      }.bind(this),
+      error: function() {
+          // Wipe state on API error
+          this.setState({
+            congressional: []
+          });
+      }.bind(this),
+    });
+
+    var senateURI = nytimesAPI
+      + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
+
+    $.ajax({
+      url: senateURI,
+      dataType: 'jsonp',
+      success: function(data) {
+        if (data.status == "OK") {
+          this.setState({
+            senatorial: data.results
+          });
+        }
+      }.bind(this),
+      error: function() {
+          // Wipe state on API error
+          this.setState({
+            senatorial: []
+          });
+      }.bind(this),
+    });
+
+  },
   getInitialState: function() {
     return {
       cycle: '',
@@ -811,64 +867,9 @@ var District = React.createClass({
     };
   },
   componentWillReceiveProps: function(props) {
-
     // Look up current candidates for this state and district
-    if (props.state != this.props.state && props.district != this.props.district) {
-      var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
-      var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
-
-      var query = {
-        'api-key': apiKey
-      };
-      var cycle = window.ENV.ELECTIONS.cycle;
-      var state = props.state;
-      var district = props.district;
-
-      var houseURI = nytimesAPI
-        + cycle + '/seats/' + state + '/house/' + district
-        + '.json?' + $.param(query);
-
-      $.ajax({
-        url: houseURI,
-        dataType: 'jsonp',
-        success: function(data) {
-          if (data.status == "OK") {
-            this.setState({
-              cycle: data.cycle,
-              state: data.state,
-              district: data.district,
-              congressional: data.results
-            });
-          }
-        }.bind(this),
-        error: function() {
-            // Wipe state on API error
-            this.setState({
-              congressional: []
-            });
-        }.bind(this),
-      });
-
-      var senateURI = nytimesAPI
-        + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
-
-      $.ajax({
-        url: senateURI,
-        dataType: 'jsonp',
-        success: function(data) {
-          if (data.status == "OK") {
-            this.setState({
-              senatorial: data.results
-            });
-          }
-        }.bind(this),
-        error: function() {
-            // Wipe state on API error
-            this.setState({
-              senatorial: []
-            });
-        }.bind(this),
-      });
+    if (props.state != this.props.state || props.district != this.props.district) {
+      this.locateCandidates(props.state, props.district);
     }
 
   },
