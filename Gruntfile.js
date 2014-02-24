@@ -6,6 +6,11 @@ module.exports = function(grunt) {
       options: {
         includePaths: ['vendor/foundation/scss']
       },
+      dev: {
+        files: {
+          'tmp/result/css/app.css': 'app/scss/app.scss'
+        }
+      },
       dist: {
         options: {
           outputStyle: 'compressed'
@@ -128,9 +133,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'react', 'sass']);
-  grunt.registerTask('default', ['clean:tmp', 'build', 'concat:dev']);
-  grunt.registerTask('server', ['clean:tmp', 'build', 'concat:dev', 'connect', 'watch']);
-  grunt.registerTask('dist', ['clean', 'build', 'preprocess:dist', 'concat:dist', 'copy:dist']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'react']);
+  grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev']);
+  grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'connect', 'watch']);
+  grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'copy:dist']);
 
 }
