@@ -72,18 +72,6 @@ module.exports = function(grunt) {
           }
         ]
       },
-      app: {
-      /*
-        files: [
-          {
-            expand: true,
-            cwd: 'app/',
-            src: ['index.html'],
-            dest: 'tmp/result'
-          }
-        ]
-        */
-      },
       dist: {
         files: [
           {
