@@ -576,7 +576,10 @@ var LegislatorProfile = React.createClass({
 var Lobby = React.createClass({
   getInitialState: function() {
     return ({
-      medium: null
+      medium: null,
+      twitterAPI: window.ENV.API.TWITTER.SHARE.endpoint,
+      facebookAPI: window.ENV.API.FACEBOOK.DIALOG.endpoint,
+      facebookKey: window.ENV.API.FACEBOOK.DIALOG.apiKey
     });
   },
   handleClick: function(event) {
@@ -637,7 +640,10 @@ var Lobby = React.createClass({
     return false;
   },
   render: function() {
-    var message;
+    var message, caption;
+    var fullName = this.props.legislator ? [
+      this.props.legislator.title, this.props.legislator.first_name, this.props.legislator.last_name
+    ].join(" ") : '';
     var isReformer = this.props.reforms.length > 0;
     if (this.props.legislator && isReformer) {
       var pronoun;
@@ -652,8 +658,11 @@ var Lobby = React.createClass({
           pronoun = "them"
       }
       message = "Let your candidate know you support " + pronoun;
+      caption = fullName + ' is a reformer';
+
     } else {
       message = "Ask your candidate to support reform"
+      caption = "Asking " + fullName + 'to support reform';
     }
 
     var intro;
@@ -673,12 +682,28 @@ var Lobby = React.createClass({
     }
     var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
 
-    var resource = this.props.legislator ? 'legislators/' + this.props.legislator.bioguide_id : '';
-    var shareURIencoded = encodeURIComponent('http://reform.to/#/' + resource);
+    var legislatorResource = this.props.legislator ? 'legislators/' + this.props.legislator.bioguide_id : '';
+    var legislatorURL = 'http://reform.to/#/' + legislatorResource
+    var legislatorPicture = this.props.legislator ? 'http://reform.to/vendor/congress-photos/img/100x125/' + this.props.legislator.bioguide_id + '.jpg' : '';
+
+    var fbQuery = {
+      app_id: this.state.facebookKey,
+      display: "page",
+      caption: caption,
+      link: legislatorURL,
+      redirect_uri: legislatorURL,
+      picture: legislatorPicture
+    };
+    var facebookDialogURL = [this.state.facebookAPI, "?" ,$.param(fbQuery)].join('');
 
     var legislatorTwitterHandle = this.props.legislator && this.props.legislator.twitter_id ? "@" + this.props.legislator.twitter_id : '';
-    var tweetMessage = isReformer ? "Thanks for supporting reform!" : "Please support essential reform";
-    var tweetText = encodeURIComponent(tweetMessage + " " + legislatorTwitterHandle);
+    var tweetMessage = isReformer ? "My candidate is a reformer" : "Please support essential reform";
+
+    var twQuery = {
+      url: legislatorURL,
+      text: [tweetMessage, legislatorTwitterHandle].join(' ')
+    };
+    var twitterShareURL = [this.state.twitterAPI, "?" ,$.param(twQuery)].join('');
 
     var content;
     if (this.props.legislator) {
@@ -704,8 +729,8 @@ var Lobby = React.createClass({
             <span className="subheader">Share</span>
           </div>
           <div className="large-4 medium-10 small-12 columns">
-          <a href={"https://www.facebook.com/sharer/sharer.php?u=" + shareURIencoded} className="button" target="_blank">Facebook</a>{' '}
-            <a href={"https://twitter.com/share?url=" + shareURIencoded + "&text=" + tweetText} className="button" target="_blank">Tweet</a>
+            <a href={facebookDialogURL} className="button" target="_blank">Facebook</a>{' '}
+            <a href={twitterShareURL} className="button" target="_blank">Tweet</a>
           </div>
         </div>
         <div className="row">
