@@ -33,6 +33,17 @@ window.ENV = {
       MAPS: {
         endpoint: "http://maps.googleapis.com/maps/api/geocode/json"
       }
+    },
+    TWITTER: {
+      SHARE: {
+        endpoint: "https://twitter.com/share"
+      }
+    },
+    FACEBOOK: {
+      DIALOG: {
+        endpoint: "https://www.facebook.com/dialog/feed",
+        apiKey: "527046850741667"
+      }
     }
   }
 };
