@@ -126,10 +126,10 @@ var App = React.createClass({
     var reforms;
     if (this.state.bills) {
       var bills = this.state.bills;
-      reforms = _.map(this.state.reforms, function(r) {
+      reforms = _.sortBy(_.map(this.state.reforms, function(r) {
         r.bill = _.find(bills, function(b) { return b.bill_id === r.bill_id });
         return r;
-      });
+      }), 'title');
 
     } else {
       reforms = this.state.reforms;
