@@ -113,6 +113,9 @@ var App = React.createClass({
       }
     }
   },
+  setRoute: function(route) {
+    this.router.setRoute(route);
+  },
   routeToLocation: function(coords) {
     this.router.setRoute("/home/" + coords.latitude + "," + coords.longitude);
   },
@@ -184,6 +187,7 @@ var App = React.createClass({
           latitude={lat}
           longitude={lng}
           page={this.state.page}
+          onRoute={this.setRoute}
         />
         {content}
       </div>
@@ -191,7 +195,25 @@ var App = React.createClass({
   }
 });
 
+var SetRouteMixin = {
+  handleRoute: function(route) {
+    this.props.onRoute(route);
+    return false;
+  }
+};
+
+var AppLink = React.createClass({
+  mixins: [SetRouteMixin],
+  render: function() {
+    var link = '#' + this.props.route;
+    return (
+      <a href={link} onClick={this.handleRoute.bind(this, this.props.route)}>{this.props.text}</a>
+    );
+  }
+});
+
 var Navigation = React.createClass({
+  mixins: [SetRouteMixin],
   getInitialState: function() {
     return ({
       expanded: true
@@ -209,15 +231,15 @@ var Navigation = React.createClass({
     var lat = this.props.latitude;
     var lng = this.props.longitude;
     var coords = lat && lng ? [lat,lng].join(',') : '';
-    var homeLink = coords ? "#/home/" + coords : "#/home";
+    var homeRoute = coords ? "/home/" + coords : "/home";
 
-    var nextLink;
+    var nextRoute;
     var nextTitle;
     if (this.props.page === "pledges") {
-      nextLink = homeLink;
+      nextRoute = homeRoute;
       nextTitle = "Find Your Candidate";
     } else {
-      nextLink = "#/pledges";
+      nextRoute = "/pledges";
       nextTitle = "Take the Pledge";
     }
 
@@ -226,19 +248,19 @@ var Navigation = React.createClass({
     <nav className={navClass} data-topbar>
       <ul className="title-area">
         <li className="name">
-        <h1 className="subheader"><a href={homeLink}>Reform.to</a></h1>
+        <h1 className="subheader"><AppLink route={homeRoute} text="Reform.to" onRoute={this.handleRoute}/></h1>
         </li>
         <li className="toggle-topbar menu-icon"><a href="#" onClick={this.toggleTopbar}><span>Menu</span></a></li>
       </ul>
       <section className="top-bar-section">
         <ul className="right">
           <li className="divider"></li>
-          <li className="active"><a href={nextLink}>{nextTitle}{' '} <i className="fa fa-chevron-right"></i></a></li>
+          <li className="active"><AppLink route={nextRoute} text={nextTitle} onRoute={this.handleRoute}/></li>
         </ul>
         <ul className="left">
-          <li><a href="#/reforms">Reforms</a></li>
-          <li><a href="#/badges">Badges</a></li>
-          <li><a href="#/about">About</a></li>
+          <li><AppLink route={'/reforms'} text={'Reforms'} onRoute={this.handleRoute}/></li>
+          <li><AppLink route={'/badges'} text={'Badges'} onRoute={this.handleRoute}/></li>
+          <li><AppLink route={'/about'} text={'About'} onRoute={this.handleRoute}/></li>
         </ul>
       </section>
     </nav>
