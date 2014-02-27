@@ -618,7 +618,7 @@ var Lobby = React.createClass({
           address = legislator.contact_form;
           break;
         case 'Write':
-          address = legislator.office + ", Washington, D.C.";
+          address = legislator.office + ", Washington, D.C. 20510";
           break;
         case 'Fax':
           address = legislator.fax;
