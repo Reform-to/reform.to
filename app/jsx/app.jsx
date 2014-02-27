@@ -1867,7 +1867,7 @@ var BadgesIndex = React.createClass({
           {_.map(this.props.badges, function(badge) {
             var link = "#/badges/" + badge.slug;
             return (
-              <h3>
+              <h3 key={badge.slug}>
                 <a href={link}>
                   <span className="minor" style={badgeStyle}>
                     <img src={badge.icon} alt={badge.name} />
