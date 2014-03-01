@@ -742,17 +742,17 @@ var Lobby = React.createClass({
             <span className="subheader">Lobby</span>
           </div>
           <div className="large-6 medium-10 small-12 columns">
-            <a href="#" className="button" onClick={this.handleClick}>Call</a>{' '}
-            <a href="#" className="button" onClick={this.handleClick}>Email</a>{' '}
-            <a href="#" className="button" onClick={this.handleClick}>Write</a>{' '}
-            <a href="#" className="button" onClick={this.handleClick}>Fax</a>{' '}
+            <a href="#" className="button green slim" onClick={this.handleClick}>Call</a>{' '}
+            <a href="#" className="button blue slim" onClick={this.handleClick}>Email</a>{' '}
+            <a href="#" className="button orange slim" onClick={this.handleClick}>Write</a>{' '}
+            <a href="#" className="button purple slim" onClick={this.handleClick}>Fax</a>{' '}
           </div>
           <div className="large-1 medium-2 small-12 columns">
             <span className="subheader">Share</span>
           </div>
           <div className="large-4 medium-10 small-12 columns">
-            <a href={facebookDialogURL} className="button" target="_blank">Facebook</a>{' '}
-            <a href={twitterShareURL} className="button" target="_blank">Tweet</a>
+            <a href={facebookDialogURL} className="button facebook slim" target="_blank"><i className="fa fa-facebook"></i>Facebook</a>{' '}
+            <a href={twitterShareURL} className="button twitter slim" target="_blank"><i className="fa fa-twitter"></i>Tweet</a>
           </div>
         </div>
         <div className="row">

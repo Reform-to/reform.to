@@ -126,6 +126,94 @@ html, body {
 }
 
 
+.button .fa {
+  padding-right: 1em;
+}
+
+.button.slim {
+  padding: 0.5rem 1.75rem;
+  border-radius: 4px;
+}
+
+.button.green {
+  background-color: #6c9d36;
+  background: -moz-linear-gradient(top, #83bb45, #6c9d36);
+  background: -ms-linear-gradient(top, #83bb45, #6c9d36);
+  background: -webkit-linear-gradient(top, #83bb45, #6c9d36);
+}
+.button.green:hover { 
+  background-color: #6c9d36;
+  background: -moz-linear-gradient(top, #6c9d36, #6c9d36);
+  background: -ms-linear-gradient(top, #6c9d36, #6c9d36);
+  background: -webkit-linear-gradient(top, #6c9d36, #6c9d36);
+}
+.button.blue {
+  background-color: #3465a4;
+  background: -moz-linear-gradient(top, #008CBA, #3465a4);
+  background: -ms-linear-gradient(top, #008CBA, #3465a4);
+  background: -webkit-linear-gradient(top, #008CBA, #3465a4);
+}
+.button.blue:hover {
+  background-color: #3465a4;
+  background: -moz-linear-gradient(top, #3465a4, #3465a4);
+  background: -ms-linear-gradient(top, #3465a4, #3465a4);
+  background: -webkit-linear-gradient(top, #3465a4, #3465a4);
+}
+.button.orange {
+  background-color: #f57900;
+  background: -moz-linear-gradient(top, #ff7e00, #f57900);
+  background: -ms-linear-gradient(top, #ff7e00, #f57900);
+  background: -webkit-linear-gradient(top, #ff7e00, #f57900);
+}
+.button.orange:hover {
+  background-color: #ff7e00;
+  background: -moz-linear-gradient(top, #f57900, #f57900);
+  background: -ms-linear-gradient(top, #f57900, #f57900);
+  background: -webkit-linear-gradient(top, #f57900, #f57900);
+}
+.button.purple {
+  background-color: #75507b;
+  background: -moz-linear-gradient(top, #8d6094, #75507b);
+  background: -ms-linear-gradient(top, #8d6094, #75507b);
+  background: -webkit-linear-gradient(top, #8d6094, #75507b);
+}
+.button.purple:hover {
+  background-color: #75507b;
+  background: -moz-linear-gradient(top, #75507b, #75507b);
+  background: -ms-linear-gradient(top, #75507b, #75507b);
+  background: -webkit-linear-gradient(top, #75507b, #75507b);
+}
+
+.button.facebook {
+  padding: 0.5rem 1.75rem 0.5rem 1rem;
+  background-color: #2b4170;
+  background: -moz-linear-gradient(top, #3b5998, #2b4170);
+  background: -ms-linear-gradient(top, #3b5998, #2b4170);
+  background: -webkit-linear-gradient(top, #3b5998, #2b4170);
+}
+.button.facebook:hover {
+  padding: 0.5rem 1.75rem 0.5rem 1rem;
+  background-color: #2b4170;
+  background: -moz-linear-gradient(top, #2b4170, #2b4170);
+  background: -ms-linear-gradient(top, #2b4170, #2b4170);
+  background: -webkit-linear-gradient(top, #2b4170, #2b4170);
+}
+.button.twitter {
+  padding: 0.5rem 1.75rem 0.5rem 1rem;
+  background-color: #2b4170;
+  background: -moz-linear-gradient(top, #13cefa, #0899cd);
+  background: -ms-linear-gradient(top, #13cefa, #0899cd);
+  background: -webkit-linear-gradient(top, #13cefa, #0899cd);
+}
+.button.twitter:hover {
+  padding: 0.5rem 1.75rem 0.5rem 1rem;
+  background-color: #2b4170;
+  background: -moz-linear-gradient(top, #0899cd, #0899cd);
+  background: -ms-linear-gradient(top, #0899cd, #0899cd);
+  background: -webkit-linear-gradient(top, #0899cd, #0899cd);
+}
+
+
 fieldset {
   legend {
       font-family: $legend-font-family;
