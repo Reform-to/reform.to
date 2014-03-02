@@ -751,8 +751,8 @@ var Lobby = React.createClass({
             <span className="subheader">Share</span>
           </div>
           <div className="large-4 medium-10 small-12 columns">
-            <a href={facebookDialogURL} className="button facebook slim" target="_blank"><i className="fa fa-facebook"></i>Facebook</a>{' '}
-            <a href={twitterShareURL} className="button twitter slim" target="_blank"><i className="fa fa-twitter"></i>Tweet</a>
+            <a href={facebookDialogURL} className="button facebook slim" target="_blank"><i className="fa fa-facebook"></i>Post to Facebook</a>{' '}
+            <a href={twitterShareURL} className="button twitter slim" target="_blank"><i className="fa fa-twitter"></i>Post to Twitter</a>
           </div>
         </div>
         <div className="row">
