@@ -679,11 +679,11 @@ var Lobby = React.createClass({
         default:
           pronoun = "them"
       }
-      message = "Let your candidate know you support " + pronoun;
+      message = "Let " + fullName + " know you support " + pronoun;
       caption = fullName + ' is a reformer';
 
     } else {
-      message = "Ask your candidate to support reform"
+      message = "Contact " + fullName + " today to urge support for fundamental reform"
       caption = "Asking " + fullName + 'to support reform';
     }
 
@@ -2250,13 +2250,13 @@ var BADGES = [
     description: "Candidates who have pledged to cosponsor legislation that would create fundamental reform"
   },
   {
-    name: "Default 2 Corruption",
+    name: "DC",
     abbr: "dc",
     slug: "default-2-corruption",
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
-    description: "Candidates who have not pledged to cosponsor fundamental reform"
+    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified here"
   },
 ];
 
