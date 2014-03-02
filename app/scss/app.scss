@@ -125,9 +125,8 @@ html, body {
   }
 }
 
-
-.button .fa {
-  padding-right: 1em;
+.button .fa { 
+  padding-right: 0.5rem;
 }
 
 .button.slim {
@@ -184,30 +183,29 @@ html, body {
   background: -webkit-linear-gradient(top, #75507b, #75507b);
 }
 
+.button.facebook, .button.twitter {
+  padding: 0.5rem 1.75rem 0.5rem 0.85rem;
+}
 .button.facebook {
-  padding: 0.5rem 1.75rem 0.5rem 1rem;
-  background-color: #2b4170;
+  background-color: $facebook-color-dark;
   background: -moz-linear-gradient(top, #3b5998, #2b4170);
   background: -ms-linear-gradient(top, #3b5998, #2b4170);
   background: -webkit-linear-gradient(top, #3b5998, #2b4170);
 }
 .button.facebook:hover {
-  padding: 0.5rem 1.75rem 0.5rem 1rem;
-  background-color: #2b4170;
+  background-color: $facebook-color-dark;
   background: -moz-linear-gradient(top, #2b4170, #2b4170);
   background: -ms-linear-gradient(top, #2b4170, #2b4170);
   background: -webkit-linear-gradient(top, #2b4170, #2b4170);
 }
 .button.twitter {
-  padding: 0.5rem 1.75rem 0.5rem 1rem;
-  background-color: #2b4170;
+  background-color: $twitter-color-dark;
   background: -moz-linear-gradient(top, #13cefa, #0899cd);
   background: -ms-linear-gradient(top, #13cefa, #0899cd);
   background: -webkit-linear-gradient(top, #13cefa, #0899cd);
 }
 .button.twitter:hover {
-  padding: 0.5rem 1.75rem 0.5rem 1rem;
-  background-color: #2b4170;
+  background-color: $twitter-color-dark;
   background: -moz-linear-gradient(top, #0899cd, #0899cd);
   background: -ms-linear-gradient(top, #0899cd, #0899cd);
   background: -webkit-linear-gradient(top, #0899cd, #0899cd);
