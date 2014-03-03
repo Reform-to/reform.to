@@ -1919,7 +1919,9 @@ var BadgeProfile = React.createClass({
           </p>
           <h2 className="subheader text-center">{this.props.badge.name}</h2>
           <h4 className="text-center">
-            <em>{this.props.badge.description}</em>
+            <em>
+              <span dangerouslySetInnerHTML={{__html: this.props.badge.description}} />.
+            </em>
           </h4>
           <hr/>
         </div>
