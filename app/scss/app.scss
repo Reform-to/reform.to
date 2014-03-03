@@ -125,6 +125,75 @@ html, body {
   }
 }
 
+@mixin background-gradient($direction, $color1, $color2) {
+  background-color: $color2;
+  background: -moz-linear-gradient($direction, $color1, $color2);
+  background: -ms-linear-gradient($direction, $color1, $color2);
+  background: -webkit-linear-gradient($direction, $color1, $color2); 
+}
+
+.button .fa { 
+  padding-right: 0.5rem;
+}
+
+.button.slim {
+  padding: 0.5rem 1.75rem;
+  margin: 0 0 0.25rem;
+  @include radius();
+}
+
+.button.green {
+  @include background-gradient(top, #83bb45, #6c9d36);
+}
+.button.green:hover { 
+  @include background-gradient(top, #6c9d36, #6c9d36);
+}
+.button.blue {
+  @include background-gradient(top, #008CBA, #3465a4);
+}
+.button.blue:hover {
+  @include background-gradient(top, #3465a4, #3465a4);
+}
+.button.orange {
+  @include background-gradient(top, #ff7e00, #f57900);
+}
+.button.orange:hover {
+  @include background-gradient(top, #f57900, #f57900);
+}
+.button.purple {
+  @include background-gradient(top, #8d6094, #75507b);
+}
+.button.purple:hover {
+  @include background-gradient(top, #75507b, #75507b);
+}
+
+.button.facebook {
+  min-width: 210px;
+  background-color: $facebook-color-dark;
+  background: -moz-linear-gradient(top, #3b5998, #2b4170);
+  background: -ms-linear-gradient(top, #3b5998, #2b4170);
+  background: -webkit-linear-gradient(top, #3b5998, #2b4170);
+}
+.button.facebook:hover {
+  background-color: $facebook-color-dark;
+  background: -moz-linear-gradient(top, #2b4170, #2b4170);
+  background: -ms-linear-gradient(top, #2b4170, #2b4170);
+  background: -webkit-linear-gradient(top, #2b4170, #2b4170);
+}
+.button.twitter {
+  min-width: 210px;
+  background-color: $twitter-color-dark;
+  background: -moz-linear-gradient(top, #13cefa, #0899cd);
+  background: -ms-linear-gradient(top, #13cefa, #0899cd);
+  background: -webkit-linear-gradient(top, #13cefa, #0899cd);
+}
+.button.twitter:hover {
+  background-color: $twitter-color-dark;
+  background: -moz-linear-gradient(top, #0899cd, #0899cd);
+  background: -ms-linear-gradient(top, #0899cd, #0899cd);
+  background: -webkit-linear-gradient(top, #0899cd, #0899cd);
+}
+
 
 fieldset {
   legend {

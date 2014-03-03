@@ -679,11 +679,11 @@ var Lobby = React.createClass({
         default:
           pronoun = "them"
       }
-      message = "Let your candidate know you support " + pronoun;
+      message = "Let " + fullName + " know you support " + pronoun;
       caption = fullName + ' is a reformer';
 
     } else {
-      message = "Ask your candidate to support reform"
+      message = "Contact " + fullName + " today to urge support for fundamental reform"
       caption = "Asking " + fullName + 'to support reform';
     }
 
@@ -742,17 +742,17 @@ var Lobby = React.createClass({
             <span className="subheader">Lobby</span>
           </div>
           <div className="large-6 medium-10 small-12 columns">
-            <a href="#" className="button" onClick={this.handleClick}>Call</a>{' '}
-            <a href="#" className="button" onClick={this.handleClick}>Email</a>{' '}
-            <a href="#" className="button" onClick={this.handleClick}>Write</a>{' '}
-            <a href="#" className="button" onClick={this.handleClick}>Fax</a>{' '}
+            <a href="#" className="button green slim" onClick={this.handleClick}>Call</a>{' '}
+            <a href="#" className="button blue slim" onClick={this.handleClick}>Email</a>{' '}
+            <a href="#" className="button orange slim" onClick={this.handleClick}>Write</a>{' '}
+            <a href="#" className="button purple slim" onClick={this.handleClick}>Fax</a>{' '}
           </div>
           <div className="large-1 medium-2 small-12 columns">
             <span className="subheader">Share</span>
           </div>
           <div className="large-4 medium-10 small-12 columns">
-            <a href={facebookDialogURL} className="button" target="_blank">Facebook</a>{' '}
-            <a href={twitterShareURL} className="button" target="_blank">Tweet</a>
+            <a href={facebookDialogURL} className="button facebook slim" target="_blank"><i className="fa fa-facebook"></i>Post to Facebook</a>{' '}
+            <a href={twitterShareURL} className="button twitter slim" target="_blank"><i className="fa fa-twitter"></i>Post to Twitter</a>
           </div>
         </div>
         <div className="row">
@@ -2250,13 +2250,13 @@ var BADGES = [
     description: "Candidates who have pledged to cosponsor legislation that would create fundamental reform"
   },
   {
-    name: "Default 2 Corruption",
+    name: "DC",
     abbr: "dc",
     slug: "default-2-corruption",
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
-    description: "Candidates who have not pledged to cosponsor fundamental reform"
+    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified here"
   },
 ];
 
