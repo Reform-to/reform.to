@@ -2254,7 +2254,7 @@ var BADGES = [
   {
     name: "DC",
     abbr: "dc",
-    slug: "default-2-corruption",
+    slug: "dc",
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
