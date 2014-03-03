@@ -1896,7 +1896,9 @@ var BadgesIndex = React.createClass({
                   </span>{' '}
                   {badge.name} {' '}
                 </a>
-                <small>{badge.description}.</small>
+                <small>
+                  <span dangerouslySetInnerHTML={{__html: badge.description}} />.
+                </small>
               </h3>
             );
           })}
@@ -2256,7 +2258,7 @@ var BADGES = [
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
-    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified here"
+    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified <a href='#/reforms'>here</a>"
   },
 ];
 
