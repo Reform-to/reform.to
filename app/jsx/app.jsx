@@ -320,16 +320,6 @@ var CandidatePicker = React.createClass({
       longitude: coords.longitude
     };
 
-    var locateLegislatorsURL =
-      sunlightAPI + '/legislators/locate' + "?" + $.param(locationQuery);
-
-    $.ajax({
-      url: locateLegislatorsURL,
-      success: function(data) {
-        this.setState({legislators: data.results});
-      }.bind(this)
-    });
-
     var locateDistrictURL =
       sunlightAPI + '/districts/locate' + "?" + $.param(locationQuery);
 
@@ -341,6 +331,19 @@ var CandidatePicker = React.createClass({
             state: data.results[0].state,
             district: data.results[0].district
           });
+
+          var locateLegislatorsURL =
+            sunlightAPI + '/legislators/locate' + "?" + $.param(locationQuery);
+
+          $.ajax({
+            url: locateLegislatorsURL,
+            success: function(data) {
+              this.setState({legislators: data.results});
+            }.bind(this)
+          });
+
+        } else {
+          this.replaceState(this.getInitialState());
         }
       }.bind(this)
     });
@@ -945,12 +948,13 @@ var District = React.createClass({
 
   },
   render: function() {
+    var hasCandidates = this.state.senatorial.length || this.state.congressional.length;
     return (
       <div>
         <div className="row">
           <div className="large-6 medium-8 columns">
             <h2 className="special-header subheader">
-              {this.state.cycle ? 'Election ' + this.state.cycle : ''}
+              {hasCandidates ? 'Election ' + this.state.cycle : ''}
             </h2>
           </div>
           <div className="large-6 medium-4 columns">
