@@ -325,6 +325,7 @@ var CandidatePicker = React.createClass({
 
     var locationQuery = {
       apikey: apiKey,
+      per_page: "all",
       latitude: latitude,
       longitude: longitude
     };
@@ -345,6 +346,7 @@ var CandidatePicker = React.createClass({
             // Look up legislators for the entire state
             var legislatorsQuery = {
               apikey: apiKey,
+              per_page: "all",
               state: state
             };
             locateLegislatorsURL =
