@@ -453,6 +453,7 @@ var CandidatePicker = React.createClass({
           district={this.state.district}
           legislators={this.state.legislators}
           states={this.props.states}
+          bills={this.props.bills}
         />
       </div>
     </div>
@@ -1030,6 +1031,7 @@ var District = React.createClass({
               district={this.state.district}
               cycle={this.state.cycle}
               legislators={this.props.legislators}
+              bills={this.props.bills}
             />
           </div>
           <div className="medium-6 columns">
@@ -1042,6 +1044,7 @@ var District = React.createClass({
               chamber="Senate"
               cycle={this.state.cycle}
               legislators={this.props.legislators}
+              bills={this.props.bills}
             />
           </div>
         </div>
@@ -1060,6 +1063,14 @@ var CandidateList = React.createClass({
       var district = this.props.district.replace(/\b0+/g, "");
     }
 
+    var bills = this.props.bills ? this.props.bills : [];
+
+    // Merge all sponsor and co-sponsor IDs into one array
+    var sponsor_ids = _.uniq(_.union(
+      _.pluck(bills, 'sponsor_id'),
+      _.flatten(bills, false, 'cosponsor_ids')
+    ));
+
     var candidateNodes = _.map(this.props.candidates, function (candidate) {
       // Take the first letter of the party name only
       var party = candidate.candidate.party.substring(0, 1);
@@ -1076,6 +1087,9 @@ var CandidateList = React.createClass({
       });
       var bioguideId = legislator ? legislator.bioguide_id : null;
 
+      // Check if this Candidate is in the list of Reformers
+      var isReformer = bioguideId ? _.contains(sponsor_ids, bioguideId) : false;
+
       return <Candidate
         key={fecId}
         firstName={firstName}
@@ -1084,6 +1098,7 @@ var CandidateList = React.createClass({
         state={state}
         district={district}
         bioguideId={bioguideId}
+        isReformer={isReformer}
       />
     }.bind(this));
     return (
@@ -1103,17 +1118,21 @@ var Candidate = React.createClass({
     } else {
       var image = '/img/avatar.png';
     }
+
+    var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
+    var badgeSlug = this.props.isReformer ? "anti-corruption" : "dc";
     return (
       <div className="ac-candidate">
         <div className="row">
           <div className="medium-12 columns">
-          <Avatar party={this.props.party} image={image} />
+          <Avatar party={this.props.party} image={image} badge={badge} badgeSlug={badgeSlug}/>
             <CandidateName
               firstName={this.props.firstName}
               lastName={this.props.lastName}
               party={this.props.party}
               state={this.props.state}
               district={this.props.district}
+              isReformer={this.props.isReformer}
               bioguideId={this.props.bioguideId}
             />
           </div>
