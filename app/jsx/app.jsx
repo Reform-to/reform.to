@@ -873,7 +873,7 @@ var Legislator = React.createClass({
     var image = congressPhotosAPI + photoResource;
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var badgeSlug = this.props.isReformer ? "anti-corruption" : "default-2-corruption";
+    var badgeSlug = this.props.isReformer ? "anti-corruption" : "dc";
     return (
       <div className="ac-candidate">
       <div className="row">
