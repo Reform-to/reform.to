@@ -151,6 +151,7 @@ var App = React.createClass({
         resolution={this.state.resolution}
         reforms={reforms}
         bills={this.state.bills}
+        states={this.props.states}
         onUpdateLocation={this.routeToLocation}
       />
     } else if (this.state.page === 'reforms') {
@@ -296,6 +297,7 @@ var HomePage = React.createClass({
         longitude={this.props.longitude}
         resolution={this.props.resolution}
         reforms={this.props.reforms}
+        states={this.props.states}
         bills={this.props.bills}
       />
       </div>
@@ -417,6 +419,9 @@ var CandidatePicker = React.createClass({
     }
   },
   render: function() {
+    var stateAbbr = this.state.state;
+    var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr });
+    var stateName = state ? state.name : '';
     return (
     <div className="ac-candidate-picker">
     <div className="row">
@@ -427,7 +432,7 @@ var CandidatePicker = React.createClass({
       </div>
       <div className="large-6 medium-4 columns">
         <h2>
-          {this.state.state ? this.state.state : ''}
+          {stateName ? stateName : ''}
           {this.state.district ? ", District " + this.state.district : ''}
         </h2>
       </div>
@@ -447,6 +452,7 @@ var CandidatePicker = React.createClass({
           state={this.state.state}
           district={this.state.district}
           legislators={this.state.legislators}
+          states={this.props.states}
         />
       </div>
     </div>
@@ -994,6 +1000,9 @@ var District = React.createClass({
   },
   render: function() {
     var hasCandidates = this.state.senatorial.length || this.state.congressional.length;
+    var stateAbbr = this.state.state;
+    var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr });
+    var stateName = state ? state.name : '';
     return (
       <div>
         <div className="row">
@@ -1004,7 +1013,7 @@ var District = React.createClass({
           </div>
           <div className="large-6 medium-4 columns">
             <h2>
-                {this.props.state ? this.props.state : ''}
+                {stateName ? stateName : ''}
                 {this.props.district ? ", District " + this.props.district : ''}
             </h2>
           </div>
