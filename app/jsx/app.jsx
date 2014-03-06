@@ -58,8 +58,11 @@ var App = React.createClass({
 
     return { page: 'home', reforms: [], bills: [] };
   },
-  navigateToLocation: function(empty, lat, lng) {
-    this.setState({page: 'home', latitude: lat, longitude: lng});
+  navigateToCoords: function(empty, lat, lng) {
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: null});
+  },
+  navigateToPlace: function(empty, lat, lng, rez) {
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: rez});
   },
   navigateToReform: function(empty, id) {
     this.setState({page: 'reform', identifier: id});
@@ -74,7 +77,8 @@ var App = React.createClass({
     var router = Router({
       '/': this.setState.bind(this, {page: 'home'}, null),
       '/home': {
-        "/(.*),(.*)": this.navigateToLocation.bind(this, null),
+        "/(.*),(.*),(.*)": this.navigateToPlace.bind(this, null),
+        "/(.*),(.*)": this.navigateToCoords.bind(this, null),
         '': this.setState.bind(this, {page: 'home'}, null),
       },
       '/reforms': {
@@ -117,7 +121,8 @@ var App = React.createClass({
     this.router.setRoute(route);
   },
   routeToLocation: function(coords) {
-    this.router.setRoute("/home/" + coords.latitude + "," + coords.longitude);
+    var loc = [coords.latitude,coords.longitude,coords.resolution].join(',');
+    this.router.setRoute("/home/" + loc);
   },
   render: function() {
     var content;
@@ -143,6 +148,7 @@ var App = React.createClass({
       content = <HomePage
         latitude={lat}
         longitude={lng}
+        resolution={this.state.resolution}
         reforms={reforms}
         bills={this.state.bills}
         onUpdateLocation={this.routeToLocation}
@@ -186,6 +192,7 @@ var App = React.createClass({
         <Navigation
           latitude={lat}
           longitude={lng}
+          resolution={this.state.resolution}
           page={this.state.page}
           onRoute={this.setRoute}
         />
@@ -230,7 +237,8 @@ var Navigation = React.createClass({
   render: function() {
     var lat = this.props.latitude;
     var lng = this.props.longitude;
-    var coords = lat && lng ? [lat,lng].join(',') : '';
+    var rez = this.props.resolution;
+    var coords = lat && lng ? [lat,lng,rez].join(',') : '';
     var homeRoute = coords ? "/home/" + coords : "/home";
 
     var nextRoute;
@@ -286,6 +294,7 @@ var HomePage = React.createClass({
       <CandidatePicker
         latitude={this.props.latitude}
         longitude={this.props.longitude}
+        resolution={this.props.resolution}
         reforms={this.props.reforms}
         bills={this.props.bills}
       />
@@ -310,14 +319,14 @@ var AboutPage = React.createClass({
 });
 
 var CandidatePicker = React.createClass({
-  locateCandidates: function(coords) {
+  locateCandidates: function(latitude, longitude, resolution) {
     var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
     var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
 
     var locationQuery = {
       apikey: apiKey,
-      latitude: coords.latitude,
-      longitude: coords.longitude
+      latitude: latitude,
+      longitude: longitude
     };
 
     var locateDistrictURL =
@@ -327,13 +336,37 @@ var CandidatePicker = React.createClass({
       url: locateDistrictURL,
       success: function(data) {
         if (data.count > 0) {
-          this.setState({
-            state: data.results[0].state,
-            district: data.results[0].district
-          });
+          var state = data.results[0].state;
+          var district = data.results[0].district;
 
-          var locateLegislatorsURL =
-            sunlightAPI + '/legislators/locate' + "?" + $.param(locationQuery);
+          // Determine whether results are for a district or the whole state
+          var locateLegislatorsURL;
+          if (resolution === "administrative_area_level_1") {
+            // Look up legislators for the entire state
+            var legislatorsQuery = {
+              apikey: apiKey,
+              state: state
+            };
+            locateLegislatorsURL =
+              sunlightAPI + '/legislators' + "?" + $.param(legislatorsQuery);
+
+            // Only set the state
+            this.setState({
+              state: state,
+              district: ''
+            });
+
+          } else {
+            // Look up the legislators for a particular latitude and longitude
+            locateLegislatorsURL =
+              sunlightAPI + '/legislators/locate' + "?" + $.param(locationQuery);
+
+            // Set the state and district
+            this.setState({
+              state: state,
+              district: district
+            });
+          }
 
           $.ajax({
             url: locateLegislatorsURL,
@@ -358,20 +391,27 @@ var CandidatePicker = React.createClass({
       bills: []
     };
   },
-  componentWillMount: function() {
-    // Display results for a default location
-    var lat = this.props.latitude;
-    var lng = this.props.longitude;
-    if (lat && lng) {
-      this.locateCandidates({ latitude: lat, longitude: lng });
+  getDefaultProps: function() {
+    return {
+      resolution: 'locality'
     }
   },
-  componentWillReceiveProps: function(nextProps) {
+  componentWillMount: function() {
+    // Display results for a given location
+    var lat = this.props.latitude;
+    var lng = this.props.longitude;
+    var rez = this.props.resolution;
+    if (lat && lng) {
+      this.locateCandidates(lat, lng, rez);
+    }
+  },
+  componentWillReceiveProps: function(props) {
     // Update results if the location changes
-    var lat = nextProps.latitude;
-    var lng = nextProps.longitude;
-    if (lat != this.props.latitude && lng != this.props.longitude) {
-      this.locateCandidates({ latitude: lat, longitude: lng });
+    var lat = props.latitude;
+    var lng = props.longitude;
+    var rez = props.resolution;
+    if (lat != this.props.latitude || lng != this.props.longitude || rez != this.props.resolution) {
+      this.locateCandidates(lat, lng, rez);
     }
   },
   render: function() {
@@ -451,7 +491,8 @@ var AddressForm = React.createClass({
             var location = results[0].geometry.location;
             var lat = location.lat;
             var lng = location.lng;
-            this.props.onAddressGeocode({latitude: lat, longitude: lng});
+            var rez = results[0].types[0];
+            this.props.onAddressGeocode({latitude: lat, longitude: lng, resolution: rez});
           } else {
             this.setState({
               addressHelper:'No information for ' + results[0].formatted_address
@@ -883,8 +924,10 @@ var District = React.createClass({
     };
     var cycle = window.ENV.ELECTIONS.cycle;
 
+    var districtResource = district ? '/' + district : '';
+
     var houseURI = nytimesAPI
-      + cycle + '/seats/' + state + '/house/' + district
+      + cycle + '/seats/' + state + '/house' + districtResource
       + '.json?' + $.param(query);
 
     $.ajax({
