@@ -933,22 +933,30 @@ var District = React.createClass({
     };
     var cycle = window.ENV.ELECTIONS.cycle;
 
-    var districtResource = district ? '/' + district : '';
+    // If a district is specified, we can do a lookup of the house resource.
+    // However, if no district is specified, we will have to look up seats for
+    // the entire state, and pick out house seats only.
+    var chamberResource = district ? '/house/' + district : '';
 
-    var houseURI = nytimesAPI
-      + cycle + '/seats/' + state + '/house' + districtResource
+    var seatsURI = nytimesAPI
+      + cycle + '/seats/' + state + chamberResource
       + '.json?' + $.param(query);
 
     $.ajax({
-      url: houseURI,
+      url: seatsURI,
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
+          results = data.results;
+          // If there is no district specified, pick out only the house members
+          congressional = district ? results : _.filter(results, function(r) {
+            return r.district.indexOf('house') >= 0;
+          });
           this.setState({
             cycle: data.cycle,
             state: data.state,
             district: data.district,
-            congressional: data.results
+            congressional: congressional
           });
         }
       }.bind(this),
@@ -1058,9 +1066,9 @@ var CandidateList = React.createClass({
     var state = this.props.state;
 
     // Remove any leading zero from the district number, if it exists
-    var district;
+    var searchDistrict;
     if (this.props.district !== undefined && this.props.district.length > 0) {
-      var district = this.props.district.replace(/\b0+/g, "");
+      searchDistrict = this.props.district.replace(/\b0+/g, "");
     }
 
     var bills = this.props.bills ? this.props.bills : [];
@@ -1089,6 +1097,15 @@ var CandidateList = React.createClass({
 
       // Check if this Candidate is in the list of Reformers
       var isReformer = bioguideId ? _.contains(sponsor_ids, bioguideId) : false;
+
+      // Check if this candidate has a district field
+      var district;
+      if (candidate.district) {
+        var cd = candidate.district;
+        district = cd.substring(cd.lastIndexOf('/') + 1, cd.lastIndexOf('.')).replace(/\b0+/g, "");
+      } else {
+        district = searchDistrict;
+      }
 
       return <Candidate
         key={fecId}
