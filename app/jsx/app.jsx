@@ -1083,10 +1083,10 @@ var CandidateList = React.createClass({
       // Take the first letter of the party name only
       var party = candidate.candidate.party.substring(0, 1);
 
-      // Format "LASTNAME, FIRSTNAME" as "Firstname LASTNAME"
+      // Format "LASTNAME, FIRSTNAME" as "FIRSTNAME LASTNAME"
       var names = candidate.candidate.name.split(',');
       var lastName = names[0];
-      var firstName = toTitleCase(names[1]);
+      var firstName = names[1];
 
       // Check if candidate has a bioguide id
       var fecId = candidate.candidate.id;
@@ -2374,12 +2374,4 @@ if ('geolocation' in navigator) {
       longitude: position.coords.longitude
     });
   });
-}
-
-/**
- * Utilities
- */
-
-function toTitleCase(str) {
-      return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
