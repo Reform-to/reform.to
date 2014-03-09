@@ -933,30 +933,21 @@ var District = React.createClass({
     };
     var cycle = window.ENV.ELECTIONS.cycle;
 
-    // If a district is specified, we can do a lookup of the house resource.
-    // However, if no district is specified, we will have to look up seats for
-    // the entire state, and pick out house seats only.
-    var chamberResource = district ? '/house/' + district : '';
-
-    var seatsURI = nytimesAPI
-      + cycle + '/seats/' + state + chamberResource
+    var districtResource = district ? '/' + district : '';
+    var houseURI = nytimesAPI
+      + cycle + '/seats/' + state + '/house' + districtResource
       + '.json?' + $.param(query);
 
     $.ajax({
-      url: seatsURI,
+      url: houseURI,
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
-          results = data.results;
-          // If there is no district specified, pick out only the house members
-          congressional = district ? results : _.filter(results, function(r) {
-            return r.district.indexOf('house') >= 0;
-          });
           this.setState({
             cycle: data.cycle,
             state: data.state,
             district: data.district,
-            congressional: congressional
+            congressional: data.results
           });
         }
       }.bind(this),
