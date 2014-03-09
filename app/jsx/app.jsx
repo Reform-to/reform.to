@@ -3,6 +3,12 @@
  */
 
 var App = React.createClass({
+  propTypes: {
+    states: React.PropTypes.array,
+    badges: React.PropTypes.array,
+    latitude: React.PropTypes.number,
+    longitude: React.PropTypes.number
+  },
   getInitialState: function() {
     var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
 
@@ -58,11 +64,15 @@ var App = React.createClass({
 
     return { page: 'home', reforms: [], bills: [] };
   },
-  navigateToCoords: function(empty, lat, lng) {
+  navigateToCoords: function(empty, latitude, longitude) {
+    var lat = parseFloat(latitude);
+    var lng = parseFloat(longitude);
     this.setState({page: 'home', latitude: lat, longitude: lng, resolution: null});
   },
-  navigateToPlace: function(empty, lat, lng, rez) {
-    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: rez});
+  navigateToPlace: function(empty, latitude, longitude, resolution) {
+    var lat = parseFloat(latitude);
+    var lng = parseFloat(longitude);
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: resolution});
   },
   navigateToReform: function(empty, id) {
     this.setState({page: 'reform', identifier: id});
@@ -211,6 +221,11 @@ var SetRouteMixin = {
 };
 
 var AppLink = React.createClass({
+  propTypes: {
+    route: React.PropTypes.string.isRequired,
+    text: React.PropTypes.string.isRequired,
+    onRoute: React.PropTypes.func.isRequired
+  },
   mixins: [SetRouteMixin],
   render: function() {
     var link = '#' + this.props.route;
@@ -221,6 +236,13 @@ var AppLink = React.createClass({
 });
 
 var Navigation = React.createClass({
+  propTypes: {
+    latitude: React.PropTypes.number,
+    longitude: React.PropTypes.number,
+    resolution: React.PropTypes.string,
+    page: React.PropTypes.string.isRequired,
+    onRoute: React.PropTypes.func.isRequired
+  },
   mixins: [SetRouteMixin],
   getInitialState: function() {
     return ({
@@ -278,6 +300,15 @@ var Navigation = React.createClass({
 });
 
 var HomePage = React.createClass({
+  propTypes: {
+    latitude: React.PropTypes.number,
+    longitude: React.PropTypes.number,
+    resolution: React.PropTypes.string,
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array,
+    states: React.PropTypes.array,
+    onUpdateLocation: React.PropTypes.func.isRequired
+  },
   updateLocation: function(coords) {
     this.props.onUpdateLocation(coords);
   },
@@ -321,6 +352,14 @@ var AboutPage = React.createClass({
 });
 
 var CandidatePicker = React.createClass({
+  propTypes: {
+    latitude: React.PropTypes.number,
+    longitude: React.PropTypes.number,
+    resolution: React.PropTypes.string,
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array,
+    states: React.PropTypes.array,
+  },
   locateCandidates: function(latitude, longitude, resolution) {
     var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
     var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
@@ -340,7 +379,7 @@ var CandidatePicker = React.createClass({
       success: function(data) {
         if (data.count > 0) {
           var state = data.results[0].state;
-          var district = data.results[0].district;
+          var district = _.parseInt(data.results[0].district);
 
           // Determine whether results are for a district or the whole state
           var locateLegislatorsURL;
@@ -357,7 +396,7 @@ var CandidatePicker = React.createClass({
             // Only set the state
             this.setState({
               state: state,
-              district: ''
+              district: null
             });
 
           } else {
@@ -390,7 +429,7 @@ var CandidatePicker = React.createClass({
     return {
       legislators: [],
       state: '',
-      district: '',
+      district: null,
       reforms: [],
       bills: []
     };
@@ -463,6 +502,9 @@ var CandidatePicker = React.createClass({
 });
 
 var AddressForm = React.createClass({
+  propTypes: {
+    onAddressGeocode: React.PropTypes.func.isRequired
+  },
   geocodeAddress: function() {
     this.setState({addressHelper: 'Searching...'});
     this.setState({addressStatus: 'helper'});
@@ -545,6 +587,12 @@ var AddressForm = React.createClass({
 });
 
 var LegislatorProfile = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string.isRequired,
+    bioguideId: React.PropTypes.string.isRequired,
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array
+  },
   getInitialState: function() {
     return {
       legislators: [],
@@ -649,6 +697,11 @@ var LegislatorProfile = React.createClass({
 });
 
 var Lobby = React.createClass({
+  propTypes: {
+    legislator: React.PropTypes.object,
+    reforms: React.PropTypes.array,
+    unsupported: React.PropTypes.array
+  },
   getInitialState: function() {
     return ({
       medium: null,
@@ -829,6 +882,11 @@ var Lobby = React.createClass({
 });
 
 var LegislatorList = React.createClass({
+  propTypes: {
+    legislators: React.PropTypes.array,
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array
+  },
   render: function() {
     var bills = this.props.bills ? this.props.bills : [];
 
@@ -868,6 +926,21 @@ var LegislatorList = React.createClass({
 });
 
 var Legislator = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string,
+    firstName: React.PropTypes.string,
+    lastName: React.PropTypes.string,
+    title: React.PropTypes.string,
+    state: React.PropTypes.string,
+    district: React.PropTypes.number,
+    party: React.PropTypes.string,
+    phone: React.PropTypes.string,
+    office: React.PropTypes.string,
+    contactForm: React.PropTypes.string,
+    twitter: React.PropTypes.string,
+    facebook: React.PropTypes.string,
+    isReformer: React.PropTypes.bool
+  },
   render: function() {
     var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
     var photoResource = '/img/100x125/'+ this.props.key + '.jpg';
@@ -924,6 +997,13 @@ var Legislator = React.createClass({
 });
 
 var District = React.createClass({
+  propTypes: {
+    state: React.PropTypes.string,
+    district: React.PropTypes.number,
+    legislators: React.PropTypes.array,
+    bills: React.PropTypes.array,
+    states: React.PropTypes.array,
+  },
   locateCandidates: function(state, district) {
     var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
     var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
@@ -946,7 +1026,7 @@ var District = React.createClass({
           this.setState({
             cycle: data.cycle,
             state: data.state,
-            district: data.district,
+            district: _.parseInt(data.district),
             congressional: data.results
           });
         }
@@ -983,9 +1063,9 @@ var District = React.createClass({
   },
   getInitialState: function() {
     return {
-      cycle: '',
-      state: [],
-      district: [],
+      cycle: null,
+      state: '',
+      district: null,
       congressional: [],
       senatorial: [],
       legislators: []
@@ -1053,14 +1133,17 @@ var District = React.createClass({
 });
 
 var CandidateList = React.createClass({
+  propTypes: {
+    candidates: React.PropTypes.array,
+    state: React.PropTypes.string,
+    district: React.PropTypes.number,
+    chamber: React.PropTypes.oneOf(['House', 'Senate']),
+    cycle: React.PropTypes.number,
+    legislators: React.PropTypes.array,
+    bills: React.PropTypes.array
+  },
   render: function() {
     var state = this.props.state;
-
-    // Remove any leading zero from the district number, if it exists
-    var searchDistrict;
-    if (this.props.district !== undefined && this.props.district.length > 0) {
-      searchDistrict = this.props.district.replace(/\b0+/g, "");
-    }
 
     var bills = this.props.bills ? this.props.bills : [];
 
@@ -1093,9 +1176,7 @@ var CandidateList = React.createClass({
       var district;
       if (candidate.district) {
         var cd = candidate.district;
-        district = cd.substring(cd.lastIndexOf('/') + 1, cd.lastIndexOf('.')).replace(/\b0+/g, "");
-      } else {
-        district = searchDistrict;
+        district = _.parseInt(cd.substring(cd.lastIndexOf('/') + 1, cd.lastIndexOf('.')));
       }
 
       return <Candidate
@@ -1118,6 +1199,16 @@ var CandidateList = React.createClass({
 });
 
 var Candidate = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string,
+    firstName: React.PropTypes.string,
+    lastName: React.PropTypes.string,
+    party: React.PropTypes.string,
+    state: React.PropTypes.string,
+    district: React.PropTypes.number,
+    bioguideId: React.PropTypes.string,
+    isReformer: React.PropTypes.bool
+  },
   render: function() {
     if (this.props.bioguideId) {
       var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
@@ -1151,6 +1242,12 @@ var Candidate = React.createClass({
 });
 
 var Avatar = React.createClass({
+  propTypes: {
+    party: React.PropTypes.string,
+    image: React.PropTypes.string,
+    badge: React.PropTypes.string,
+    badgeSlug: React.PropTypes.string,
+  },
   render: function() {
     var avatarClass = "party-" + this.props.party;
     var avatarStyle = {
@@ -1175,6 +1272,16 @@ var Avatar = React.createClass({
 });
 
 var CandidateName = React.createClass({
+  propTypes: {
+    title: React.PropTypes.string,
+    firstName: React.PropTypes.string,
+    lastName: React.PropTypes.string,
+    party: React.PropTypes.string,
+    state: React.PropTypes.string,
+    district: React.PropTypes.number,
+    isReformer: React.PropTypes.bool,
+    bioguideId: React.PropTypes.string
+  },
   handleClick: function(event) {
     return false;
   },
@@ -1212,6 +1319,10 @@ var CandidateName = React.createClass({
 });
 
 var PledgeTaker = React.createClass({
+  propTypes: {
+    reforms: React.PropTypes.array,
+    states: React.PropTypes.array,
+  },
   getInitialState: function() {
     return { reforms: [], submitted: false, confirmed: false, reformError: '', emailError: false };
   },
@@ -1367,6 +1478,12 @@ var PledgeTaker = React.createClass({
 });
 
 var CandidacyFieldset = React.createClass({
+  propTypes: {
+    states: React.PropTypes.array,
+    onCandidacyChange: React.PropTypes.func.isRequired,
+    onIdChange: React.PropTypes.func.isRequired,
+    onNameChange: React.PropTypes.func.isRequired
+  },
   getInitialState: function() {
     return {
       role: '',
@@ -1806,6 +1923,12 @@ var CandidacyFieldset = React.createClass({
 });
 
 var ReformsFieldset = React.createClass({
+  propTypes: {
+    reforms: React.PropTypes.array,
+    checked: React.PropTypes.array,
+    error: React.PropTypes.string,
+    onReformsSelect: React.PropTypes.func.isRequired
+  },
   selectReforms: function(event) {
     // Get the value of the reform which was clicked
     var target = _.parseInt(event.target.value);
@@ -1855,6 +1978,15 @@ var ReformsFieldset = React.createClass({
 });
 
 var ContactFieldset = React.createClass({
+  propTypes: {
+    firstName: React.PropTypes.string,
+    middleName: React.PropTypes.string,
+    lastName: React.PropTypes.string,
+    suffix: React.PropTypes.string,
+    onNameChange: React.PropTypes.func.isRequired,
+    submitted: React.PropTypes.bool,
+    emailError: React.PropTypes.bool
+  },
   // Form values are bound to props, so send any user inputs back to the parent
   changeFirstName: function(event) {
     // Combine the new value with the current values for the other inputs
@@ -1961,6 +2093,9 @@ var ContactFieldset = React.createClass({
 });
 
 var BadgesIndex = React.createClass({
+  propTypes: {
+    badges: React.PropTypes.array
+  },
   render: function() {
     var badgeStyle = {
       textTransform: "uppercase"
@@ -1994,6 +2129,10 @@ var BadgesIndex = React.createClass({
 });
 
 var BadgeProfile = React.createClass({
+  propTypes: {
+    badge: React.PropTypes.object.isRequired,
+    reforms: React.PropTypes.array
+  },
   render: function() {
     return (
       <div>
@@ -2023,8 +2162,8 @@ var BadgeProfile = React.createClass({
           var legislators = cosponsors.concat(sponsor);
           var sponsorCount = legislators.length;
           return (
-            <div>
-            <h3 key={reform.id}>
+            <div key={reform.id}>
+            <h3>
               <a href={resource}>
                 {reform.title}
               </a> {' '}
@@ -2047,6 +2186,9 @@ var BadgeProfile = React.createClass({
 });
 
 var ReformsIndex = React.createClass({
+  propTypes: {
+    reforms: React.PropTypes.array
+  },
   render: function() {
     return (
       <div>
@@ -2066,6 +2208,9 @@ var ReformsIndex = React.createClass({
 });
 
 var Reforms = React.createClass({
+  propTypes: {
+    reforms: React.PropTypes.array
+  },
   render: function() {
     // Group the reforms by type
     var groups = _.groupBy(this.props.reforms, function(reform) {
@@ -2088,6 +2233,10 @@ var Reforms = React.createClass({
 });
 
 var ReformsList = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string.isRequired,
+    reforms: React.PropTypes.array
+  },
   render: function() {
     var reformNodes = _.map(this.props.reforms, function (reform) {
       return <Reform
@@ -2112,6 +2261,10 @@ var ReformsList = React.createClass({
 });
 
 var ReformProfile = React.createClass({
+  propTypes: {
+    reform: React.PropTypes.object,
+    bills: React.PropTypes.array
+  },
   render: function() {
     var reform = this.props.reform;
 
@@ -2149,6 +2302,17 @@ var ReformProfile = React.createClass({
 });
 
 var Reform = React.createClass({
+  propTypes: {
+    key: React.PropTypes.number.isRequired,
+    title: React.PropTypes.string,
+    description: React.PropTypes.string,
+    sponsor: React.PropTypes.object,
+    billId: React.PropTypes.string,
+    url: React.PropTypes.string,
+    slug: React.PropTypes.string,
+    status: React.PropTypes.string,
+    bill: React.PropTypes.object,
+  },
   render: function() {
 
     var sponsorLine;
@@ -2212,6 +2376,9 @@ var Reform = React.createClass({
 });
 
 var StatesLegislators = React.createClass({
+  propTypes: {
+    legislators: React.PropTypes.array
+  },
   render: function() {
     // Sort and group Co-sponsors by State
     sortByState = function(l) { return l.state_name; };
@@ -2242,6 +2409,11 @@ var StatesLegislators = React.createClass({
 });
 
 var Bill = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string,
+    bill: React.PropTypes.object,
+    slug: React.PropTypes.string
+  },
   render: function() {
     var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
 
@@ -2278,6 +2450,11 @@ var Bill = React.createClass({
 });
 
 var FullTitleLastName = React.createClass({
+  propTypes: {
+    title: React.PropTypes.string,
+    gender: React.PropTypes.string,
+    lastName: React.PropTypes.string
+  },
   render: function() {
     var title;
     switch (this.props.title) {
@@ -2307,6 +2484,16 @@ var FullTitleLastName = React.createClass({
 });
 
 var TitleNamePartyState = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string,
+    bioguideId: React.PropTypes.string,
+    title: React.PropTypes.string,
+    firstName: React.PropTypes.string,
+    lastName: React.PropTypes.string,
+    state: React.PropTypes.string,
+    district: React.PropTypes.number,
+    party: React.PropTypes.string
+  },
   render: function() {
     var fullName = [
       this.props.title, this.props.firstName, this.props.lastName
