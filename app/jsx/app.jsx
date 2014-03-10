@@ -646,26 +646,8 @@ var LegislatorProfile = React.createClass({
       />
     }
 
-    var callOut;
-    var callToAction;
-    var callOutStyle = 'panel';
-    if (reforms.length) {
-      callOut = "is a Reformer!";
-      callOutStyle = 'panel callout';
-      callToAction = "";
-    } else {
-      callOut = "has not supported any Reforms.";
-      callToAction = "Contact your Legislators today and urge them to support essential reform."
-    }
     return(
       <div>
-      <div className="row">
-        <div className="large-6 medium-8 columns">
-          <h2 className="subheader">
-            {this.state.legislators.length > 0 ? 'United States Congress' : ''}
-          </h2>
-        </div>
-      </div>
       <div className="row">
         <div className="large-12 columns">
           <LegislatorList
@@ -676,18 +658,13 @@ var LegislatorProfile = React.createClass({
         </div>
       </div>
       <div className="row">
-        <div className="large-12 columns">
-          <div className={callOutStyle}>
-            <h4 className="subheader text-center">{legislatorName} {' '} {callOut}</h4>
-            <p className="text-center">{callToAction}</p>
-          </div>
+        <div className="large-8 large-offset-2 columns">
+          <Deed reforms={reforms} attribution={legislatorName} />
         </div>
       </div>
       <div className="row">
         <div className="large-12 columns">
           <hr/>
-          <h2 className="subheader">{reforms.length > 0 ? "Sponsored Reform" : ""}</h2>
-          <Reforms reforms={reforms} />
           <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
         </div>
       </div>
@@ -877,6 +854,47 @@ var Lobby = React.createClass({
         <div>
           {content}
         </div>
+    );
+  }
+});
+
+var Deed = React.createClass({
+  propTypes: {
+    attribution: React.PropTypes.component,
+    reforms: React.PropTypes.array
+  },
+  getDefaultProps: function() {
+    return {
+      attribution: <span>The reformer linked to this deed</span>,
+      reforms: []
+    };
+  },
+  render: function() {
+    var commitment;
+    if (this.props.reforms.length > 0) {
+      commitment = "is committed to consponsoring the following fundamental reform:"
+    } else {
+      commitment = "has not committed to consponsoring fundamental reform."
+    }
+    return(
+      <div>
+        <h2 className="subheader special-header text-center text-lowercase">
+          Commitment to Reform
+        </h2>
+        <h4 className="text-center">{this.props.attribution} {' '} {commitment}</h4>
+        {_.map(this.props.reforms, function (reform, i) {
+          var resource = "#/reforms/" + reform.slug;
+          return (
+            <div key={i}>
+              <h3 className="text-center">
+                <a href={resource}>
+                  {reform.title}
+                </a>
+              </h3>
+            </div>
+          )
+        }, this)}
+      </div>
     );
   }
 });
