@@ -95,6 +95,10 @@ html, body {
   color: $success-color;
 }
 
+.special-header a:hover, .special-header a:focus {
+  color: $anchor-success-color-hover;
+}
+
 .light-header {
   color: $small-font-color;
   text-transform: uppercase;
