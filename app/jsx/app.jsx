@@ -947,12 +947,12 @@ var Legislator = React.createClass({
     var image = congressPhotosAPI + photoResource;
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var badgeSlug = this.props.isReformer ? "anti-corruption" : "dc";
+    var link = "#/legislators/" + this.props.key;
     return (
       <div className="ac-candidate">
       <div className="row">
       <div className="large-6 medium-8 columns">
-        <Avatar party={this.props.party} image={image} badge={badge} badgeSlug={badgeSlug}/>
+        <Avatar party={this.props.party} image={image} badge={badge} link={link}/>
         <CandidateName
           title={this.props.title}
           firstName={this.props.firstName}
@@ -1219,12 +1219,12 @@ var Candidate = React.createClass({
     }
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var badgeSlug = this.props.isReformer ? "anti-corruption" : "dc";
+    var link = this.props.bioguideId ? "#/legislators/" + this.props.bioguideId : null;
     return (
       <div className="ac-candidate">
         <div className="row">
           <div className="medium-12 columns">
-          <Avatar party={this.props.party} image={image} badge={badge} badgeSlug={badgeSlug}/>
+          <Avatar party={this.props.party} image={image} badge={badge} link={link}/>
             <CandidateName
               firstName={this.props.firstName}
               lastName={this.props.lastName}
@@ -1255,17 +1255,16 @@ var Avatar = React.createClass({
     };
     var badgeClass = "badge " + this.props.badge;
 
-    var badgeLink;
-    if (this.props.badge) {
-      var badgeUrl = "/#/badges/" + this.props.badgeSlug;
-      badgeLink = <a className="badge-link" href={badgeUrl}></a>
+    var avatarLink;
+    if (this.props.link) {
+      avatarLink = <a className="badge-link" href={this.props.link}></a>
     }
     return (
       <div
         className={"show-for-medium-up avatar img-circle " + avatarClass }
         style={avatarStyle}>
         <div className={badgeClass}> </div>
-        {badgeLink}
+        {avatarLink}
       </div>
     );
   }
