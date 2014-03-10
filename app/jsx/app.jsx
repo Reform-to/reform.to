@@ -917,7 +917,7 @@ var CandidateProfile = React.createClass({
   },
   getInitialState: function() {
     return {
-      candidate: null
+      candidates: []
     };
   },
   componentWillMount: function() {
@@ -937,22 +937,39 @@ var CandidateProfile = React.createClass({
       url: candidateURI,
       dataType: 'jsonp',
       success: function(data) {
-        this.setState({candidate: data.results[0]});
+        var candidates = _.map(data.results, function(c) {
+          return { candidate: c , district: c.district, state: c.state }
+        });
+        this.setState({candidates: candidates});
       }.bind(this)
     });
   },
   render: function() {
     var attribution;
-    if (this.state.candidate) {
-      var names = this.state.candidate.name.split(',');
+    var candidateList;
+    if (this.state.candidates.length > 0) {
+      var candidate = this.state.candidates[0];
+      var cs = candidate.candidate.state;
+      var state = cs.substring(cs.lastIndexOf('/') + 1, cs.lastIndexOf('.'));
+      var names = candidate.candidate.name.split(',');
       var lastName = names[0];
       var firstName = names[1];
       candidateName = [firstName, lastName].join(" ");
       attribution = <span>{candidateName}</span>
+
+      candidateList = <CandidateList
+        candidates={this.state.candidates}
+        state={state}
+      />
     }
 
     return (
       <div>
+      <div className="row">
+        <div className="large-12 columns">
+          {candidateList}
+        </div>
+      </div>
       <div className="row">
         <div className="large-8 large-offset-2 columns">
           <Deed attribution={attribution} />
