@@ -1285,7 +1285,7 @@ var CandidateName = React.createClass({
     return false;
   },
   render: function() {
-    var nameClass = this.props.isReformer ? 'name special-header' : 'name'
+    var nameClass = 'name';
 
     var link = '';
     if (this.props.bioguideId) {
