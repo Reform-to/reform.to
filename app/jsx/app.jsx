@@ -1308,9 +1308,7 @@ var CandidateName = React.createClass({
         {this.props.party}-{this.props.state}
         {this.props.district ? ", District " + this.props.district : ''} { ' ' }
         <span className="subheader">
-        <a href="#/reforms">
         {this.props.isReformer ? " -  Reformer" : ''}
-        </a>
         </span>
         </span>
       </div>
