@@ -83,6 +83,9 @@ var App = React.createClass({
   navigateToLegislator: function(empty, id) {
     this.setState({page: 'legislators', identifier: id});
   },
+  navigateToCandidate: function(empty, id) {
+    this.setState({page: 'candidates', identifier: id});
+  },
   componentWillMount: function() {
     var router = Router({
       '/': this.setState.bind(this, {page: 'home'}, null),
@@ -97,6 +100,9 @@ var App = React.createClass({
       },
       '/legislators': {
         '/:id': this.navigateToLegislator.bind(this, null),
+      },
+      '/candidates': {
+        '/:id': this.navigateToCandidate.bind(this, null),
       },
       '/badges': {
         '/:id': this.navigateToBadge.bind(this, null),
@@ -177,6 +183,13 @@ var App = React.createClass({
       }
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile
+        key={this.state.identifier}
+        bioguideId={this.state.identifier}
+        reforms={reforms}
+        bills={this.state.bills}
+      />
+    } else if (this.state.page === 'candidates') {
+      content = <CandidateProfile
         key={this.state.identifier}
         bioguideId={this.state.identifier}
         reforms={reforms}
@@ -899,6 +912,20 @@ var Deed = React.createClass({
   }
 });
 
+var CandidateProfile = React.createClass({
+  render: function() {
+    return (
+      <div>
+      <div className="row">
+        <div className="large-12 columns">
+        <h1>Candidate Profile</h1>
+        </div>
+      </div>
+      </div>
+    );
+  }
+});
+
 var LegislatorList = React.createClass({
   propTypes: {
     legislators: React.PropTypes.array,
@@ -1251,6 +1278,7 @@ var Candidate = React.createClass({
               district={this.props.district}
               isReformer={this.props.isReformer}
               bioguideId={this.props.bioguideId}
+              fecId={this.props.key}
             />
           </div>
         </div>
@@ -1308,6 +1336,8 @@ var CandidateName = React.createClass({
     var link = '';
     if (this.props.bioguideId) {
       link = "#/legislators/" + this.props.bioguideId;
+    } else if (this.props.fecId) {
+      link = "#/candidates/" + this.props.fecId;
     }
 
     var fullName = this.props.firstName + " " + this.props.lastName;
