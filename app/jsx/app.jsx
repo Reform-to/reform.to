@@ -191,9 +191,7 @@ var App = React.createClass({
     } else if (this.state.page === 'candidates') {
       content = <CandidateProfile
         key={this.state.identifier}
-        bioguideId={this.state.identifier}
-        reforms={reforms}
-        bills={this.state.bills}
+        fecId={this.state.identifier}
       />
     } else if (this.state.page === 'badges') {
       content = <BadgesIndex badges={this.props.badges} />
@@ -913,12 +911,51 @@ var Deed = React.createClass({
 });
 
 var CandidateProfile = React.createClass({
+  propTypes: {
+    key: React.PropTypes.string.isRequired,
+    fecId: React.PropTypes.string.isRequired
+  },
+  getInitialState: function() {
+    return {
+      candidate: null
+    };
+  },
+  componentWillMount: function() {
+    var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
+    var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+
+    var query = {
+      'api-key': apiKey
+    };
+    var cycle = window.ENV.ELECTIONS.cycle;
+
+    var candidateURI = nytimesAPI
+      + cycle + '/candidates/' + this.props.fecId
+      + '.json?' + $.param(query);
+
+    $.ajax({
+      url: candidateURI,
+      dataType: 'jsonp',
+      success: function(data) {
+        this.setState({candidate: data.results[0]});
+      }.bind(this)
+    });
+  },
   render: function() {
+    var attribution;
+    if (this.state.candidate) {
+      var names = this.state.candidate.name.split(',');
+      var lastName = names[0];
+      var firstName = names[1];
+      candidateName = [firstName, lastName].join(" ");
+      attribution = <span>{candidateName}</span>
+    }
+
     return (
       <div>
       <div className="row">
-        <div className="large-12 columns">
-        <h1>Candidate Profile</h1>
+        <div className="large-8 large-offset-2 columns">
+          <Deed attribution={attribution} />
         </div>
       </div>
       </div>
