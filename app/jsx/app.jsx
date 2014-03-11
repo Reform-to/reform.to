@@ -2670,7 +2670,7 @@ var BADGES = [
     slug: "anti-corruption",
     badge: "/img/badges/ac-128x128.png",
     icon: "/img/badges/ac-32x32.png",
-    reforms: [0, 1, 2, 3],
+    reforms: [0, 1, 2, 3, 4, 5],
     description: "Candidates who have pledged to cosponsor legislation that would create fundamental reform"
   },
   {
