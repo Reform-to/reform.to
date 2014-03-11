@@ -704,6 +704,7 @@ var LegislatorProfile = React.createClass({
       legislatorName = <a href={link}><FullTitleFullName
         title={legislator.title}
         gender={legislator.gender}
+        firstName={legislator.first_name}
         lastName={legislator.last_name}
       /></a>
     }
