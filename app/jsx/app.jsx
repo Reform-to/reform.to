@@ -38,7 +38,6 @@ var App = React.createClass({
           "sponsor",
           "cosponsor_ids",
           "cosponsors_count",
-          "cosponsors",
           "last_version"
         ];
 
@@ -55,6 +54,34 @@ var App = React.createClass({
           url: findBillsURL,
           success: function(data) {
             this.setState({ bills: data.results });
+            cosponsorIds = _.uniq(_.flatten(_.pluck(data.results, 'cosponsor_ids')));
+
+            var cosponsorFields = [
+              "bioguide_id",
+              "first_name",
+              "last_name",
+              "state",
+              "state_name",
+              "district",
+              "party"
+            ];
+
+            var cosponsorQuery = {
+              apikey: apiKey,
+              "bioguide_id__in": cosponsorIds.join('|'),
+              fields: cosponsorFields.join(),
+              per_page: "all"
+            };
+
+            var findCosponsorsURL =
+              sunlightAPI + "/legislators" + "?" + $.param(cosponsorQuery);
+
+            $.ajax({
+              url: findCosponsorsURL,
+              success: function(data) {
+                this.setState({ cosponsors: data.results });
+              }.bind(this)
+            });
           }.bind(this)
         });
 
@@ -62,7 +89,7 @@ var App = React.createClass({
       }.bind(this)
     });
 
-    return { page: 'home', reforms: [], bills: [] };
+    return { page: 'home', reforms: [], bills: [], cosponsors: [] };
   },
   navigateToCoords: function(empty, latitude, longitude) {
     var lat = parseFloat(latitude);
@@ -177,9 +204,17 @@ var App = React.createClass({
       var reform = _.find(reforms, function(r) {
         return slug === r.slug;
       });
+      var cosponsor_ids = reform && reform.bill ? reform.bill.cosponsor_ids : [];
+      var cosponsors = _.filter(this.state.cosponsors, function(c) {
+        return _.contains(cosponsor_ids, c.bioguide_id);
+      });
 
       if (reform) {
-        content = <ReformProfile reform={reform} bills={this.state.bills} />
+        content = <ReformProfile
+          reform={reform}
+          bills={this.state.bills}
+          cosponsors={cosponsors}
+        />
       }
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile
@@ -203,7 +238,11 @@ var App = React.createClass({
       var reforms = _.filter(this.state.reforms, function(r) {
         return _.contains(badge.reforms, r.id);
       });
-      content = <BadgeProfile badge={badge} reforms={reforms} />
+      content = <BadgeProfile
+        badge={badge}
+        reforms={reforms}
+        cosponsors={this.state.cosponsors}
+      />
     } else if (this.state.page === 'pledges') {
       content = <PledgeTaker reforms={reforms} states={this.props.states} />
     } else if (this.state.page === 'about') {
@@ -2230,7 +2269,8 @@ var BadgesIndex = React.createClass({
 var BadgeProfile = React.createClass({
   propTypes: {
     badge: React.PropTypes.object.isRequired,
-    reforms: React.PropTypes.array
+    reforms: React.PropTypes.array,
+    cosponsors: React.PropTypes.array
   },
   render: function() {
     return (
@@ -2257,7 +2297,10 @@ var BadgeProfile = React.createClass({
         {_.map(this.props.reforms, function(reform) {
           var resource = "#/reforms/" + reform.slug;
           var sponsor = reform.bill ? reform.bill.sponsor : [];
-          var cosponsors = reform.bill ? _.pluck(reform.bill.cosponsors, 'legislator') : [];
+          var cosponsor_ids = reform.bill ? reform.bill.cosponsor_ids : [];
+          var cosponsors = _.filter(this.props.cosponsors, function(c) {
+            return _.contains(cosponsor_ids, c.bioguide_id);
+          });
           var legislators = cosponsors.concat(sponsor);
           var sponsorCount = legislators.length;
           return (
@@ -2276,7 +2319,7 @@ var BadgeProfile = React.createClass({
             <hr/>
             </div>
           );
-        })}
+        }.bind(this))}
         </div>
       </div>
       </div>
@@ -2362,7 +2405,8 @@ var ReformsList = React.createClass({
 var ReformProfile = React.createClass({
   propTypes: {
     reform: React.PropTypes.object,
-    bills: React.PropTypes.array
+    bills: React.PropTypes.array,
+    cosponsors: React.PropTypes.array
   },
   render: function() {
     var reform = this.props.reform;
@@ -2373,6 +2417,7 @@ var ReformProfile = React.createClass({
         key={reform.bill_id}
         bill={reform.bill}
         slug={reform.slug}
+        cosponsors={this.props.cosponsors}
       />
     }
 
@@ -2515,15 +2560,15 @@ var Bill = React.createClass({
   propTypes: {
     key: React.PropTypes.string,
     bill: React.PropTypes.object,
-    slug: React.PropTypes.string
+    slug: React.PropTypes.string,
+    cosponsors: React.PropTypes.array
   },
   render: function() {
     var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
 
     var cosponsorNodes;
     if (cosponsors_count) {
-      var legislators = _.pluck(this.props.bill.cosponsors, 'legislator');
-      cosponsorNodes = <StatesLegislators legislators={legislators} />
+      cosponsorNodes = <StatesLegislators legislators={this.props.cosponsors} />
     }
     var official_title = this.props.bill ? this.props.bill.official_title : '';
     var short_title = this.props.bill ? this.props.bill.short_title : '';
