@@ -701,7 +701,7 @@ var LegislatorProfile = React.createClass({
     if (this.state.legislators.length) {
       var legislator = this.state.legislators[0];
       var link = "#/legislators/" + legislator.bioguide_id;
-      legislatorName = <a href={link}><FullTitleLastName
+      legislatorName = <a href={link}><FullTitleFullName
         title={legislator.title}
         gender={legislator.gender}
         lastName={legislator.last_name}
@@ -2640,11 +2640,12 @@ var Bill = React.createClass({
   }
 });
 
-var FullTitleLastName = React.createClass({
+var FullTitleFullName = React.createClass({
   propTypes: {
-    title: React.PropTypes.string,
+    title: React.PropTypes.string.isRequired,
     gender: React.PropTypes.string,
-    lastName: React.PropTypes.string
+    firstName: React.PropTypes.string,
+    lastName: React.PropTypes.string.isRequired
   },
   render: function() {
     var title;
@@ -2665,7 +2666,7 @@ var FullTitleLastName = React.createClass({
     }
 
     var fullName = [
-      title, this.props.lastName
+      title, this.props.firstName, this.props.lastName
     ].join(" ");
 
     return (
