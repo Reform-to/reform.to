@@ -716,6 +716,18 @@ var LegislatorProfile = React.createClass({
         </div>
       </div>
 
+    var callOut;
+    var callToAction;
+    var callOutStyle = 'panel';
+    if (reforms.length) {
+      callOut = "is a Reformer!";
+      callOutStyle = 'panel callout';
+      callToAction = "";
+    } else {
+      callOut = "has not supported any Reforms.";
+      callToAction = "Contact your Legislators today and urge them to support essential reform."
+    }
+
     var profile =
       <div>
       <div className="row">
@@ -727,10 +739,22 @@ var LegislatorProfile = React.createClass({
           />
         </div>
       </div>
-      {deed}
       <div className="row">
         <div className="large-12 columns">
-          <hr/>
+          <div className={callOutStyle}>
+            <h4 className="subheader text-center">{legislatorName} {' '} {callOut}</h4>
+            <p className="text-center">{callToAction}</p>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="large-12 columns">
+          <h2 className="subheader">{reforms.length > 0 ? "Sponsored Reform" : ""}</h2>
+          <Reforms reforms={reforms} />
+        </div>
+      </div>
+      <div className="row">
+        <div className="large-12 columns">
           <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
         </div>
       </div>
