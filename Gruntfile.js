@@ -2,6 +2,19 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    jquery: {
+      dist: {
+        options: {
+          prefix: 'jquery-',
+          minify: true
+        },
+        output: 'tmp/result/js/lib',
+        versions: {
+          "2.0.3": ['css', 'deprecated', 'dimensions', 'effects', 'event-alias', 'offset', 'sizzle', 'wrap']
+        }
+      }
+    },
+
     sass: {
       options: {
         includePaths: ['vendor/foundation/scss']
@@ -150,6 +163,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-jquery-builder');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -157,7 +171,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'react', 'copy:compiled']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'jquery', 'react', 'copy:compiled']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev']);
   grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'connect', 'watch']);
   grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'uglify', 'copy:dist']);
