@@ -29,7 +29,7 @@ module.exports = function(grunt) {
     react: {
       main: {
         files: {
-            'tmp/result/js/app.js': 'app/jsx/app.jsx'
+            'tmp/compiled/js/app.js': 'app/jsx/app.jsx'
         }
       }
     },
@@ -57,6 +57,16 @@ module.exports = function(grunt) {
     },
 
     copy: {
+      compiled: {
+        files: [
+          {
+            expand: true,
+            cwd: 'tmp/compiled',
+            src: ['**/*'],
+            dest: 'tmp/result'
+          }
+        ]
+      },
       vendor: {
         files: [
           {
@@ -90,6 +100,14 @@ module.exports = function(grunt) {
       }
     },
 
+    uglify: {
+      app: {
+        files: {
+          'tmp/result/js/app.min.js': ['tmp/compiled/js/app.js']
+        }
+      }
+    },
+
     connect: {
       server: {
         options: {
@@ -117,6 +135,11 @@ module.exports = function(grunt) {
         tasks: ['copy:assets']
       },
 
+      compiled: {
+        files: 'tmp/compiled/**/*',
+        tasks: ['copy:compiled']
+      },
+
       react: {
         files: 'app/jsx/**/*.jsx',
         tasks: ['react']
@@ -126,6 +149,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -133,9 +157,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'react']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'react', 'copy:compiled']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev']);
   grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'connect', 'watch']);
-  grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'copy:dist']);
+  grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'uglify', 'copy:dist']);
 
 }
