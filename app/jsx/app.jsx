@@ -108,10 +108,16 @@ var App = React.createClass({
     this.setState({page: 'badge', identifier: id});
   },
   navigateToLegislator: function(empty, id) {
-    this.setState({page: 'legislators', identifier: id});
+    this.setState({page: 'legislators', identifier: id, resource: null});
+  },
+  navigateToLegislatorDeed: function(empty, id) {
+    this.setState({page: 'legislators', identifier: id, resource: 'deed'});
   },
   navigateToCandidate: function(empty, id) {
-    this.setState({page: 'candidates', identifier: id});
+    this.setState({page: 'candidates', identifier: id, resource: null});
+  },
+  navigateToCandidateDeed: function(empty, id) {
+    this.setState({page: 'candidates', identifier: id, resource: 'deed'});
   },
   componentWillMount: function() {
     var router = Router({
@@ -127,9 +133,11 @@ var App = React.createClass({
       },
       '/legislators': {
         '/:id': this.navigateToLegislator.bind(this, null),
+        '/:id/deed': this.navigateToLegislatorDeed.bind(this, null),
       },
       '/candidates': {
         '/:id': this.navigateToCandidate.bind(this, null),
+        '/:id/deed': this.navigateToCandidateDeed.bind(this, null),
       },
       '/badges': {
         '/:id': this.navigateToBadge.bind(this, null),
@@ -222,11 +230,13 @@ var App = React.createClass({
         bioguideId={this.state.identifier}
         reforms={reforms}
         bills={this.state.bills}
+        resource={this.state.resource}
       />
     } else if (this.state.page === 'candidates') {
       content = <CandidateProfile
         key={this.state.identifier}
         fecId={this.state.identifier}
+        resource={this.state.resource}
       />
     } else if (this.state.page === 'badges') {
       content = <BadgesIndex badges={this.props.badges} />
@@ -641,7 +651,8 @@ var LegislatorProfile = React.createClass({
     key: React.PropTypes.string.isRequired,
     bioguideId: React.PropTypes.string.isRequired,
     reforms: React.PropTypes.array,
-    bills: React.PropTypes.array
+    bills: React.PropTypes.array,
+    resource: React.PropTypes.string
   },
   getInitialState: function() {
     return {
@@ -689,14 +700,22 @@ var LegislatorProfile = React.createClass({
 
     if (this.state.legislators.length) {
       var legislator = this.state.legislators[0];
-      legislatorName = <FullTitleLastName
+      var link = "#/legislators/" + legislator.bioguide_id;
+      legislatorName = <a href={link}><FullTitleLastName
         title={legislator.title}
         gender={legislator.gender}
         lastName={legislator.last_name}
-      />
+      /></a>
     }
 
-    return(
+    var deed =
+      <div className="row">
+        <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
+          <Deed reforms={reforms} attribution={legislatorName} />
+        </div>
+      </div>
+
+    var profile =
       <div>
       <div className="row">
         <div className="large-12 columns">
@@ -707,11 +726,7 @@ var LegislatorProfile = React.createClass({
           />
         </div>
       </div>
-      <div className="row">
-        <div className="large-8 large-offset-2 columns">
-          <Deed reforms={reforms} attribution={legislatorName} />
-        </div>
-      </div>
+      {deed}
       <div className="row">
         <div className="large-12 columns">
           <hr/>
@@ -719,6 +734,12 @@ var LegislatorProfile = React.createClass({
         </div>
       </div>
       </div>
+
+    var content = this.props.resource === 'deed' ? deed : profile;
+    return(
+        <div>
+          {content}
+        </div>
     );
   }
 });
@@ -927,16 +948,24 @@ var Deed = React.createClass({
       commitment = "has not committed to consponsoring fundamental reform."
     }
     return(
-      <div>
-        <h2 className="subheader special-header text-center text-lowercase">
-          Commitment to Reform
+      <div className="ac-deed">
+        <div className="ac-deed-content">
+        <section>
+        <h2 className="subheader text-lowercase">
+          Commitment<br/>to<br/>Reform
         </h2>
-        <h4 className="text-center">{this.props.attribution} {' '} {commitment}</h4>
+        </section>
+        <section>
+        <h4 className="ac-deed-attribution">
+          {this.props.attribution}<br/>{commitment}
+        </h4>
+        </section>
+        <section>
         {_.map(this.props.reforms, function (reform, i) {
           var resource = "#/reforms/" + reform.slug;
           return (
             <div key={i}>
-              <h3 className="text-center">
+              <h3>
                 <a href={resource}>
                   {reform.title}
                 </a>
@@ -944,6 +973,8 @@ var Deed = React.createClass({
             </div>
           )
         }, this)}
+        </section>
+        </div>
       </div>
     );
   }
@@ -993,8 +1024,9 @@ var CandidateProfile = React.createClass({
       var names = candidate.candidate.name.split(',');
       var lastName = names[0];
       var firstName = names[1];
-      candidateName = [firstName, lastName].join(" ");
-      attribution = <span>{candidateName}</span>
+      var candidateName = [firstName, lastName].join(" ");
+      var link = "#/candidates/" + candidate.candidate.id;
+      attribution = <a href={link}>{candidateName}</a>
 
       candidateList = <CandidateList
         candidates={this.state.candidates}
@@ -1002,18 +1034,27 @@ var CandidateProfile = React.createClass({
       />
     }
 
-    return (
-      <div>
-      <div className="row">
-        <div className="large-12 columns">
-          {candidateList}
-        </div>
-      </div>
+    var deed =
       <div className="row">
         <div className="large-8 large-offset-2 columns">
           <Deed attribution={attribution} />
         </div>
       </div>
+
+    var profile =
+      <div>
+      <div className="row">
+        <div className="large-12 columns">
+          {candidateList}
+        </div>
+        {deed}
+      </div>
+      </div>
+
+    var content = this.props.resource === 'deed' ? deed : profile;
+    return (
+      <div>
+        {content}
       </div>
     );
   }
