@@ -291,13 +291,14 @@ span.helper, small.helper {
     .badge-link {
       position: absolute;
       height: 106px;
-      width: 100px;
+      width: 36px;
       bottom: -6px;
+      right: -2px;
       z-index: 2000;
     }
 
     .badge-link:hover {
-      border-bottom: 3px solid $primary-color;
+      border-bottom: 2px solid $primary-color;
     }
 
     .badge.ac-badge {

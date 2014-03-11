@@ -1126,7 +1126,7 @@ var Legislator = React.createClass({
     var image = congressPhotosAPI + photoResource;
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var link = "#/legislators/" + this.props.key;
+    var link = "#/legislators/" + this.props.key + "/deed";
     return (
       <div className="ac-candidate">
       <div className="row">
@@ -1398,7 +1398,9 @@ var Candidate = React.createClass({
     }
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var link = this.props.bioguideId ? "#/legislators/" + this.props.bioguideId : null;
+    var resource = this.props.bioguideId ? "#/legislators/" : "#/candidates/";
+    var id = this.props.bioguideId ? this.props.bioguideId : this.props.key;
+    var link = resource + id + '/deed';
     return (
       <div className="ac-candidate">
         <div className="row">
@@ -1435,16 +1437,16 @@ var Avatar = React.createClass({
     };
     var badgeClass = "badge " + this.props.badge;
 
-    var avatarLink;
+    var badgeLink;
     if (this.props.link) {
-      avatarLink = <a className="badge-link" href={this.props.link}></a>
+      badgeLink = <a className="badge-link" href={this.props.link}></a>
     }
     return (
       <div
         className={"show-for-medium-up avatar img-circle " + avatarClass }
         style={avatarStyle}>
         <div className={badgeClass}> </div>
-        {avatarLink}
+        {badgeLink}
       </div>
     );
   }
