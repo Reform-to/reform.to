@@ -2438,6 +2438,9 @@ var Reform = React.createClass({
       }
     }
 
+    var bill = this.props.bill;
+    var chamber = bill && bill.chamber ? bill.chamber : '';
+
     statusStyle = {
       textTransform: "uppercase",
     };
@@ -2453,6 +2456,7 @@ var Reform = React.createClass({
           {' '}
           <small style={statusStyle}>
             {this.props.status}
+            {' '} {chamber ? 'in the ' + chamber : '' }
           </small>
         </h3>
         <p>
