@@ -720,12 +720,10 @@ var LegislatorProfile = React.createClass({
     var callToAction;
     var callOutStyle = 'panel';
     if (reforms.length) {
-      callOut = "is a Reformer!";
+      callOut = "is committed to cosponsoring fundamental reform.";
       callOutStyle = 'panel callout';
-      callToAction = "";
     } else {
-      callOut = "has not supported any Reforms.";
-      callToAction = "Contact your Legislators today and urge them to support essential reform."
+      callOut = "has not committed to cosponsoring fundamental reform.";
     }
 
     var profile =
@@ -740,10 +738,9 @@ var LegislatorProfile = React.createClass({
         </div>
       </div>
       <div className="row">
-        <div className="large-12 columns">
-          <div className={callOutStyle}>
-            <h4 className="subheader text-center">{legislatorName} {' '} {callOut}</h4>
-            <p className="text-center">{callToAction}</p>
+        <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
+          <div className="ac-deed">
+            <h4 className="text-center">{legislatorName} <br/> {callOut}</h4>
           </div>
         </div>
       </div>
