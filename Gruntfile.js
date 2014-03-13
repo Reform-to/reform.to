@@ -47,6 +47,10 @@ module.exports = function(grunt) {
       }
     },
 
+    jshint: {
+      app: ['tmp/compiled/js/**/*.js']
+    },
+
     preprocess: {
       dev: {
         src : 'app/index.html', dest : 'tmp/result/index.html',
@@ -153,6 +157,11 @@ module.exports = function(grunt) {
         tasks: ['copy:compiled']
       },
 
+      jshint: {
+        files: 'tmp/compiled/**/*',
+        tasks: ['jshint:app']
+      },
+
       react: {
         files: 'app/jsx/**/*.jsx',
         tasks: ['react']
@@ -164,6 +173,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-jquery-builder');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -171,7 +181,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-react');
   grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'jquery', 'react', 'copy:compiled']);
+  grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'jquery', 'react', 'copy:compiled', 'jshint:app']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev']);
   grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'connect', 'watch']);
   grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'uglify', 'copy:dist']);
