@@ -183,7 +183,7 @@ var App = React.createClass({
     if (this.state.bills) {
       var bills = this.state.bills;
       reforms = _.sortBy(_.map(this.state.reforms, function(r) {
-        r.bill = _.find(bills, function(b) { return b.bill_id === r.bill_id });
+        r.bill = _.find(bills, function(b) { return b.bill_id === r.bill_id; });
         return r;
       }), 'title');
 
@@ -195,6 +195,7 @@ var App = React.createClass({
     var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
     var lng = this.state.longitude ? this.state.longitude : this.props.longitude;
 
+    var slug;
     if (this.state.page === 'home') {
       content = <HomePage
         latitude={lat}
@@ -204,11 +205,11 @@ var App = React.createClass({
         bills={this.state.bills}
         states={this.props.states}
         onUpdateLocation={this.routeToLocation}
-      />
+      />;
     } else if (this.state.page === 'reforms') {
-      content = <ReformsIndex reforms={reforms} />
+      content = <ReformsIndex reforms={reforms} />;
     } else if (this.state.page === 'reform') {
-      var slug = this.state.identifier;
+      slug = this.state.identifier;
       var reform = _.find(reforms, function(r) {
         return slug === r.slug;
       });
@@ -222,7 +223,7 @@ var App = React.createClass({
           reform={reform}
           bills={this.state.bills}
           cosponsors={cosponsors}
-        />
+        />;
       }
     } else if (this.state.page === 'legislators') {
       content = <LegislatorProfile
@@ -231,32 +232,32 @@ var App = React.createClass({
         reforms={reforms}
         bills={this.state.bills}
         resource={this.state.resource}
-      />
+      />;
     } else if (this.state.page === 'candidates') {
       content = <CandidateProfile
         key={this.state.identifier}
         fecId={this.state.identifier}
         resource={this.state.resource}
-      />
+      />;
     } else if (this.state.page === 'badges') {
-      content = <BadgesIndex badges={this.props.badges} />
+      content = <BadgesIndex badges={this.props.badges} />;
     } else if (this.state.page === 'badge') {
-      var slug = this.state.identifier;
+      slug = this.state.identifier;
       var badge = _.find(this.props.badges, function(b) {
         return slug === b.slug;
       });
-      var reforms = _.filter(this.state.reforms, function(r) {
+      var badgeReforms = _.filter(this.state.reforms, function(r) {
         return _.contains(badge.reforms, r.id);
       });
       content = <BadgeProfile
         badge={badge}
-        reforms={reforms}
+        reforms={badgeReforms}
         cosponsors={this.state.cosponsors}
-      />
+      />;
     } else if (this.state.page === 'pledges') {
-      content = <PledgeTaker reforms={reforms} states={this.props.states} />
+      content = <PledgeTaker reforms={reforms} states={this.props.states} />;
     } else if (this.state.page === 'about') {
-      content = <AboutPage />
+      content = <AboutPage />;
     }
     return (
       <div>
@@ -497,7 +498,7 @@ var CandidatePicker = React.createClass({
   getDefaultProps: function() {
     return {
       resolution: 'locality'
-    }
+    };
   },
   componentWillMount: function() {
     // Display results for a given location
@@ -519,7 +520,7 @@ var CandidatePicker = React.createClass({
   },
   render: function() {
     var stateAbbr = this.state.state;
-    var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr });
+    var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr; });
     var stateName = state ? state.name : '';
     return (
     <div className="ac-candidate-picker">
@@ -577,7 +578,7 @@ var AddressForm = React.createClass({
       region: 'US',
       address: address,
       sensor: false
-    }
+    };
 
     var geocodeAddressURL = googleMapsAPI + "?" + $.param(geocodeQuery);
 
@@ -668,7 +669,7 @@ var LegislatorProfile = React.createClass({
     var legislatorQuery = {
       apikey: apiKey,
       bioguide_id: this.props.bioguideId
-    }
+    };
 
     var locateLegislatorsURL =
       sunlightAPI + '/legislators' + "?" + $.param(legislatorQuery);
@@ -706,7 +707,7 @@ var LegislatorProfile = React.createClass({
         gender={legislator.gender}
         firstName={legislator.first_name}
         lastName={legislator.last_name}
-      /></a>
+      /></a>;
     }
 
     var deed =
@@ -714,7 +715,7 @@ var LegislatorProfile = React.createClass({
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
           <Deed reforms={reforms} attribution={legislatorName} />
         </div>
-      </div>
+      </div>;
 
     var callOut;
     var callToAction;
@@ -755,7 +756,7 @@ var LegislatorProfile = React.createClass({
           <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
         </div>
       </div>
-      </div>
+      </div>;
 
     var content = this.props.resource === 'deed' ? deed : profile;
     return(
@@ -785,7 +786,6 @@ var Lobby = React.createClass({
     var legislator = this.props.legislator;
     if (legislator) {
       var address;
-      var salutation;
       switch (medium) {
         case 'Call':
           address = legislator.phone;
@@ -853,19 +853,19 @@ var Lobby = React.createClass({
           pronoun = "him";
           break;
         default:
-          pronoun = "them"
+          pronoun = "them";
       }
       message = "Let " + fullName + " know you support " + pronoun;
       caption = fullName + ' is a reformer';
 
     } else {
-      message = "Contact " + fullName + " today to urge support for fundamental reform"
+      message = "Contact " + fullName + " today to urge support for fundamental reform";
       caption = "Asking " + fullName + 'to support reform';
     }
 
     var intro;
     if (this.state.address) {
-      intro = <p>{this.state.salutation}<br/> {this.state.message} </p>
+      intro = <p>{this.state.salutation}<br/> {this.state.message} </p>;
     }
 
     var lobby;
@@ -876,12 +876,12 @@ var Lobby = React.createClass({
             {_.map(this.props.unsupported, function(r) { return (<li key={r.id}>{r.title}</li>); }) }
             </ul>
             <p>You can find out more at <a href="http://reform.to/#/reforms">reform.to</a></p>
-            </div>
+            </div>;
     }
     var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
 
     var legislatorResource = this.props.legislator ? 'legislators/' + this.props.legislator.bioguide_id : '';
-    var legislatorURL = 'http://reform.to/#/' + legislatorResource
+    var legislatorURL = 'http://reform.to/#/' + legislatorResource;
     var legislatorPicture = this.props.legislator ? 'http://reform.to/vendor/congress-photos/img/100x125/' + this.props.legislator.bioguide_id + '.jpg' : '';
 
     var fbQuery = {
@@ -965,9 +965,9 @@ var Deed = React.createClass({
   render: function() {
     var commitment;
     if (this.props.reforms.length > 0) {
-      commitment = "is committed to consponsoring the following fundamental reform:"
+      commitment = "is committed to consponsoring the following fundamental reform:";
     } else {
-      commitment = "has not committed to consponsoring fundamental reform."
+      commitment = "has not committed to consponsoring fundamental reform.";
     }
     return(
       <div className="ac-deed">
@@ -993,7 +993,7 @@ var Deed = React.createClass({
                 </a>
               </h3>
             </div>
-          )
+          );
         }, this)}
         </section>
         </div>
@@ -1021,16 +1021,16 @@ var CandidateProfile = React.createClass({
     };
     var cycle = window.ENV.ELECTIONS.cycle;
 
-    var candidateURI = nytimesAPI
-      + cycle + '/candidates/' + this.props.fecId
-      + '.json?' + $.param(query);
+    var candidateURI = nytimesAPIi +
+      cycle + '/candidates/' + this.props.fecId +
+      '.json?' + $.param(query);
 
     $.ajax({
       url: candidateURI,
       dataType: 'jsonp',
       success: function(data) {
         var candidates = _.map(data.results, function(c) {
-          return { candidate: c , district: c.district, state: c.state }
+          return { candidate: c , district: c.district, state: c.state };
         });
         this.setState({candidates: candidates});
       }.bind(this)
@@ -1048,12 +1048,12 @@ var CandidateProfile = React.createClass({
       var firstName = names[1];
       var candidateName = [firstName, lastName].join(" ");
       var link = "#/candidates/" + candidate.candidate.id;
-      attribution = <a href={link}>{candidateName}</a>
+      attribution = <a href={link}>{candidateName}</a>;
 
       candidateList = <CandidateList
         candidates={this.state.candidates}
         state={state}
-      />
+      />;
     }
 
     var deed =
@@ -1061,7 +1061,7 @@ var CandidateProfile = React.createClass({
         <div className="large-8 large-offset-2 columns">
           <Deed attribution={attribution} />
         </div>
-      </div>
+      </div>;
 
     var profile =
       <div>
@@ -1071,7 +1071,7 @@ var CandidateProfile = React.createClass({
         </div>
         {deed}
       </div>
-      </div>
+      </div>;
 
     var content = this.props.resource === 'deed' ? deed : profile;
     return (
@@ -1116,7 +1116,7 @@ var LegislatorList = React.createClass({
         twitter={legislator.twitter_id}
         facebook={legislator.facebook_id}
         isReformer={isReformer}
-        />
+        />;
     }));
     return (
       <div className="ac-legislator-list">
@@ -1215,9 +1215,9 @@ var District = React.createClass({
     var cycle = window.ENV.ELECTIONS.cycle;
 
     var districtResource = district ? '/' + district : '';
-    var houseURI = nytimesAPI
-      + cycle + '/seats/' + state + '/house' + districtResource
-      + '.json?' + $.param(query);
+    var houseURI = nytimesAPI +
+      cycle + '/seats/' + state + '/house' + districtResource +
+      '.json?' + $.param(query);
 
     $.ajax({
       url: houseURI,
@@ -1240,8 +1240,8 @@ var District = React.createClass({
       }.bind(this),
     });
 
-    var senateURI = nytimesAPI
-      + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
+    var senateURI = nytimesAPI +
+      cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
 
     $.ajax({
       url: senateURI,
@@ -1282,7 +1282,7 @@ var District = React.createClass({
   render: function() {
     var hasCandidates = this.state.senatorial.length || this.state.congressional.length;
     var stateAbbr = this.state.state;
-    var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr });
+    var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr; });
     var stateName = state ? state.name : '';
     return (
       <div>
@@ -1366,7 +1366,7 @@ var CandidateList = React.createClass({
       // Check if candidate has a bioguide id
       var fecId = candidate.candidate.id;
       var legislator = _.find(this.props.legislators, function(l) {
-        return _.contains(l.fec_ids, fecId)
+        return _.contains(l.fec_ids, fecId);
       });
       var bioguideId = legislator ? legislator.bioguide_id : null;
 
@@ -1389,7 +1389,7 @@ var CandidateList = React.createClass({
         district={district}
         bioguideId={bioguideId}
         isReformer={isReformer}
-      />
+      />;
     }.bind(this));
     return (
       <div className="ac-candidate-list">
@@ -1411,12 +1411,13 @@ var Candidate = React.createClass({
     isReformer: React.PropTypes.bool
   },
   render: function() {
+    var image;
     if (this.props.bioguideId) {
       var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
       var photoResource = '/img/100x125/'+ this.props.bioguideId + '.jpg';
-      var image = congressPhotosAPI + photoResource;
+      image = congressPhotosAPI + photoResource;
     } else {
-      var image = '/img/avatar.png';
+      image = '/img/avatar.png';
     }
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
@@ -1461,7 +1462,7 @@ var Avatar = React.createClass({
 
     var badgeLink;
     if (this.props.link) {
-      badgeLink = <a className="badge-link" href={this.props.link}></a>
+      badgeLink = <a className="badge-link" href={this.props.link}></a>;
     }
     return (
       <div
@@ -1592,7 +1593,7 @@ var PledgeTaker = React.createClass({
         state: this.state.state,
         district: this.state.district,
         reforms: this.state.reforms
-      }
+      };
 
       this.setState({ submitted: true});
 
@@ -1708,11 +1709,11 @@ var CandidacyFieldset = React.createClass({
         // Search for current members of Congress
 
         // Use the Sunlight Foundation API
-        var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
+        var sunApiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
         var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
 
         var locationQuery = {
-          apikey: apiKey,
+          apikey: sunApiKey,
           state: candidacy.state,
           chamber: candidacy.chamber,
         };
@@ -1740,11 +1741,11 @@ var CandidacyFieldset = React.createClass({
         // Search for candidates for Congress
 
         // Use the NYT Campaign Finance API
-        var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
+        var nytApiKey = window.ENV.API.NYT.FINANCES.apiKey;
         var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
 
         var query = {
-          'api-key': apiKey
+          'api-key': nytApiKey
         };
 
         var cycle = window.ENV.ELECTIONS.cycle;
@@ -1752,8 +1753,8 @@ var CandidacyFieldset = React.createClass({
 
         // Perform the search for Senate, or House + District
         if (candidacy.chamber === "senate") {
-          var senateURI = nytimesAPI
-            + cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
+          var senateURI = nytimesAPI +
+            cycle + '/seats/' + state + '/senate' + '.json?' + $.param(query);
 
           $.ajax({
             url: senateURI,
@@ -1775,9 +1776,9 @@ var CandidacyFieldset = React.createClass({
 
         } else if (candidacy.chamber === "house" && candidacy.district) {
           var district = candidacy.district;
-          var houseURI = nytimesAPI
-            + cycle + '/seats/' + state + '/house/' + district
-            + '.json?' + $.param(query);
+          var houseURI = nytimesAPI +
+            cycle + '/seats/' + state + '/house/' + district +
+            '.json?' + $.param(query);
 
           $.ajax({
             url: houseURI,
@@ -2017,24 +2018,14 @@ var CandidacyFieldset = React.createClass({
           <label><strong>My Seat is in...</strong></label>
           <div className="row">
             <div className="large-3 medium-3 columns">
-              <select
-                id="form-select-chamber"
-                onChange={this.selectChamber}
-                value={this.state.chamber}
-                name="chamber"
-              >
+              <select id="form-select-chamber" onChange={this.selectChamber} value={this.state.chamber} name="chamber">
                 <option value="">Chamber...</option>
                 <option value="house">House of Representatives</option>
                 <option value="senate">Senate</option>
               </select>
             </div>
             <div className="large-3 medium-3 columns">
-              <select
-                id="form-select-state"
-                onChange={this.selectState}
-                value={this.state.state}
-                name="state"
-              >
+              <select id="form-select-state" onChange={this.selectState} value={this.state.state} name="state">
                 <option value="">State...</option>
                 {_.map(this.props.states, function(s) {
                   return (
@@ -2044,13 +2035,7 @@ var CandidacyFieldset = React.createClass({
               </select>
             </div>
             <div className="large-3 medium-3 columns">
-              <select
-                id="form-select-district"
-                className={districtSelectClasses}
-                onChange={this.selectDistrict}
-                value={this.state.district}
-                name="district"
-              >
+              <select id="form-select-district" className={districtSelectClasses} onChange={this.selectDistrict} value={this.state.district} name="district">
                 <option value="">District...</option>
                 <option value="0">At Large</option>
                 {_.map(districtNums, function(i) {
@@ -2072,12 +2057,7 @@ var CandidacyFieldset = React.createClass({
                 My Name is...
               </strong>
             </label>
-            <select
-              id="form-select-legislator"
-              onChange={this.selectLegislator}
-              value={this.state.bioguideId}
-              name="bioguide_id"
-            >
+            <select id="form-select-legislator" onChange={this.selectLegislator} value={this.state.bioguideId} name="bioguide_id">
             <option value="">Select Your Name...</option>
             {_.map(this.state.legislators, function (legislator, i) {
               return (
@@ -2086,7 +2066,7 @@ var CandidacyFieldset = React.createClass({
                   {legislator.first_name} {' '} {legislator.last_name},{' '}
                   {legislator.party}-{legislator.state}
                 </option>
-              )
+              );
             }, this)}
             <option value="N/A">Not Listed</option>
             </select>
@@ -2101,19 +2081,14 @@ var CandidacyFieldset = React.createClass({
                 My Name is...
               </strong>
             </label>
-            <select
-              id="form-select-candidate"
-              onChange={this.selectCandidate}
-              value={this.state.fecId}
-              name="fec_id"
-            >
+            <select id="form-select-candidate" onChange={this.selectCandidate} value={this.state.fecId} name="fec_id">
             <option value="">Select Your Name...</option>
             {_.map(this.state.candidates, function (candidate, i) {
               return (
                 <option value={candidate.candidate.id} key={candidate.candidate.id}>
                   {candidate.candidate.name}
                 </option>
-              )
+              );
             }, this)}
             <option value="N/A">Not Listed</option>
             </select>
@@ -2173,10 +2148,10 @@ var ReformsFieldset = React.createClass({
               <strong>{reform.title}.</strong> {' '} <em>{reform.description}</em>
               </label>
             </div>
-          )
+          );
         }, this)}
       </fieldset>
-    )
+    );
   }
 });
 
@@ -2214,10 +2189,10 @@ var ContactFieldset = React.createClass({
 
     var submitButton;
     if (this.props.submitted) {
-      submitButton = <button className="button expand tiny" disabled>Sending...</button>
+      submitButton = <button className="button expand tiny" disabled>Sending...</button>;
 
     } else {
-      submitButton = <button className="button expand tiny">I do so pledge</button>
+      submitButton = <button className="button expand tiny">I do so pledge</button>;
     }
 
     emailClass = this.props.emailError ? "error" : '';
@@ -2291,7 +2266,7 @@ var ContactFieldset = React.createClass({
           </div>
         </div>
       </fieldset>
-    )
+    );
   }
 });
 
@@ -2425,7 +2400,7 @@ var Reforms = React.createClass({
     });
 
     var reformsListNodes = _.mapValues(groups, function(reforms, type) {
-      return <ReformsList key={type} reforms={reforms} />
+      return <ReformsList key={type} reforms={reforms} />;
     });
     return (
       <div className="ac-reforms">
@@ -2456,7 +2431,7 @@ var ReformsList = React.createClass({
         slug={reform.slug}
         status={reform.reform_status}
         bill={reform.bill}
-        />
+        />;
     });
     return (
       <div className="ac-reform-list">
@@ -2483,7 +2458,7 @@ var ReformProfile = React.createClass({
         bill={reform.bill}
         slug={reform.slug}
         cosponsors={this.props.cosponsors}
-      />
+      />;
     }
 
     return (
@@ -2537,12 +2512,12 @@ var Reform = React.createClass({
         state={legislator.state}
         district={legislator.district}
         party={legislator.party}
-      />
+      />;
     } else {
       var s = this.props.sponsor;
       var name = _.compact([s.title, s.first_name, s.last_name]).join(" ");
       if (s.website) {
-        sponsorLine = <a href={s.website}>{name}</a>
+        sponsorLine = <a href={s.website}>{name}</a>;
       } else {
         sponsorLine = name;
       }
@@ -2608,7 +2583,7 @@ var StatesLegislators = React.createClass({
             state={legislator.state}
             district={legislator.district}
             party={legislator.party}
-          /></li>
+          /></li>;
         })}
         </ul>
       );
@@ -2633,7 +2608,7 @@ var Bill = React.createClass({
 
     var cosponsorNodes;
     if (cosponsors_count) {
-      cosponsorNodes = <StatesLegislators legislators={this.props.cosponsors} />
+      cosponsorNodes = <StatesLegislators legislators={this.props.cosponsors} />;
     }
     var official_title = this.props.bill ? this.props.bill.official_title : '';
     var short_title = this.props.bill ? this.props.bill.short_title : '';
@@ -2680,7 +2655,7 @@ var FullTitleFullName = React.createClass({
         }
         break;
       case "Sen":
-        title = "Senator"
+        title = "Senator";
         break;
       case "Del":
         title = "Delegate";
