@@ -710,12 +710,15 @@ var LegislatorProfile = React.createClass({
       /></a>;
     }
 
+    var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
+    var photoResource = '/img/100x125/'+ this.props.bioguideId + '.jpg';
+    var image = congressPhotosAPI + photoResource;
     var deed =
       <div className="row">
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
-          <Deed reforms={reforms} attribution={legislatorName} />
-        </div>
-      </div>;
+        <Deed reforms={reforms} attribution={legislatorName} image={image}/>
+      </div>
+    </div>;
 
     var callOut;
     var callToAction;
@@ -953,6 +956,7 @@ var Lobby = React.createClass({
 
 var Deed = React.createClass({
   propTypes: {
+    image: React.PropTypes.string,
     attribution: React.PropTypes.component,
     reforms: React.PropTypes.array
   },
@@ -965,22 +969,29 @@ var Deed = React.createClass({
   render: function() {
     var commitment;
     if (this.props.reforms.length > 0) {
-      commitment = "is committed to consponsoring the following fundamental reform:";
+      commitment = "is committed to consponsoring the following fundamental reform";
     } else {
       commitment = "has not committed to consponsoring fundamental reform.";
     }
+    var avatarStyle = {
+      backgroundImage: 'url(' + this.props.image + ')'
+    };
     return(
       <div className="ac-deed">
         <div className="ac-deed-content">
-        <section>
-        <h2 className="subheader text-lowercase">
-          Commitment<br/>to<br/>Reform
+        <section className="ac-deed-title">
+        <h2 className="subheader">
+          <span>Commitment</span>{' '}
+          <span>to</span>{' '}
+          <span>Reform</span>
         </h2>
         </section>
         <section>
-        <h4 className="ac-deed-attribution">
-          {this.props.attribution}<br/>{commitment}
-        </h4>
+        <div className="ac-deed-avatar" style={avatarStyle}></div>
+        <h3 className="ac-deed-attribution">
+          {this.props.attribution}
+        </h3>
+          <h3><span className="ac-deed-commitment">{commitment}</span></h3>
         </section>
         <section>
         {_.map(this.props.reforms, function (reform, i) {
@@ -996,11 +1007,14 @@ var Deed = React.createClass({
           );
         }, this)}
         </section>
+        <h3>
+        ★ ★ ★
+        </h3>
         </div>
       </div>
     );
   }
-});
+  });
 
 var CandidateProfile = React.createClass({
   propTypes: {
@@ -1056,10 +1070,11 @@ var CandidateProfile = React.createClass({
       />;
     }
 
+    var image = '/img/avatar.png';
     var deed =
       <div className="row">
         <div className="large-8 large-offset-2 columns">
-          <Deed attribution={attribution} />
+          <Deed attribution={attribution} image={image}/>
         </div>
       </div>;
 
