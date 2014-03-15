@@ -698,16 +698,25 @@ var LegislatorProfile = React.createClass({
     });
 
     var legislatorName;
+    var legislatorDeed;
 
     if (this.state.legislators.length) {
       var legislator = this.state.legislators[0];
       var link = "#/legislators/" + legislator.bioguide_id;
+      var deedLink = link + "/deed";
       legislatorName = <a href={link}><FullTitleFullName
         title={legislator.title}
         gender={legislator.gender}
         firstName={legislator.first_name}
         lastName={legislator.last_name}
       /></a>;
+      legislatorDeed = <a href={deedLink}><FullTitleFullName
+        title={legislator.title}
+        gender={legislator.gender}
+        lastName={legislator.last_name}
+      /></a>;
+    } else {
+      legislatorName = <span>The Legislator</span>;
     }
 
     var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
@@ -716,16 +725,13 @@ var LegislatorProfile = React.createClass({
     var deed =
       <div className="row">
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
-        <Deed reforms={reforms} attribution={legislatorName} image={image}/>
-      </div>
-    </div>;
+          <Deed reforms={reforms} attribution={legislatorName} image={image}/>
+        </div>
+      </div>;
 
     var callOut;
-    var callToAction;
-    var callOutStyle = 'panel';
     if (reforms.length) {
       callOut = "is committed to cosponsoring fundamental reform.";
-      callOutStyle = 'panel callout';
     } else {
       callOut = "has not committed to cosponsoring fundamental reform.";
     }
@@ -744,7 +750,7 @@ var LegislatorProfile = React.createClass({
       <div className="row">
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
           <div className="ac-deed">
-            <h4 className="text-center">{legislatorName} <br/> {callOut}</h4>
+            <h4 className="text-center">{legislatorDeed} <br/> {callOut}</h4>
           </div>
         </div>
       </div>
