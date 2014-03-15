@@ -1021,7 +1021,7 @@ var CandidateProfile = React.createClass({
     };
     var cycle = window.ENV.ELECTIONS.cycle;
 
-    var candidateURI = nytimesAPIi +
+    var candidateURI = nytimesAPI +
       cycle + '/candidates/' + this.props.fecId +
       '.json?' + $.param(query);
 
