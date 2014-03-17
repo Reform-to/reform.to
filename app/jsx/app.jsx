@@ -522,18 +522,20 @@ var CandidatePicker = React.createClass({
     var stateAbbr = this.state.state;
     var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr; });
     var stateName = state ? state.name : '';
+    var district = this.state.district ? this.state.district : '';
+    var hasLegislators = this.state.legislators.length > 0;
     return (
     <div className="ac-candidate-picker">
     <div className="row">
       <div className="large-6 medium-8 columns">
         <h2 className="subheader">
-          {this.state.legislators.length > 0 ? 'United States Congress' : ''}
+          {hasLegislators ? 'United States Congress' : ''}
         </h2>
       </div>
       <div className="large-6 medium-4 columns">
         <h2>
-          {stateName ? stateName : ''}
-          {this.state.district ? ", District " + this.state.district : ''}
+          {hasLegislators && stateName ? stateName : ''}
+          {hasLegislators && district ? ", District " + district : ''}
         </h2>
       </div>
     </div>
@@ -1305,6 +1307,7 @@ var District = React.createClass({
     var stateAbbr = this.state.state;
     var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr; });
     var stateName = state ? state.name : '';
+    var district = this.state.district ? this.state.district : '';
     return (
       <div>
         <div className="row">
@@ -1315,8 +1318,8 @@ var District = React.createClass({
           </div>
           <div className="large-6 medium-4 columns">
             <h2>
-                {stateName ? stateName : ''}
-                {this.props.district ? ", District " + this.props.district : ''}
+                {hasCandidates && stateName ? stateName : ''}
+                {hasCandidates && district ? ", District " + district : ''}
             </h2>
           </div>
         </div>
