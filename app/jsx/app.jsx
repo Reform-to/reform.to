@@ -275,11 +275,17 @@ var AppLink = React.createClass({
     route: React.PropTypes.string.isRequired,
     text: React.PropTypes.renderable.isRequired,
   },
+  statics: {
+    buildResourcePath: function(resource) {
+      var path = resource.charAt(0) === '/' ? resource : '/' + resource;
+      return '#' + path;
+    },
+  },
   handleRoute: function(route) {
     window.scrollTo(0, 0);
   },
   render: function() {
-    var link = '#' + this.props.route;
+    var link = AppLink.buildResourcePath(this.props.route);
     return (
       <a href={link} onClick={this.handleRoute.bind(this, this.props.route)}>{this.props.text}</a>
     );
