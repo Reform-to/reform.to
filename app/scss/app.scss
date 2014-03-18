@@ -251,8 +251,29 @@ span.helper, small.helper {
   margin: 2em 0;
   padding: 4px;
   text-align: center;
-  box-shadow: 0px 0px 20px #999999;
+  box-shadow: 0px 0px 20px #BBBBBB;
   @include radius(5px);
+
+  &.success {
+    border: 3px solid $success-color;
+    h3, h4 {
+      color: $success-color !important;
+    }
+    .ac-deed-content {
+      border: 1px solid $success-color;
+    }
+  }
+
+  &.error {
+    border: 3px solid $alert-color;
+
+    h3, h4 {
+      color: $alert-color !important;
+    }
+    .ac-deed-content {
+      border: 1px solid $alert-color;
+    }
+  }
 
   .ac-deed-content {
     padding: 2em 3em;

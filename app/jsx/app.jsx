@@ -732,10 +732,13 @@ var LegislatorProfile = React.createClass({
       </div>;
 
     var callOut;
+    var callOutClass;
     if (reforms.length) {
       callOut = "is committed to cosponsoring fundamental reform.";
+      callOutClass = "ac-deed success";
     } else {
       callOut = "has not committed to cosponsoring fundamental reform.";
+      callOutClass = "ac-deed error";
     }
 
     var profile =
@@ -751,8 +754,10 @@ var LegislatorProfile = React.createClass({
       </div>
       <div className="row">
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
-          <div className="ac-deed">
+          <div className={callOutClass}>
+            <div className="ac-deed-content">
             <h4 className="text-center">{legislatorDeed} <br/> {callOut}</h4>
+            </div>
           </div>
         </div>
       </div>
