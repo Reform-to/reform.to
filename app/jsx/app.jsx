@@ -168,9 +168,6 @@ var App = React.createClass({
       }
     }
   },
-  setRoute: function(route) {
-    this.router.setRoute(route);
-  },
   routeToLocation: function(coords) {
     var loc = [coords.latitude,coords.longitude,coords.resolution].join(',');
     this.router.setRoute("/home/" + loc);
@@ -266,7 +263,6 @@ var App = React.createClass({
           longitude={lng}
           resolution={this.state.resolution}
           page={this.state.page}
-          onRoute={this.setRoute}
         />
         {content}
       </div>
@@ -274,20 +270,14 @@ var App = React.createClass({
   }
 });
 
-var SetRouteMixin = {
-  handleRoute: function(route) {
-    this.props.onRoute(route);
-    return false;
-  }
-};
-
 var AppLink = React.createClass({
   propTypes: {
     route: React.PropTypes.string.isRequired,
-    text: React.PropTypes.string.isRequired,
-    onRoute: React.PropTypes.func.isRequired
+    text: React.PropTypes.renderable.isRequired,
   },
-  mixins: [SetRouteMixin],
+  handleRoute: function(route) {
+    window.scrollTo(0, 0);
+  },
   render: function() {
     var link = '#' + this.props.route;
     return (
@@ -301,10 +291,8 @@ var Navigation = React.createClass({
     latitude: React.PropTypes.number,
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
-    page: React.PropTypes.string.isRequired,
-    onRoute: React.PropTypes.func.isRequired
+    page: React.PropTypes.string.isRequired
   },
-  mixins: [SetRouteMixin],
   getInitialState: function() {
     return ({
       expanded: true
@@ -340,19 +328,19 @@ var Navigation = React.createClass({
     <nav className={navClass} data-topbar>
       <ul className="title-area">
         <li className="name">
-        <h1 className="subheader"><AppLink route={homeRoute} text="Reform.to" onRoute={this.handleRoute}/></h1>
+        <h1 className="subheader"><AppLink route={homeRoute} text="Reform.to"/></h1>
         </li>
         <li className="toggle-topbar menu-icon"><a href="#" onClick={this.toggleTopbar}><span>Menu</span></a></li>
       </ul>
       <section className="top-bar-section">
         <ul className="right">
           <li className="divider"></li>
-          <li className="active"><AppLink route={nextRoute} text={nextTitle} onRoute={this.handleRoute}/></li>
+          <li className="active"><AppLink route={nextRoute} text={nextTitle} /></li>
         </ul>
         <ul className="left">
-          <li><AppLink route={'/reforms'} text={'Reforms'} onRoute={this.handleRoute}/></li>
-          <li><AppLink route={'/badges'} text={'Badges'} onRoute={this.handleRoute}/></li>
-          <li><AppLink route={'/about'} text={'About'} onRoute={this.handleRoute}/></li>
+          <li><AppLink route={'/reforms'} text={'Reforms'} /></li>
+          <li><AppLink route={'/badges'} text={'Badges'} /></li>
+          <li><AppLink route={'/about'} text={'About'} /></li>
         </ul>
       </section>
     </nav>
