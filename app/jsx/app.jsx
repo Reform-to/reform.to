@@ -897,7 +897,7 @@ var Lobby = React.createClass({
     var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
 
     var legislatorResource = this.props.legislator ? 'legislators/' + this.props.legislator.bioguide_id : '';
-    var legislatorURL = 'http://reform.to/#/' + legislatorResource;
+    var legislatorURL = 'http://reform.to/' + AppLink.buildResourcePath(legislatorResource);
     var legislatorPicture = this.props.legislator ? 'http://reform.to/vendor/congress-photos/img/100x125/' + this.props.legislator.bioguide_id + '.jpg' : '';
 
     var fbQuery = {
@@ -1174,7 +1174,7 @@ var Legislator = React.createClass({
     var image = congressPhotosAPI + photoResource;
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var link = "#/legislators/" + this.props.key + "/deed";
+    var link = AppLink.buildResourcePath("legislators/" + this.props.key + "/deed");
     return (
       <div className="ac-candidate">
       <div className="row">
@@ -1448,9 +1448,9 @@ var Candidate = React.createClass({
     }
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
-    var resource = this.props.bioguideId ? "#/legislators/" : "#/candidates/";
+    var resource = this.props.bioguideId ? "legislators" : "candidates";
     var id = this.props.bioguideId ? this.props.bioguideId : this.props.key;
-    var link = resource + id + '/deed';
+    var link = AppLink.buildResourcePath(resource + '/' + id + '/deed');
     return (
       <div className="ac-candidate">
         <div className="row">
@@ -1519,12 +1519,13 @@ var CandidateName = React.createClass({
   render: function() {
     var nameClass = 'name';
 
-    var link = '';
+    var resource;
     if (this.props.bioguideId) {
-      link = "#/legislators/" + this.props.bioguideId;
+      resource = "legislators/" + this.props.bioguideId;
     } else if (this.props.fecId) {
-      link = "#/candidates/" + this.props.fecId;
+      resource = "candidates/" + this.props.fecId;
     }
+    var link = resource ? AppLink.buildResourcePath(resource) : '';
 
     var fullName = this.props.firstName + " " + this.props.lastName;
 
@@ -2312,7 +2313,7 @@ var BadgesIndex = React.createClass({
             Badges
           </h2>
           {_.map(this.props.badges, function(badge) {
-            var link = "#/badges/" + badge.slug;
+            var link = AppLink.buildResourcePath("badges/" + badge.slug);
             return (
               <h3 key={badge.slug}>
                 <a href={link}>
@@ -2362,7 +2363,7 @@ var BadgeProfile = React.createClass({
           {this.props.reforms.length ? "Reforms" : ''}
         </h4>
         {_.map(this.props.reforms, function(reform) {
-          var resource = "#/reforms/" + reform.slug;
+          var resource = AppLink.buildResourcePath("reforms/" + reform.slug);
           var sponsor = reform.bill ? reform.bill.sponsor : [];
           var cosponsor_ids = reform.bill ? reform.bill.cosponsor_ids : [];
           var cosponsors = _.filter(this.props.cosponsors, function(c) {
@@ -2556,7 +2557,7 @@ var Reform = React.createClass({
     statusStyle = {
       textTransform: "uppercase",
     };
-    var resource = "#/reforms/" + this.props.slug;
+    var resource = AppLink.buildResourcePath("reforms/" + this.props.slug);
     var a = $('<a>', { href:this.props.url } )[0];
     var hostname = a.hostname;
     return (
@@ -2731,6 +2732,8 @@ var TitleNamePartyState = React.createClass({
 
 var STATES = [ { "name": "Alabama", "abbr": "AL" }, { "name": "Alaska", "abbr": "AK" }, { "name": "American Samoa", "abbr": "AS" }, { "name": "Arizona", "abbr": "AZ" }, { "name": "Arkansas", "abbr": "AR" }, { "name": "California", "abbr": "CA" }, { "name": "Colorado", "abbr": "CO" }, { "name": "Connecticut", "abbr": "CT" }, { "name": "Delaware", "abbr": "DE" }, { "name": "District Of Columbia", "abbr": "DC" }, { "name": "Federated States Of Micronesia", "abbr": "FM" }, { "name": "Florida", "abbr": "FL" }, { "name": "Georgia", "abbr": "GA" }, { "name": "Guam", "abbr": "GU" }, { "name": "Hawaii", "abbr": "HI" }, { "name": "Idaho", "abbr": "ID" }, { "name": "Illinois", "abbr": "IL" }, { "name": "Indiana", "abbr": "IN" }, { "name": "Iowa", "abbr": "IA" }, { "name": "Kansas", "abbr": "KS" }, { "name": "Kentucky", "abbr": "KY" }, { "name": "Louisiana", "abbr": "LA" }, { "name": "Maine", "abbr": "ME" }, { "name": "Marshall Islands", "abbr": "MH" }, { "name": "Maryland", "abbr": "MD" }, { "name": "Massachusetts", "abbr": "MA" }, { "name": "Michigan", "abbr": "MI" }, { "name": "Minnesota", "abbr": "MN" }, { "name": "Mississippi", "abbr": "MS" }, { "name": "Missouri", "abbr": "MO" }, { "name": "Montana", "abbr": "MT" }, { "name": "Nebraska", "abbr": "NE" }, { "name": "Nevada", "abbr": "NV" }, { "name": "New Hampshire", "abbr": "NH" }, { "name": "New Jersey", "abbr": "NJ" }, { "name": "New Mexico", "abbr": "NM" }, { "name": "New York", "abbr": "NY" }, { "name": "North Carolina", "abbr": "NC" }, { "name": "North Dakota", "abbr": "ND" }, { "name": "Northern Mariana Islands", "abbr": "MP" }, { "name": "Ohio", "abbr": "OH" }, { "name": "Oklahoma", "abbr": "OK" }, { "name": "Oregon", "abbr": "OR" }, { "name": "Palau", "abbr": "PW" }, { "name": "Pennsylvania", "abbr": "PA" }, { "name": "Puerto Rico", "abbr": "PR" }, { "name": "Rhode Island", "abbr": "RI" }, { "name": "South Carolina", "abbr": "SC" }, { "name": "South Dakota", "abbr": "SD" }, { "name": "Tennessee", "abbr": "TN" }, { "name": "Texas", "abbr": "TX" }, { "name": "Utah", "abbr": "UT" }, { "name": "Vermont", "abbr": "VT" }, { "name": "Virgin Islands", "abbr": "VI" }, { "name": "Virginia", "abbr": "VA" }, { "name": "Washington", "abbr": "WA" }, { "name": "West Virginia", "abbr": "WV" }, { "name": "Wisconsin", "abbr": "WI" }, { "name": "Wyoming", "abbr": "WY" } ];
 
+var reformsLink = AppLink.buildResourcePath('reforms');
+
 var BADGES = [
   {
     name: "Anti-Corruption Pledge",
@@ -2748,7 +2751,7 @@ var BADGES = [
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
-    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified <a href='#/reforms'>here</a>"
+    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified <a href='" + reformsLink +"'>here</a>"
   },
 ];
 
