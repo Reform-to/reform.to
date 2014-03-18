@@ -2314,6 +2314,10 @@ var BadgesIndex = React.createClass({
           </h2>
           {_.map(this.props.badges, function(badge) {
             var link = AppLink.buildResourcePath("badges/" + badge.slug);
+            var more = _.find(badge.links, function(link) {
+              return link.rel === "more";
+            });
+            var moreLink = more ? <AppLink route={more.href} text={more.prompt} />  : '';
             return (
               <h3 key={badge.slug}>
                 <a href={link}>
@@ -2323,7 +2327,7 @@ var BadgesIndex = React.createClass({
                   {badge.name} {' '}
                 </a>
                 <small>
-                  <span dangerouslySetInnerHTML={{__html: badge.description}} />.
+                  {badge.description}. {moreLink} {moreLink ? '.' : ''}
                 </small>
               </h3>
             );
@@ -2341,6 +2345,10 @@ var BadgeProfile = React.createClass({
     cosponsors: React.PropTypes.array
   },
   render: function() {
+    var more = _.find(this.props.badge.links, function(link) {
+      return link.rel === "more";
+    });
+    var moreLink = more ? <AppLink route={more.href} text={more.prompt} />  : '';
     return (
       <div>
       <div className="row">
@@ -2351,7 +2359,7 @@ var BadgeProfile = React.createClass({
           <h2 className="subheader text-center">{this.props.badge.name}</h2>
           <h4 className="text-center">
             <em>
-              <span dangerouslySetInnerHTML={{__html: this.props.badge.description}} />.
+              {this.props.badge.description}. {moreLink} {moreLink ? '.' : ''}
             </em>
           </h4>
           <hr/>
@@ -2751,7 +2759,10 @@ var BADGES = [
     badge: "/img/badges/dc-128x128.png",
     icon: "/img/badges/dc-32x32.png",
     reforms: [],
-    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified <a href='" + reformsLink +"'>here</a>"
+    description: "Candidates who have not pledged to cosponsor any of the the fundamental reforms identified here",
+    links: [
+      {"rel" : "more", "href" : '/reforms', "prompt" : "Read about the Reforms"}
+    ]
   },
 ];
 
