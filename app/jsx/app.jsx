@@ -392,7 +392,11 @@ var AboutPage = React.createClass({
         <div className="row">
             <div className="large-6 large-offset-3 medium-10 medium-offset-1 columns">
               <h4 className="subheader text-center">About</h4>
-              <p><a href="/">Reform.to</a> tracks members of Congress as well as candidates, and highlights their support for specific <a href="#/reforms">legislative and constitutional reforms</a> aimed at fighting the corrupting influence of money in politics.</p>
+              <p>
+                <a href="/">Reform.to</a> tracks members of Congress as well as candidates, and highlights their support for specific{' '}
+                <AppLink route="/reforms" text="legislative and constitutional reforms" />{' '}
+                aimed at fighting the corrupting influence of money in politics.
+              </p>
             </div>
         </div>
       </div>
@@ -687,26 +691,28 @@ var LegislatorProfile = React.createClass({
       return _.contains(bill_ids, r.bill_id);
     });
 
-    var legislatorName;
-    var legislatorDeed;
+    var legislatorNameLink;
+    var legislatorDeedLink;
 
     if (this.state.legislators.length) {
       var legislator = this.state.legislators[0];
-      var link = "#/legislators/" + legislator.bioguide_id;
-      var deedLink = link + "/deed";
-      legislatorName = <a href={link}><FullTitleFullName
+      var profileRoute = "/legislators/" + legislator.bioguide_id;
+      var deedRoute = profileRoute + "/deed";
+      var legislatorName = <FullTitleFullName
         title={legislator.title}
         gender={legislator.gender}
         firstName={legislator.first_name}
         lastName={legislator.last_name}
-      /></a>;
-      legislatorDeed = <a href={deedLink}><FullTitleFullName
+      />;
+      legislatorNameLink = <AppLink route={profileRoute} text={legislatorName} />;
+      legislatorShortName = <FullTitleFullName
         title={legislator.title}
         gender={legislator.gender}
         lastName={legislator.last_name}
-      /></a>;
+      />;
+      legislatorDeedLink = <AppLink route={deedRoute} text={legislatorShortName} />;
     } else {
-      legislatorName = <span>The Legislator</span>;
+      legislatorNameLink = <span>The Legislator</span>;
     }
 
     var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
@@ -715,7 +721,7 @@ var LegislatorProfile = React.createClass({
     var deed =
       <div className="row">
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
-          <Deed reforms={reforms} attribution={legislatorName} image={image}/>
+          <Deed reforms={reforms} attribution={legislatorNameLink} image={image}/>
         </div>
       </div>;
 
@@ -744,7 +750,7 @@ var LegislatorProfile = React.createClass({
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
           <div className={callOutClass}>
             <div className="ac-deed-content">
-            <h4 className="text-center">{legislatorDeed} <br/> {callOut}</h4>
+            <h4 className="text-center">{legislatorDeedLink} <br/> {callOut}</h4>
             </div>
           </div>
         </div>
@@ -879,7 +885,7 @@ var Lobby = React.createClass({
             <ul>
             {_.map(this.props.unsupported, function(r) { return (<li key={r.id}>{r.title}</li>); }) }
             </ul>
-            <p>You can find out more at <a href="http://reform.to/#/reforms">reform.to</a></p>
+            <p>You can find out more at <AppLink route="/reforms" text="Reform.to"/></p>
             </div>;
     }
     var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
@@ -996,13 +1002,11 @@ var Deed = React.createClass({
         </section>
         <section>
         {_.map(this.props.reforms, function (reform, i) {
-          var resource = "#/reforms/" + reform.slug;
+          var resource = "/reforms/" + reform.slug;
           return (
             <div key={i}>
               <h3>
-                <a href={resource}>
-                  {reform.title}
-                </a>
+                <AppLink route={resource} text={reform.title} />
               </h3>
             </div>
           );
@@ -1062,8 +1066,8 @@ var CandidateProfile = React.createClass({
       var lastName = names[0];
       var firstName = names[1];
       var candidateName = [firstName, lastName].join(" ");
-      var link = "#/candidates/" + candidate.candidate.id;
-      attribution = <a href={link}>{candidateName}</a>;
+      var resource = "/candidates/" + candidate.candidate.id;
+      attribution = <AppLink route={resource} text={candidateName}/>;
 
       candidateList = <CandidateList
         candidates={this.state.candidates}
@@ -2704,10 +2708,10 @@ var TitleNamePartyState = React.createClass({
     var fullName = [
       this.props.title, this.props.firstName, this.props.lastName
     ].join(" ");
-    var link = "#/legislators/" + this.props.bioguideId;
+    var resource = "/legislators/" + this.props.bioguideId;
     return (
       <span>
-        <a href={link}>{fullName}</a>{' '}
+        <AppLink route={resource} text={fullName}/>{' '}
         <span className="minor">({this.props.party}-{this.props.state})</span>
       </span>
     );
