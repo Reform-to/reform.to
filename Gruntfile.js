@@ -1,4 +1,6 @@
 module.exports = function(grunt) {
+  var pushState = require('grunt-connect-pushstate/lib/utils').pushState;
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
@@ -129,7 +131,25 @@ module.exports = function(grunt) {
       server: {
         options: {
           port: 9001,
-          base: 'tmp/result'
+          base: 'tmp/result',
+          middleware: function(connect, options) {
+            var middlewares = [];
+
+            // PushState support
+            // middlewares.push(pushState());
+
+            if (!Array.isArray(options.base)) {
+              options.base = [options.base];
+            }
+
+            var directory = options.directory || options.base[options.base.length - 1];
+            options.base.forEach(function (base) {
+              // Serve static files
+              middlewares.push(connect.static(base));
+            });
+
+            return middlewares;
+          }
         }
       }
     },
@@ -169,6 +189,7 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-connect-pushstate');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');

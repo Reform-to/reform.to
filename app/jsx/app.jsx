@@ -146,6 +146,8 @@ var App = React.createClass({
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null)
     }).configure({
+      // Set html5history and pushstate support
+      html5history: false,
       // Reset the scroll position every time a route is entered
       on: function() { window.scrollTo(0, 0); }
     });
