@@ -183,7 +183,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'jquery', 'react', 'copy:compiled', 'jshint:app']);
   grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev']);
-  grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'connect', 'watch']);
+  grunt.registerTask('supervise', ['connect', 'watch']);
+  grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'supervise']);
   grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'uglify', 'copy:dist']);
 
 }
