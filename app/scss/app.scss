@@ -293,16 +293,6 @@ span.helper, small.helper {
       }
     }
 
-    .ac-deed-avatar {
-      height: 100px;
-      width: 100px;
-      margin: 0 auto 1em;
-      @include radius(50%);
-      border: 1px solid rgb(0, 0, 0);
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
     .ac-deed-attribution {
       font-weight: 400;
       margin-bottom: 0;
@@ -326,7 +316,7 @@ span.helper, small.helper {
   margin-bottom: 1rem;
   border-bottom: 1px solid $secondary-color;
 
-  .avatar {
+  .ac-avatar {
     float: left;
     top: 3px;
     margin-right: 25px;
@@ -380,50 +370,17 @@ span.helper, small.helper {
   }
 }
 
-.avatar {
-  width: 60px;
-  height: 60px;
-  background-repeat:no-repeat;
-  background-position:center;
-}
-
-.img-circle {
+.ac-avatar {
+  height: 100px;
+  width: 100px;
+  margin: 0 auto 1em;
   @include radius(50%);
+  border: 1px solid rgb(0, 0, 0);
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 @media #{$medium-up} {
-  .avatar {
-    width: 100px;
-    height: 100px;
-  }
-
-  .avatar.party-R:after {
-    content: " ";
-    position: absolute;
-    background-color: rgba(255, 125, 125, 0.4);
-    width: 100px;
-    height: 100px;
-    @include radius(50%);
-  }
-
-  .avatar.party-D:after {
-    content: " ";
-    position: absolute;
-    background-color: rgba(125, 125, 255, 0.4);
-    width: 100px;
-    height: 100px;
-    @include radius(50%);
-  }
-
-  .avatar:after,
-  .avatar.party-I:after {
-    content: " ";
-    position: absolute;
-    background-color: rgba(255, 50, 255, 0.4);
-    width: 100px;
-    height: 100px;
-    @include radius(50%);
-  }
 
   .ac-candidate {
     padding-bottom: 1rem;

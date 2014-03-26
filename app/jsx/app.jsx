@@ -1000,7 +1000,7 @@ var Deed = React.createClass({
         </h2>
         </section>
         <section>
-        <div className="ac-deed-avatar" style={avatarStyle}></div>
+        <div className="ac-avatar" style={avatarStyle}></div>
         <h3 className="ac-deed-attribution">
           {this.props.attribution}
         </h3>
@@ -1481,7 +1481,8 @@ var Avatar = React.createClass({
     badgeSlug: React.PropTypes.string,
   },
   render: function() {
-    var avatarClass = "party-" + this.props.party;
+    var party = this.props.party;
+    var partyClass = party ? "party-" + party : "no-party";
     var avatarStyle = {
       backgroundImage: 'url(' + this.props.image + ')'
     };
@@ -1493,7 +1494,7 @@ var Avatar = React.createClass({
     }
     return (
       <div
-        className={"show-for-medium-up avatar img-circle " + avatarClass }
+        className={"show-for-medium-up ac-avatar " + partyClass }
         style={avatarStyle}>
         <div className={badgeClass}> </div>
         {badgeLink}
