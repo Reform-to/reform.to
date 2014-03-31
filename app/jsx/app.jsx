@@ -2457,7 +2457,16 @@ var ReformsList = React.createClass({
     reforms: React.PropTypes.array
   },
   render: function() {
-    var reformNodes = _.map(this.props.reforms, function (reform) {
+    // Group the reforms by topic
+    var groups = _.groupBy(this.props.reforms, function(reform) {
+      return reform.reform_topic ? reform.reform_topic : '';
+    });
+    var reformNodes = _.mapValues(groups, function(reforms, topic) {
+      return (<div>
+      <h4 className="subheader serious-header">{topic}</h4>
+      <div className="row">
+      <div className="large-11 medium-11 large-offset-1 medium-offset-1 columns">
+      {_.map(reforms, function (reform) {
       return <Reform
         key={reform.id}
         title={reform.title}
@@ -2469,6 +2478,9 @@ var ReformsList = React.createClass({
         status={reform.reform_status}
         bill={reform.bill}
         />;
+      })}
+      </div></div></div>
+      );
     });
     return (
       <div className="ac-reform-list">
