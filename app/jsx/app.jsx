@@ -1636,7 +1636,7 @@ var PledgeTaker = React.createClass({
         dataType: "json"
       });
 
-      $('html,body').scrollTop(0);
+      window.scrollTo(0, 0);
     }
     return false;
   },
@@ -1646,6 +1646,7 @@ var PledgeTaker = React.createClass({
     var contactEmail = this.state.email ? this.state.email : "your email address";
 
     var reforms = this.props.reforms;
+    var checkedReforms = this.state.reforms;
 
     return (
       <div className="ac-pledge-taker">
@@ -1679,6 +1680,7 @@ var PledgeTaker = React.createClass({
               onNameChange={this.fillInNames}
               submitted={this.state.submitted}
               emailError={this.state.emailError}
+              onSubmit={this.handleSubmit}
             />
           </form>
           </div>
@@ -1690,10 +1692,10 @@ var PledgeTaker = React.createClass({
             <fieldset>
               <legend>4. Review Your Pledge</legend>
               <ol>
-                {_.map(this.state.reforms, function (r, i) {
-                  var reform = reforms[r];
+                {_.map(reforms, function (r) {
+                  var supportedStyle = _.contains(checkedReforms, r.id) ? {} : { display: 'none' };
                   return (
-                    <li key={i}><strong>{reform.title}</strong></li>
+                    <li key={r.id} style={supportedStyle}><strong>{r.title}</strong></li>
                   );
                 }, this)}
               </ol>
@@ -2194,6 +2196,10 @@ var ContactFieldset = React.createClass({
     submitted: React.PropTypes.bool,
     emailError: React.PropTypes.bool
   },
+  handleSubmit: function() {
+    this.props.onSubmit();
+    return false;
+  },
   // Form values are bound to props, so send any user inputs back to the parent
   changeFirstName: function(event) {
     // Combine the new value with the current values for the other inputs
@@ -2221,7 +2227,7 @@ var ContactFieldset = React.createClass({
       submitButton = <button className="button expand tiny" disabled>Sending...</button>;
 
     } else {
-      submitButton = <button className="button expand tiny">I do so pledge</button>;
+      submitButton = <button className="button expand tiny" onClick={this.handleSubmit}>I do so pledge</button>;
     }
 
     emailClass = this.props.emailError ? "error" : '';
