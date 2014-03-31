@@ -246,6 +246,10 @@ span.helper, small.helper {
   text-transform: lowercase;
 }
 
+.text-capitalize {
+  text-transform: capitalize;
+}
+
 .ac-deed {
   border: 3px solid $body-font-color;
   margin: 2em 0;
