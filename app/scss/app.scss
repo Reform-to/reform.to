@@ -387,6 +387,19 @@ span.helper, small.helper {
   background-position: center;
 }
 
+.ac-avatar.has-party:after,
+.ac-avatar.no-party:after,
+.ac-avatar.party-I:after {
+  content: " ";
+  position: absolute;
+  margin-top: -5px;
+  margin-left: -5px;
+  border: 2px solid rgb(180, 50, 180);
+  width: 110px;
+  height: 110px;
+  @include radius(50%);
+}
+
 .ac-avatar.party-R:after {
   content: " ";
   position: absolute;
@@ -415,18 +428,6 @@ span.helper, small.helper {
   margin-top: -5px;
   margin-left: -5px;
   border: 2px solid rgb(50, 180, 50);
-  width: 110px;
-  height: 110px;
-  @include radius(50%);
-}
-
-.ac-avatar.no-party:after,
-.ac-avatar.party-I:after {
-  content: " ";
-  position: absolute;
-  margin-top: -5px;
-  margin-left: -5px;
-  border: 2px solid rgb(180, 50, 180);
   width: 110px;
   height: 110px;
   @include radius(50%);

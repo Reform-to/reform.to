@@ -1482,7 +1482,7 @@ var Avatar = React.createClass({
   },
   render: function() {
     var party = this.props.party;
-    var partyClass = party ? "party-" + party : "no-party";
+    var partyClass = party ? "has-party party-" + party : "no-party";
     var avatarStyle = {
       backgroundImage: 'url(' + this.props.image + ')'
     };
