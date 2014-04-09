@@ -1687,8 +1687,12 @@ var PledgeTaker = React.createClass({
               lastName={this.state.lastName}
               suffix={this.state.suffix}
               onNameChange={this.fillInNames}
-              submitted={this.state.submitted}
               emailError={this.state.emailError}
+            />
+            <ReviewFieldset
+              reforms={this.props.reforms}
+              checked={this.state.reforms}
+              submitted={this.state.submitted}
               onSubmit={this.handleSubmit}
             />
           </form>
@@ -1698,17 +1702,8 @@ var PledgeTaker = React.createClass({
             <h4 className="subheader">Pledge Received</h4>
             Thank you for supporting essential reform!
           </div>
-            <fieldset>
-              <legend>4. Review Your Pledge</legend>
-              <ol>
-                {_.map(reforms, function (r) {
-                  var supportedStyle = _.contains(checkedReforms, r.id) ? {} : { display: 'none' };
-                  return (
-                    <li key={r.id} style={supportedStyle}><strong>{r.title}</strong></li>
-                  );
-                }, this)}
-              </ol>
-            </fieldset>
+          </div>
+          <div style={confirmStyle}>
             <fieldset>
               <legend>5. Await Confirmation</legend>
               <p>We will contact you at {contactEmail} to verify your pledge. If you should have any questions please get in touch with us at <a href="mailto:info@reform.to">info@reform.to</a>.</p>
@@ -2202,12 +2197,7 @@ var ContactFieldset = React.createClass({
     lastName: React.PropTypes.string,
     suffix: React.PropTypes.string,
     onNameChange: React.PropTypes.func.isRequired,
-    submitted: React.PropTypes.bool,
     emailError: React.PropTypes.bool
-  },
-  handleSubmit: function() {
-    this.props.onSubmit();
-    return false;
   },
   // Form values are bound to props, so send any user inputs back to the parent
   changeFirstName: function(event) {
@@ -2230,14 +2220,6 @@ var ContactFieldset = React.createClass({
     var middleName = this.props.middleName ? this.props.middleName : '';
     var lastName = this.props.lastName ? this.props.lastName : '';
     var suffix = this.props.suffix ? this.props.suffix : '';
-
-    var submitButton;
-    if (this.props.submitted) {
-      submitButton = <button className="button expand tiny" disabled>Sending...</button>;
-
-    } else {
-      submitButton = <button className="button expand tiny" onClick={this.handleSubmit}>I do so pledge</button>;
-    }
 
     emailClass = this.props.emailError ? "error" : '';
 
@@ -2305,11 +2287,54 @@ var ContactFieldset = React.createClass({
             </div>
           </div>
           <div className="large-7 medium-7 columns">
-            <label htmlFor="contact-form-button">Submit</label>
-            {submitButton}
           </div>
         </div>
       </fieldset>
+    );
+  }
+});
+
+var ReviewFieldset = React.createClass({
+  propTypes: {
+    reforms: React.PropTypes.array,
+    checked: React.PropTypes.array,
+    submitted: React.PropTypes.bool
+  },
+  handleSubmit: function() {
+    this.props.onSubmit();
+    return false;
+  },
+  render: function() {
+    var reforms = this.props.reforms;
+    var checked = this.props.checked;
+
+    var submitButton;
+    if (this.props.submitted) {
+      submitButton = <button className="button blue expand slim" disabled>Sending...</button>;
+    } else if (checked.length === 0) {
+      submitButton = <button className="button blue expand slim" disabled>I do so pledge</button>;
+    } else {
+      submitButton = <button className="button blue expand slim" onClick={this.handleSubmit}>I do so pledge</button>;
+    }
+
+    return (
+    <fieldset>
+      <legend>4. Review Your Pledge</legend>
+      <p>
+        { checked.length === 0 ? 'You have not selected any reforms to support.' : 'I support...' }
+      </p>
+      <ol>
+        {_.map(reforms, function (r) {
+          var supportedStyle = _.contains(checked, r.id) ? {} : { display: 'none' };
+          return (
+            <li key={r.id} style={supportedStyle}><strong>{r.title}</strong></li>
+          );
+        }, this)}
+      </ol>
+      <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
+      {submitButton}
+      </div>
+    </fieldset>
     );
   }
 });
