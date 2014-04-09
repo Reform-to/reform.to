@@ -473,7 +473,6 @@ var CandidatePicker = React.createClass({
           $.ajax({
             url: locateLegislatorsURL,
             success: function(data) {
-              console.log(data);
               this.setState({legislators: data.results});
             }.bind(this)
           });
@@ -1662,8 +1661,7 @@ var PledgeTaker = React.createClass({
     var confirmStyle = this.state.confirmed ? {} : { display: 'none' };
     var contactEmail = this.state.email ? this.state.email : "your email address";
 
-    var reforms = this.props.reforms;
-    var checkedReforms = this.state.reforms;
+    var attribution = [this.state.firstName, this.state.middleName, this.state.lastName, this.state.suffix].join(" ").trim();
 
     return (
       <div className="ac-pledge-taker">
@@ -1698,6 +1696,7 @@ var PledgeTaker = React.createClass({
               emailError={this.state.emailError}
             />
             <ReviewFieldset
+              attribution={attribution}
               reforms={this.props.reforms}
               checked={this.state.reforms}
               submitted={this.state.submitted}
@@ -2304,6 +2303,7 @@ var ContactFieldset = React.createClass({
 
 var ReviewFieldset = React.createClass({
   propTypes: {
+    attribution: React.PropTypes.string,
     reforms: React.PropTypes.array,
     checked: React.PropTypes.array,
     submitted: React.PropTypes.bool
@@ -2325,20 +2325,28 @@ var ReviewFieldset = React.createClass({
       submitButton = <button className="button blue expand slim" onClick={this.handleSubmit}>I do so pledge</button>;
     }
 
+    var supportedReforms = _.filter(reforms, function(r) {
+      return _.contains(checked, r.id);
+    });
+
+    var attribution;
+    if (this.props.attribution) {
+      attribution = <span>{this.props.attribution}</span>;
+    } else {
+      attribution = <span>The Candidate</span>;
+    }
+
     return (
     <fieldset>
       <legend>4. Review Your Pledge</legend>
       <p>
         { checked.length === 0 ? 'You have not selected any reforms to support.' : 'I support...' }
       </p>
-      <ol>
-        {_.map(reforms, function (r) {
-          var supportedStyle = _.contains(checked, r.id) ? {} : { display: 'none' };
-          return (
-            <li key={r.id} style={supportedStyle}><strong>{r.title}</strong></li>
-          );
-        }, this)}
-      </ol>
+      <div className="row">
+        <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
+          <Deed reforms={supportedReforms} attribution={attribution} />
+        </div>
+      </div>
       <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
       {submitButton}
       </div>
