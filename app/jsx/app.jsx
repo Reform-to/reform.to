@@ -767,17 +767,17 @@ var LegislatorProfile = React.createClass({
           <Reforms reforms={reforms} />
         </div>
       </div>
-      <div className="row">
-        <div className="large-12 columns">
-          <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
-        </div>
-      </div>
       </div>;
 
     var content = this.props.resource === 'deed' ? deed : profile;
     return(
         <div>
           {content}
+          <div className="row">
+            <div className="large-12 columns">
+              <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
+            </div>
+          </div>
         </div>
     );
   }
