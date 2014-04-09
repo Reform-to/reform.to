@@ -1076,7 +1076,7 @@ var CandidateProfile = React.createClass({
       var candidate = this.state.candidates[0];
       var cs = candidate.candidate.state;
       var state = cs.substring(cs.lastIndexOf('/') + 1, cs.lastIndexOf('.'));
-      var names = candidate.candidate.name.split(',');
+      var names = candidate.candidate.name.split(', ');
       var lastName = names[0];
       var firstName = names[1];
       var candidateName = [firstName, lastName].join(" ");
@@ -1976,7 +1976,7 @@ var CandidacyFieldset = React.createClass({
     });
 
     if (candidate) {
-      var names = candidate.candidate.name.split(',');
+      var names = candidate.candidate.name.split(', ');
       var lastName = names[0];
       var firstName = names[1];
 
