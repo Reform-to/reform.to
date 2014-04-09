@@ -987,9 +987,17 @@ var Deed = React.createClass({
     } else {
       commitment = "has not committed to consponsoring fundamental reform.";
     }
-    var avatarStyle = {
-      backgroundImage: 'url(' + this.props.image + ')'
-    };
+    var avatarStyle;
+    if (this.props.image) {
+      avatarStyle = {
+        backgroundImage: 'url(' + this.props.image + ')'
+      };
+    } else {
+      avatarStyle = {
+        display: 'none'
+      };
+    }
+
     return(
       <div className="ac-deed">
         <div className="ac-deed-content">
