@@ -10,6 +10,78 @@ var App = React.createClass({
     longitude: React.PropTypes.number
   },
   getInitialState: function() {
+    return { page: 'home', reforms: [], bills: [], cosponsors: [] };
+  },
+  navigateToCoords: function(empty, latitude, longitude) {
+    var lat = parseFloat(latitude);
+    var lng = parseFloat(longitude);
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: null});
+  },
+  navigateToPlace: function(empty, latitude, longitude, resolution) {
+    var lat = parseFloat(latitude);
+    var lng = parseFloat(longitude);
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: resolution});
+  },
+  navigateToReform: function(empty, id) {
+    this.setState({page: 'reform', identifier: id});
+  },
+  navigateToBadge: function(empty, id) {
+    this.setState({page: 'badge', identifier: id});
+  },
+  navigateToLegislator: function(empty, id) {
+    this.setState({page: 'legislators', identifier: id, resource: null});
+  },
+  navigateToLegislatorDeed: function(empty, id) {
+    this.setState({page: 'legislators', identifier: id, resource: 'deed'});
+  },
+  navigateToCandidate: function(empty, id) {
+    this.setState({page: 'candidates', identifier: id, resource: null});
+  },
+  navigateToCandidateDeed: function(empty, id) {
+    this.setState({page: 'candidates', identifier: id, resource: 'deed'});
+  },
+  componentWillMount: function() {
+    // Configure Router
+    var router = Router({
+      '/': this.setState.bind(this, {page: 'home'}, null),
+      '/home': {
+        "/(.*),(.*),(.*)": this.navigateToPlace.bind(this, null),
+        "/(.*),(.*)": this.navigateToCoords.bind(this, null),
+        '': this.setState.bind(this, {page: 'home'}, null),
+      },
+      '/reforms': {
+        '/:id': this.navigateToReform.bind(this, null),
+        '': this.setState.bind(this, {page: 'reforms'}, null)
+      },
+      '/legislators': {
+        '/:id': this.navigateToLegislator.bind(this, null),
+        '/:id/deed': this.navigateToLegislatorDeed.bind(this, null),
+      },
+      '/candidates': {
+        '/:id': this.navigateToCandidate.bind(this, null),
+        '/:id/deed': this.navigateToCandidateDeed.bind(this, null),
+      },
+      '/badges': {
+        '/:id': this.navigateToBadge.bind(this, null),
+        '': this.setState.bind(this, {page: 'badges'}, null)
+      },
+      '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
+      '/about': this.setState.bind(this, {page: 'about'}, null)
+    }).configure({
+      // Reset the scroll position every time a route is entered
+      on: function() { window.scrollTo(0, 0); }
+    });
+    router.init();
+
+    // If we enter the site at the base URL, update the route
+    //  to "home" for consistency and better back-button behavior
+    if (router.getRoute(0) === "") {
+      router.setRoute("/home");
+    }
+
+    this.router = router;
+
+    // Load Reforms
     var reformsURL = window.ENV.API.ANTICORRUPT.REFORMS.endpoint;
 
     var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
@@ -97,76 +169,6 @@ var App = React.createClass({
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
-
-    return { page: 'home', reforms: [], bills: [], cosponsors: [] };
-  },
-  navigateToCoords: function(empty, latitude, longitude) {
-    var lat = parseFloat(latitude);
-    var lng = parseFloat(longitude);
-    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: null});
-  },
-  navigateToPlace: function(empty, latitude, longitude, resolution) {
-    var lat = parseFloat(latitude);
-    var lng = parseFloat(longitude);
-    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: resolution});
-  },
-  navigateToReform: function(empty, id) {
-    this.setState({page: 'reform', identifier: id});
-  },
-  navigateToBadge: function(empty, id) {
-    this.setState({page: 'badge', identifier: id});
-  },
-  navigateToLegislator: function(empty, id) {
-    this.setState({page: 'legislators', identifier: id, resource: null});
-  },
-  navigateToLegislatorDeed: function(empty, id) {
-    this.setState({page: 'legislators', identifier: id, resource: 'deed'});
-  },
-  navigateToCandidate: function(empty, id) {
-    this.setState({page: 'candidates', identifier: id, resource: null});
-  },
-  navigateToCandidateDeed: function(empty, id) {
-    this.setState({page: 'candidates', identifier: id, resource: 'deed'});
-  },
-  componentWillMount: function() {
-    var router = Router({
-      '/': this.setState.bind(this, {page: 'home'}, null),
-      '/home': {
-        "/(.*),(.*),(.*)": this.navigateToPlace.bind(this, null),
-        "/(.*),(.*)": this.navigateToCoords.bind(this, null),
-        '': this.setState.bind(this, {page: 'home'}, null),
-      },
-      '/reforms': {
-        '/:id': this.navigateToReform.bind(this, null),
-        '': this.setState.bind(this, {page: 'reforms'}, null)
-      },
-      '/legislators': {
-        '/:id': this.navigateToLegislator.bind(this, null),
-        '/:id/deed': this.navigateToLegislatorDeed.bind(this, null),
-      },
-      '/candidates': {
-        '/:id': this.navigateToCandidate.bind(this, null),
-        '/:id/deed': this.navigateToCandidateDeed.bind(this, null),
-      },
-      '/badges': {
-        '/:id': this.navigateToBadge.bind(this, null),
-        '': this.setState.bind(this, {page: 'badges'}, null)
-      },
-      '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
-      '/about': this.setState.bind(this, {page: 'about'}, null)
-    }).configure({
-      // Reset the scroll position every time a route is entered
-      on: function() { window.scrollTo(0, 0); }
-    });
-    router.init();
-
-    // If we enter the site at the base URL, update the route
-    //  to "home" for consistency and better back-button behavior
-    if (router.getRoute(0) === "") {
-      router.setRoute("/home");
-    }
-
-    this.router = router;
   },
   componentWillReceiveProps: function(nextProps) {
     // Only route to the new location if the current location state is undefined
