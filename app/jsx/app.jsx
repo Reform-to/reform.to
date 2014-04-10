@@ -80,13 +80,22 @@ var App = React.createClass({
               url: findCosponsorsURL,
               success: function(data) {
                 this.setState({ cosponsors: data.results });
-              }.bind(this)
+              }.bind(this),
+              error: function(xhr, status, errorThrown) {
+                console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+              }
             });
-          }.bind(this)
+          }.bind(this),
+          error: function(xhr, status, errorThrown) {
+            console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+          }
         });
 
         this.setState({ reforms: data.reforms });
-      }.bind(this)
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+        console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+      }
     });
 
     return { page: 'home', reforms: [], bills: [], cosponsors: [] };
@@ -474,13 +483,19 @@ var CandidatePicker = React.createClass({
             url: locateLegislatorsURL,
             success: function(data) {
               this.setState({legislators: data.results});
-            }.bind(this)
+            }.bind(this),
+            error: function(xhr, status, errorThrown) {
+              console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+            }
           });
 
         } else {
           this.replaceState(this.getInitialState());
         }
-      }.bind(this)
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+        console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+      }
     });
 
   },
@@ -612,7 +627,10 @@ var AddressForm = React.createClass({
             this.setState({addressStatus: 'error'});
           }
         }
-      }.bind(this)
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+        console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+      }
     });
 
     // Remove focus from the address input
@@ -678,7 +696,10 @@ var LegislatorProfile = React.createClass({
       url: locateLegislatorsURL,
       success: function(data) {
         this.setState({legislators: data.results});
-      }.bind(this)
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+        console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+      }
     });
   },
   render: function() {
@@ -1066,7 +1087,10 @@ var CandidateProfile = React.createClass({
           return { candidate: c , district: c.district, state: c.state };
         });
         this.setState({candidates: candidates});
-      }.bind(this)
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+        console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+      }
     });
   },
   render: function() {
@@ -1271,7 +1295,8 @@ var District = React.createClass({
           });
         }
       }.bind(this),
-      error: function() {
+      error: function(xhr, status, errorThrown) {
+          console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
           // Wipe state on API error
           this.setState({
             congressional: []
@@ -1295,7 +1320,8 @@ var District = React.createClass({
           });
         }
       }.bind(this),
-      error: function() {
+      error: function(xhr, status, errorThrown) {
+          console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
           // Wipe state on API error
           this.setState({
             senatorial: []
@@ -1649,6 +1675,9 @@ var PledgeTaker = React.createClass({
         success: function(data) {
           this.setState({ confirmed: true});
         }.bind(this),
+        error: function(xhr, status, errorThrown) {
+          console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+        },
         dataType: "json"
       });
 
@@ -1775,7 +1804,10 @@ var CandidacyFieldset = React.createClass({
             url: locateLegislatorsURL,
             success: function(data) {
               this.setState({legislators: data.results});
-            }.bind(this)
+            }.bind(this),
+            error: function(xhr, status, errorThrown) {
+              console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+            }
           });
         }
 
@@ -1808,7 +1840,8 @@ var CandidacyFieldset = React.createClass({
                 });
               }
             }.bind(this),
-            error: function() {
+            error: function(xhr, status, errorThrown) {
+                console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
                 // Wipe state on API error
                 this.setState({
                   candidates: []
@@ -1832,7 +1865,8 @@ var CandidacyFieldset = React.createClass({
                 });
               }
             }.bind(this),
-            error: function() {
+            error: function(xhr, status, errorThrown) {
+                console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
                 // Wipe state on API error
                 this.setState({
                   candidates: []
