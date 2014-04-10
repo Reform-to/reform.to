@@ -53,6 +53,11 @@
     <!-- @endif -->
 
     <script src="/js/lib/jquery-2.0.3.js"></script>
+
+    <!--[if lt IE 10]>
+      <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.1/jquery.xdomainrequest.min.js"></script>
+    <![endif]-->
+
     <!-- @if dist=false -->
     <script src="/vendor/lodash/dist/lodash.js"></script>
     <script src="/vendor/director/build/director.js"></script>
@@ -65,6 +70,13 @@
 
     <script src="/js/config.js"></script>
     <script src="/js/candidates.js"></script>
+
+    <!--[if lt IE 10]>
+      <script type="text/javascript">
+        // IE Fix for CORS having to use the same protocol
+        window.ENV.API.SUNLIGHT.CONGRESS.endpoint = "http://congress.api.sunlightfoundation.com/";
+      </script>
+    <![endif]-->
 
     <!-- @if dist=false -->
     <script src="/js/app.js"></script>
