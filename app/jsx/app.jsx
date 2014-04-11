@@ -10,7 +10,7 @@ var App = React.createClass({
     longitude: React.PropTypes.number
   },
   getInitialState: function() {
-    return { page: 'home', reforms: [], bills: [], cosponsors: [] };
+    return { page: 'home', reforms: [], bills: [], sponsors: [] };
   },
   navigateToCoords: function(empty, latitude, longitude) {
     var lat = parseFloat(latitude);
@@ -126,9 +126,12 @@ var App = React.createClass({
           url: findBillsURL,
           success: function(data) {
             this.setState({ bills: data.results });
+            sponsorIds = _.uniq(_.flatten(_.pluck(data.results, 'sponsor_id')));
             cosponsorIds = _.uniq(_.flatten(_.pluck(data.results, 'cosponsor_ids')));
 
-            var cosponsorFields = [
+            legislatorIds = _.union(sponsorIds, cosponsorIds);
+
+            var legislatorFields = [
               "bioguide_id",
               "first_name",
               "last_name",
@@ -138,20 +141,20 @@ var App = React.createClass({
               "party"
             ];
 
-            var cosponsorQuery = {
+            var legislatorQuery = {
               apikey: apiKey,
-              "bioguide_id__in": cosponsorIds.join('|'),
-              fields: cosponsorFields.join(),
+              "bioguide_id__in": legislatorIds.join('|'),
+              fields: legislatorFields.join(),
               per_page: "all"
             };
 
-            var findCosponsorsURL =
-              sunlightAPI + "/legislators" + "?" + $.param(cosponsorQuery);
+            var findLegislatorsURL =
+              sunlightAPI + "/legislators" + "?" + $.param(legislatorQuery);
 
             $.ajax({
-              url: findCosponsorsURL,
+              url: findLegislatorsURL,
               success: function(data) {
-                this.setState({ cosponsors: data.results });
+                this.setState({ sponsors: data.results });
               }.bind(this),
               error: function(xhr, status, errorThrown) {
                 console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
@@ -221,16 +224,16 @@ var App = React.createClass({
       var reform = _.find(reforms, function(r) {
         return slug === r.slug;
       });
-      var cosponsor_ids = reform && reform.bill ? reform.bill.cosponsor_ids : [];
-      var cosponsors = _.filter(this.state.cosponsors, function(c) {
-        return _.contains(cosponsor_ids, c.bioguide_id);
+      var sponsor_ids = reform && reform.bill ? reform.bill.cosponsor_ids.concat(reform.bill.sponsor_id) : [];
+      var sponsors = _.filter(this.state.sponsors, function(c) {
+        return _.contains(sponsor_ids, c.bioguide_id);
       });
 
       if (reform) {
         content = <ReformProfile
           reform={reform}
           bills={this.state.bills}
-          cosponsors={cosponsors}
+          sponsors={sponsors}
         />;
       }
     } else if (this.state.page === 'legislators') {
@@ -260,7 +263,7 @@ var App = React.createClass({
       content = <BadgeProfile
         badge={badge}
         reforms={badgeReforms}
-        cosponsors={this.state.cosponsors}
+        sponsors={this.state.sponsors}
       />;
     } else if (this.state.page === 'pledges') {
       content = <PledgeTaker reforms={reforms} states={this.props.states} />;
@@ -2436,7 +2439,7 @@ var BadgeProfile = React.createClass({
   propTypes: {
     badge: React.PropTypes.object.isRequired,
     reforms: React.PropTypes.array,
-    cosponsors: React.PropTypes.array
+    sponsors: React.PropTypes.array
   },
   render: function() {
     var more = _.find(this.props.badge.links, function(link) {
@@ -2466,13 +2469,11 @@ var BadgeProfile = React.createClass({
         </h4>
         {_.map(this.props.reforms, function(reform) {
           var resource = AppLink.buildResourcePath("reforms/" + reform.slug);
-          var sponsor = reform.bill ? reform.bill.sponsor : [];
-          var cosponsor_ids = reform.bill ? reform.bill.cosponsor_ids : [];
-          var cosponsors = _.filter(this.props.cosponsors, function(c) {
-            return _.contains(cosponsor_ids, c.bioguide_id);
+          var sponsor_ids = reform.bill ? reform.bill.cosponsor_ids.concat(reform.bill.sponsor_id) : [];
+          var sponsors = _.filter(this.props.sponsors, function(c) {
+            return _.contains(sponsor_ids, c.bioguide_id);
           });
-          var legislators = cosponsors.concat(sponsor);
-          var sponsorCount = legislators.length;
+          var sponsorCount = sponsors.length;
           return (
             <div key={reform.id}>
             <h3>
@@ -2485,7 +2486,7 @@ var BadgeProfile = React.createClass({
                 {sponsorCount > 1 ? 'sponsors)' : ''}
               </span>
             </h3>
-            <StatesLegislators legislators={legislators} />
+            <StatesLegislators legislators={sponsors} />
             <hr/>
             </div>
           );
@@ -2588,7 +2589,7 @@ var ReformProfile = React.createClass({
   propTypes: {
     reform: React.PropTypes.object,
     bills: React.PropTypes.array,
-    cosponsors: React.PropTypes.array
+    sponsors: React.PropTypes.array
   },
   render: function() {
     var reform = this.props.reform;
@@ -2599,7 +2600,7 @@ var ReformProfile = React.createClass({
         key={reform.bill_id}
         bill={reform.bill}
         slug={reform.slug}
-        cosponsors={this.props.cosponsors}
+        sponsors={this.props.sponsors}
       />;
     }
 
@@ -2743,14 +2744,14 @@ var Bill = React.createClass({
     key: React.PropTypes.string,
     bill: React.PropTypes.object,
     slug: React.PropTypes.string,
-    cosponsors: React.PropTypes.array
+    sponsors: React.PropTypes.array
   },
   render: function() {
-    var cosponsors_count = this.props.bill ? this.props.bill.cosponsors_count : 0;
+    var sponsorsCount =  this.props.sponsors.length;
 
     var cosponsorNodes;
-    if (cosponsors_count) {
-      cosponsorNodes = <StatesLegislators legislators={this.props.cosponsors} />;
+    if (sponsorsCount) {
+      cosponsorNodes = <StatesLegislators legislators={this.props.sponsors} />;
     }
     var official_title = this.props.bill ? this.props.bill.official_title : '';
     var short_title = this.props.bill ? this.props.bill.short_title : '';
@@ -2770,7 +2771,7 @@ var Bill = React.createClass({
           </li>
         </ul>
         <ul className="list-commas">
-          <dt><strong className="subheader">{cosponsors_count ? "Co-Sponsors" : ''}</strong></dt>
+          <dt><strong className="subheader">{sponsorsCount ? "Sponsors" : ''}</strong></dt>
           {cosponsorNodes}
         </ul>
         <hr/>
