@@ -220,7 +220,7 @@ var App = React.createClass({
         onUpdateLocation={this.routeToLocation}
       />;
     } else if (this.state.page === 'reforms') {
-      content = <ReformsIndex reforms={reforms} />;
+      content = <ReformsIndex reforms={reforms} bills={this.state.bills} />;
     } else if (this.state.page === 'reform') {
       slug = this.state.identifier;
       var reform = _.find(reforms, function(r) {
@@ -788,7 +788,7 @@ var LegislatorProfile = React.createClass({
       <div className="row">
         <div className="large-12 columns">
           <h4 className="subheader special-header">{reforms.length > 0 ? "Sponsored Reform" : ""}</h4>
-          <Reforms reforms={reforms} />
+          <Reforms reforms={reforms} bills={bills}/>
         </div>
       </div>
       </div>;
@@ -2498,12 +2498,13 @@ var BadgeProfile = React.createClass({
 
 var ReformsIndex = React.createClass({
   propTypes: {
-    reforms: React.PropTypes.array
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array
   },
   render: function() {
     return (
       <div>
-        <Reforms reforms={this.props.reforms} />
+        <Reforms reforms={this.props.reforms} bills={this.props.bills} />
         <div className="row">
           <div className="large-12 columns">
             <div className="panel callout">
@@ -2520,7 +2521,8 @@ var ReformsIndex = React.createClass({
 
 var Reforms = React.createClass({
   propTypes: {
-    reforms: React.PropTypes.array
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array
   },
   render: function() {
     // Group the reforms by type
@@ -2528,8 +2530,10 @@ var Reforms = React.createClass({
       return reform.reform_type;
     });
 
+    var bills = this.props.bills;
+
     var reformsListNodes = _.mapValues(groups, function(reforms, type) {
-      return <ReformsList key={type} reforms={reforms} />;
+      return <ReformsList key={type} reforms={reforms} bills={bills} />;
     });
     return (
       <div className="ac-reforms">
@@ -2546,9 +2550,11 @@ var Reforms = React.createClass({
 var ReformsList = React.createClass({
   propTypes: {
     key: React.PropTypes.string.isRequired,
-    reforms: React.PropTypes.array
+    reforms: React.PropTypes.array,
+    bills: React.PropTypes.array
   },
   render: function() {
+    var bills = this.props.bills;
     // Group the reforms by topic
     var groups = _.groupBy(this.props.reforms, function(reform) {
       return reform.reform_topic ? reform.reform_topic : '';
@@ -2559,6 +2565,9 @@ var ReformsList = React.createClass({
       <div className="row">
       <div className="large-11 medium-11 large-offset-1 medium-offset-1 columns">
       {_.map(reforms, function (reform) {
+      var bill = _.find(bills, function(b) {
+        return b.bill_id == reform.bill_id;
+      });
       return <Reform
         key={reform.id}
         title={reform.title}
@@ -2568,7 +2577,7 @@ var ReformsList = React.createClass({
         url={reform.url}
         slug={reform.slug}
         status={reform.reform_status}
-        bill={reform.bill}
+        bill={bill}
         />;
       })}
       </div></div></div>
