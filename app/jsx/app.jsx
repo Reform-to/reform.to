@@ -1003,8 +1003,9 @@ var Deed = React.createClass({
     };
   },
   render: function() {
+    var isCommitted = this.props.reforms.length > 0;
     var commitment;
-    if (this.props.reforms.length > 0) {
+    if (isCommitted) {
       commitment = "is committed to consponsoring the following fundamental reform";
     } else {
       commitment = "has not committed to consponsoring fundamental reform.";
@@ -1025,9 +1026,10 @@ var Deed = React.createClass({
         <div className="ac-deed-content">
         <section className="ac-deed-title">
         <h2 className="subheader">
-          <span>Commitment</span>{' '}
+          <span>{isCommitted ? '' : 'Not'}</span>{' '}
+          <span>Committed</span>{' '}
           <span>to</span>{' '}
-          <span>Reform</span>
+          <span>Reform</span>{' '}
         </h2>
         </section>
         <section>
@@ -1049,9 +1051,9 @@ var Deed = React.createClass({
           );
         }, this)}
         </section>
-        <h3>
-        ★ ★ ★
-        </h3>
+        <h2>
+          <span>{isCommitted ? '✯✯✯' : '⦿⦿⦿'}</span>{' '}
+        </h2>
         </div>
       </div>
     );
