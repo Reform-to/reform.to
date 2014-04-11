@@ -189,18 +189,7 @@ var App = React.createClass({
   render: function() {
     var content;
 
-    // Combine the reforms and bills data into one set
-    var reforms;
-    if (this.state.bills) {
-      var bills = this.state.bills;
-      reforms = _.sortBy(_.map(this.state.reforms, function(r) {
-        r.bill = _.find(bills, function(b) { return b.bill_id === r.bill_id; });
-        return r;
-      }), 'title');
-
-    } else {
-      reforms = this.state.reforms;
-    }
+    var reforms = this.state.reforms;
 
     // Read the location from state with props as the fallback
     var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
@@ -226,7 +215,10 @@ var App = React.createClass({
       var reform = _.find(reforms, function(r) {
         return slug === r.slug;
       });
-      var sponIds = reform && reform.bill ? reform.bill.cosponsor_ids.concat(reform.bill.sponsor_id) : [];
+      var bill = reform ? _.find(this.state.bills, function(b) {
+        return b.bill_id == reform.bill_id;
+      }) : null;
+      var sponIds = bill ? bill.cosponsor_ids.concat(bill.sponsor_id) : [];
       var sponsors = _.filter(this.state.sponsors, function(c) {
         return _.contains(sponIds, c.bioguide_id);
       });
@@ -2601,14 +2593,18 @@ var ReformProfile = React.createClass({
   render: function() {
     var reform = this.props.reform;
 
-    var bill;
+    var billComponent, bill;
     if (reform.bill_id) {
-      bill = <Bill
-        key={reform.bill_id}
-        bill={reform.bill}
-        slug={reform.slug}
+      bill = _.find(this.props.bills, function(b) {
+        return b.bill_id == reform.bill_id;
+      });
+      if (bill) {
+      billComponent = <Bill
+        key={bill.bill_id}
+        bill={bill}
         sponsors={this.props.sponsors}
       />;
+      }
     }
 
     return (
@@ -2625,9 +2621,9 @@ var ReformProfile = React.createClass({
               url={reform.url}
               slug={reform.slug}
               status={reform.reform_status}
-              bill={reform.bill}
+              bill={bill}
             />
-            {bill}
+            {billComponent}
           </div>
         </div>
       </div>
@@ -2750,7 +2746,6 @@ var Bill = React.createClass({
   propTypes: {
     key: React.PropTypes.string,
     bill: React.PropTypes.object,
-    slug: React.PropTypes.string,
     sponsors: React.PropTypes.array
   },
   render: function() {
