@@ -2733,7 +2733,7 @@ var Bills = React.createClass({
           <dt><strong className="subheader">Full Text</strong></dt>
           {_.map(this.props.bills, function(b, i) {
             var short_title = b.short_title;
-            var text_link = b.last_version_urls_html;
+            var text_link = b.last_version.urls.html;
             var chamber = b.chamber;
             return (
               <li key={i}>
