@@ -1117,11 +1117,10 @@ var CandidateProfile = React.createClass({
       />;
     }
 
-    var image = '/img/avatar.png';
     var deed =
       <div className="row">
         <div className="large-8 large-offset-2 columns">
-          <Deed attribution={attribution} image={image}/>
+          <Deed attribution={attribution} />
         </div>
       </div>;
 
