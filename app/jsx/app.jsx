@@ -721,6 +721,7 @@ var LegislatorProfile = React.createClass({
 
     var legislatorNameLink;
     var legislatorDeedLink;
+    var deedLink;
 
     if (this.state.legislators.length) {
       var legislator = this.state.legislators[0];
@@ -739,8 +740,10 @@ var LegislatorProfile = React.createClass({
         lastName={legislator.last_name}
       />;
       legislatorDeedLink = <AppLink route={deedRoute} text={legislatorShortName} />;
+      deedLink = <AppLink route={deedRoute} text="Read the Deed" />;
     } else {
       legislatorNameLink = <span>The Legislator</span>;
+      legislatorDeedLink = legislatorNameLink;
     }
 
     var congressPhotosAPI = window.ENV.API.ANTICORRUPT.PHOTOS.endpoint;
@@ -778,6 +781,7 @@ var LegislatorProfile = React.createClass({
           <div className={callOutClass}>
             <div className="ac-deed-content">
             <h4 className="text-center">{legislatorDeedLink} <br/> {callOut}</h4>
+            {deedLink}
             </div>
           </div>
         </div>
