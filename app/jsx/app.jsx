@@ -206,14 +206,16 @@ var App = React.createClass({
     var lat = this.state.latitude ? this.state.latitude : this.props.latitude;
     var lng = this.state.longitude ? this.state.longitude : this.props.longitude;
 
+    // Get the ID's of the sponsors for reference
+    var sponsorIds = _.pluck(this.state.sponsors, 'bioguide_id');
+
     var slug;
     if (this.state.page === 'home') {
       content = <HomePage
         latitude={lat}
         longitude={lng}
         resolution={this.state.resolution}
-        reforms={reforms}
-        bills={this.state.bills}
+        sponsorIds={sponsorIds}
         states={this.props.states}
         onUpdateLocation={this.routeToLocation}
       />;
@@ -224,9 +226,9 @@ var App = React.createClass({
       var reform = _.find(reforms, function(r) {
         return slug === r.slug;
       });
-      var sponsor_ids = reform && reform.bill ? reform.bill.cosponsor_ids.concat(reform.bill.sponsor_id) : [];
+      var sponIds = reform && reform.bill ? reform.bill.cosponsor_ids.concat(reform.bill.sponsor_id) : [];
       var sponsors = _.filter(this.state.sponsors, function(c) {
-        return _.contains(sponsor_ids, c.bioguide_id);
+        return _.contains(sponIds, c.bioguide_id);
       });
 
       if (reform) {
@@ -242,6 +244,7 @@ var App = React.createClass({
         bioguideId={this.state.identifier}
         reforms={reforms}
         bills={this.state.bills}
+        sponsorIds={sponsorIds}
         resource={this.state.resource}
       />;
     } else if (this.state.page === 'candidates') {
@@ -373,8 +376,7 @@ var HomePage = React.createClass({
     latitude: React.PropTypes.number,
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
-    reforms: React.PropTypes.array,
-    bills: React.PropTypes.array,
+    sponsorIds: React.PropTypes.array,
     states: React.PropTypes.array,
     onUpdateLocation: React.PropTypes.func.isRequired
   },
@@ -396,9 +398,8 @@ var HomePage = React.createClass({
         latitude={this.props.latitude}
         longitude={this.props.longitude}
         resolution={this.props.resolution}
-        reforms={this.props.reforms}
+        sponsorIds={this.props.sponsorIds}
         states={this.props.states}
-        bills={this.props.bills}
       />
       </div>
     );
@@ -429,8 +430,7 @@ var CandidatePicker = React.createClass({
     latitude: React.PropTypes.number,
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
-    reforms: React.PropTypes.array,
-    bills: React.PropTypes.array,
+    sponsorIds: React.PropTypes.array,
     states: React.PropTypes.array,
   },
   locateCandidates: function(latitude, longitude, resolution) {
@@ -508,9 +508,7 @@ var CandidatePicker = React.createClass({
     return {
       legislators: [],
       state: '',
-      district: null,
-      reforms: [],
-      bills: []
+      district: null
     };
   },
   getDefaultProps: function() {
@@ -542,6 +540,7 @@ var CandidatePicker = React.createClass({
     var stateName = state ? state.name : '';
     var district = this.state.district ? this.state.district : '';
     var hasLegislators = this.state.legislators.length > 0;
+
     return (
     <div className="ac-candidate-picker">
     <div className="row">
@@ -561,8 +560,7 @@ var CandidatePicker = React.createClass({
       <div className="large-12 columns">
         <LegislatorList
           legislators={this.state.legislators}
-          reforms={this.props.reforms}
-          bills={this.props.bills}
+          sponsorIds={this.props.sponsorIds}
         />
       </div>
     </div>
@@ -572,8 +570,8 @@ var CandidatePicker = React.createClass({
           state={this.state.state}
           district={this.state.district}
           legislators={this.state.legislators}
+          sponsorIds={this.props.sponsorIds}
           states={this.props.states}
-          bills={this.props.bills}
         />
       </div>
     </div>
@@ -773,8 +771,7 @@ var LegislatorProfile = React.createClass({
         <div className="large-12 columns">
           <LegislatorList
             legislators={this.state.legislators}
-            reforms={reforms}
-            bills={bills}
+            sponsorIds={this.props.sponsorIds}
           />
         </div>
       </div>
@@ -1149,22 +1146,18 @@ var CandidateProfile = React.createClass({
 var LegislatorList = React.createClass({
   propTypes: {
     legislators: React.PropTypes.array,
+    sponsorIds: React.PropTypes.array,
     reforms: React.PropTypes.array,
     bills: React.PropTypes.array
   },
   render: function() {
-    var bills = this.props.bills ? this.props.bills : [];
 
-    // Merge all sponsor and co-sponsor IDs into one array
-    var sponsor_ids = _.uniq(_.union(
-      _.pluck(bills, 'sponsor_id'),
-      _.flatten(bills, false, 'cosponsor_ids')
-    ));
+    var reformerIds = this.props.sponsorIds ? this.props.sponsorIds : [];
 
     var legislatorNodes = _.map(this.props.legislators, (function (legislator) {
 
       // Check if this Legislator is in the list of Reformers
-      var isReformer = _.contains(sponsor_ids, legislator.bioguide_id);
+      var isReformer = _.contains(reformerIds, legislator.bioguide_id);
 
       return <Legislator
         key={legislator.bioguide_id}
@@ -1266,7 +1259,7 @@ var District = React.createClass({
     state: React.PropTypes.string,
     district: React.PropTypes.number,
     legislators: React.PropTypes.array,
-    bills: React.PropTypes.array,
+    sponsorIds: React.PropTypes.array,
     states: React.PropTypes.array,
   },
   locateCandidates: function(state, district) {
@@ -1386,7 +1379,7 @@ var District = React.createClass({
               district={this.state.district}
               cycle={this.state.cycle}
               legislators={this.props.legislators}
-              bills={this.props.bills}
+              sponsorIds={this.props.sponsorIds}
             />
           </div>
           <div className="medium-6 columns">
@@ -1399,7 +1392,7 @@ var District = React.createClass({
               chamber="Senate"
               cycle={this.state.cycle}
               legislators={this.props.legislators}
-              bills={this.props.bills}
+              sponsorIds={this.props.sponsorIds}
             />
           </div>
         </div>
@@ -1416,18 +1409,12 @@ var CandidateList = React.createClass({
     chamber: React.PropTypes.oneOf(['House', 'Senate']),
     cycle: React.PropTypes.number,
     legislators: React.PropTypes.array,
-    bills: React.PropTypes.array
+    sponsorIds: React.PropTypes.array
   },
   render: function() {
     var state = this.props.state;
 
-    var bills = this.props.bills ? this.props.bills : [];
-
-    // Merge all sponsor and co-sponsor IDs into one array
-    var sponsor_ids = _.uniq(_.union(
-      _.pluck(bills, 'sponsor_id'),
-      _.flatten(bills, false, 'cosponsor_ids')
-    ));
+    var reformerIds = this.props.sponsorIds ? this.props.sponsorIds : [];
 
     var candidateNodes = _.map(this.props.candidates, function (candidate) {
       // Take the first letter of the party name only
@@ -1446,7 +1433,7 @@ var CandidateList = React.createClass({
       var bioguideId = legislator ? legislator.bioguide_id : null;
 
       // Check if this Candidate is in the list of Reformers
-      var isReformer = bioguideId ? _.contains(sponsor_ids, bioguideId) : false;
+      var isReformer = bioguideId ? _.contains(reformerIds, bioguideId) : false;
 
       // Check if this candidate has a district field
       var district;
