@@ -2557,28 +2557,25 @@ var ReformsList = React.createClass({
       return reform.reform_topic ? reform.reform_topic : '';
     });
     var reformNodes = _.mapValues(groups, function(reforms, topic) {
-      return (<div>
+      return (<li>
       <h4 className="subheader serious-header">{topic}</h4>
-      <div className="row">
-      <div className="large-11 medium-11 large-offset-1 medium-offset-1 columns">
       {_.map(reforms, function (reform) {
       return <Reform
         key={reform.id}
         title={reform.title}
-        description={reform.description}
-        sponsor={reform.sponsor}
-        url={reform.url}
         slug={reform.slug}
         status={reform.reform_status}
         />;
       })}
-      </div></div></div>
+      </li>
       );
     });
     return (
       <div className="ac-reform-list">
         <h2 className="subheader text-capitalize">{this.props.key} Reform</h2>
+        <ul className="large-block-grid-2 medium-block-grid-2">
         {reformNodes}
+        </ul>
       </div>
     );
   }
@@ -2661,7 +2658,8 @@ var Reform = React.createClass({
         </h3>
         <p>
           <strong>
-            {this.props.description}.{' '}
+            {this.props.description}
+            {this.props.description ? '.' : ''}{' '}
           </strong>
           {sponsorLine ? "Sponsored by" : ''} {' '}
           {sponsorLine}
