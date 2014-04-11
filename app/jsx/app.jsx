@@ -266,6 +266,7 @@ var App = React.createClass({
       content = <BadgeProfile
         badge={badge}
         reforms={badgeReforms}
+        bills={this.state.bills}
         sponsors={this.state.sponsors}
       />;
     } else if (this.state.page === 'pledges') {
@@ -2426,6 +2427,7 @@ var BadgeProfile = React.createClass({
   propTypes: {
     badge: React.PropTypes.object.isRequired,
     reforms: React.PropTypes.array,
+    bills: React.PropTypes.array,
     sponsors: React.PropTypes.array
   },
   render: function() {
@@ -2456,10 +2458,19 @@ var BadgeProfile = React.createClass({
         </h4>
         {_.map(this.props.reforms, function(reform) {
           var resource = AppLink.buildResourcePath("reforms/" + reform.slug);
-          var sponsor_ids = reform.bill ? reform.bill.cosponsor_ids.concat(reform.bill.sponsor_id) : [];
-          var sponsors = _.filter(this.props.sponsors, function(c) {
-            return _.contains(sponsor_ids, c.bioguide_id);
-          });
+
+          var sponsors = [];
+          if (reform.bill_id) {
+            var bill = _.find(this.props.bills, function(b) {
+              return b.bill_id == reform.bill_id;
+            });
+
+            var sponsorIds = bill ? bill.cosponsor_ids.concat(bill.sponsor_id) : [];
+            sponsors = _.filter(this.props.sponsors, function(c) {
+              return _.contains(sponsorIds, c.bioguide_id);
+            });
+          }
+
           var sponsorCount = sponsors.length;
           return (
             <div key={reform.id}>
