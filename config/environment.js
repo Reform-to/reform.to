@@ -14,7 +14,7 @@ window.ENV = {
         endpoint: "/vendor/congress-photos/"
       },
       REFORMS: {
-        endpoint: 'http://reforms.fabricatorz.com/us/b4/'
+        endpoint: 'http://reforms.fabricatorz.com/us/b5/'
       }
     },
     SUNLIGHT: {
