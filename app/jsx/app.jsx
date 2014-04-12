@@ -2849,7 +2849,7 @@ var BADGES = [
     links: [
       {"rel" : "more", "href" : '/reforms', "prompt" : "Read about the Reforms"}
     ]
-  },
+  }
 ];
 
 // Render the main application first using the default location
