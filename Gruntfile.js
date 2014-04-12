@@ -10,7 +10,8 @@ module.exports = function(grunt) {
         },
         output: 'tmp/result/js/lib',
         versions: {
-          "2.0.3": ['css', 'deprecated', 'dimensions', 'effects', 'event-alias', 'offset', 'sizzle', 'wrap']
+          "2.0.3": ['css', 'deprecated', 'dimensions', 'effects', 'event-alias', 'offset', 'sizzle', 'wrap'],
+          "1.10.2": ['css', 'deprecated', 'dimensions', 'effects', 'event-alias', 'offset', 'wrap'],
         }
       }
     },
