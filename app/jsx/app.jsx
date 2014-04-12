@@ -274,14 +274,16 @@ var App = React.createClass({
       content = <AboutPage />;
     }
     return (
-      <div>
+      <div key={this.state.page}>
         <Navigation
           latitude={lat}
           longitude={lng}
           resolution={this.state.resolution}
           page={this.state.page}
         />
+        <div>
         {content}
+        </div>
       </div>
     );
   }
