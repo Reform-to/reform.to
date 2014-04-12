@@ -350,14 +350,14 @@ var Navigation = React.createClass({
 
     var navClass = "top-bar" + (this.state.expanded ? " expanded" : '');
     return (
-    <nav className={navClass} data-topbar>
+    <div className={navClass}>
       <ul className="title-area">
         <li className="name">
         <h1 className="subheader"><AppLink route={homeRoute} text="Reform.to"/></h1>
         </li>
         <li className="toggle-topbar menu-icon"><a href="#" onClick={this.toggleTopbar}><span>Menu</span></a></li>
       </ul>
-      <section className="top-bar-section">
+      <div className="top-bar-section">
         <ul className="right">
           <li className="divider"></li>
           <li className="active"><AppLink route={nextRoute} text={nextTitle} /></li>
@@ -367,8 +367,8 @@ var Navigation = React.createClass({
           <li><AppLink route={'/badges'} text={'Badges'} /></li>
           <li><AppLink route={'/about'} text={'About'} /></li>
         </ul>
-      </section>
-    </nav>
+      </div>
+    </div>
     );
   }
 });
@@ -1028,22 +1028,22 @@ var Deed = React.createClass({
     return(
       <div className="ac-deed">
         <div className="ac-deed-content">
-        <section className="ac-deed-title">
+        <div className="ac-deed-title section">
         <h2 className="subheader">
           <span>{isCommitted ? '' : 'Not'}</span>{' '}
           <span>Committed</span>{' '}
           <span>to</span>{' '}
           <span>Reform</span>{' '}
         </h2>
-        </section>
-        <section>
+        </div>
+        <div className="section">
         <div className="ac-avatar" style={avatarStyle}></div>
         <h3 className="ac-deed-attribution">
           {this.props.attribution}
         </h3>
           <h3><span className="ac-deed-commitment">{commitment}</span></h3>
-        </section>
-        <section>
+        </div>
+        <div className="section">
         {_.map(this.props.reforms, function (reform, i) {
           var resource = "/reforms/" + reform.slug;
           return (
@@ -1054,7 +1054,7 @@ var Deed = React.createClass({
             </div>
           );
         }, this)}
-        </section>
+        </div>
         <h2>
           <span>{isCommitted ? '✯✯✯' : '⦿⦿⦿'}</span>{' '}
         </h2>
