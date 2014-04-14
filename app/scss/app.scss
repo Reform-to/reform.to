@@ -142,6 +142,12 @@ html, body {
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
 }
 
+@media only screen and (max-width:40.063em) {
+  [class*="block-grid-"] > li {
+    width: 100%;
+  }
+}
+
 @mixin background-gradient($direction, $color1, $color2) {
   background-color: $color2;
   background: -moz-linear-gradient($direction, $color1, $color2);
