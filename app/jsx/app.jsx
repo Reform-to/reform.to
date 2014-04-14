@@ -2564,6 +2564,7 @@ var ReformsList = React.createClass({
     });
     var reformNodes = _.mapValues(groups, function(reforms, topic) {
       return (<li>
+        <div className="panel">
       <h4 className="subheader serious-header">{topic}</h4>
       {_.map(reforms, function (reform) {
       return <Reform
@@ -2573,6 +2574,7 @@ var ReformsList = React.createClass({
         status={reform.reform_status}
         />;
       })}
+      </div>
       </li>
       );
     });
@@ -2618,6 +2620,7 @@ var ReformProfile = React.createClass({
               slug={reform.slug}
               status={reform.reform_status}
             />
+            <hr/>
             {bills}
           </div>
         </div>
@@ -2676,7 +2679,6 @@ var Reform = React.createClass({
           </a>
           </strong>
         </p>
-        <hr/>
       </div>
     );
   }
