@@ -1636,7 +1636,7 @@ var PledgeTaker = React.createClass({
     }
 
     var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
-    var addReformersURL = reformersAPI + '/reformers/add';
+    var addReformersURL = reformersAPI + '/pledges/add';
 
     var contactForm = this.refs.contactForm.refs;
     var email = contactForm.contactEmail.getDOMNode().value.trim();
