@@ -213,18 +213,29 @@ var App = React.createClass({
     // Get the ID's of the sponsors for reference
     var sponsorIds = _.pluck(this.state.sponsors, 'bioguide_id');
 
+    // Get the ID's of reformer candidates
+    var reformCandidateIds = _.compact(_.pluck(this.state.reformers, 'fec_id'));
+
+    // Get the ID's of reformer congress members
+    var reformCongressIds = _.compact(_.pluck(this.state.reformers, 'bioguide_id'));
+
+    // Combine ID's of congress members who have sponsored legislation and those
+    // who have pledged their support
+    var combinedCongressIds = _.union(sponsorIds, reformCongressIds);
+
     var slug;
     if (this.state.page === 'home') {
       content = <HomePage
         latitude={lat}
         longitude={lng}
         resolution={this.state.resolution}
-        sponsorIds={sponsorIds}
+        sponsorIds={combinedCongressIds}
+        reformCandidateIds={reformCandidateIds}
         states={this.props.states}
         onUpdateLocation={this.routeToLocation}
       />;
     } else if (this.state.page === 'reforms') {
-      content = <ReformsIndex reforms={reforms} bills={this.state.bills} />;
+      content = <ReformsIndex reforms={reforms} />;
     } else if (this.state.page === 'reform') {
 
       slug = this.state.identifier;
@@ -245,26 +256,63 @@ var App = React.createClass({
         return _.contains(billSponsors, c.bioguide_id);
       });
 
+      var supporters = reform ? _.filter(this.state.reformers, function (r) {
+        return _.contains(r.reforms, reform.id);
+      }) : [];
+
       if (reform) {
         content = <ReformProfile
           reform={reform}
           bills={bills}
           sponsors={sponsors}
+          supporters={supporters}
         />;
       }
     } else if (this.state.page === 'legislators') {
+      var bioguideId = this.state.identifier;
+
+      var congressReformer = _.find(this.state.reformers, { 'bioguide_id' : bioguideId });
+      var congressSupportedReformIds = congressReformer ? congressReformer.reforms : [];
+
+      var sponsoredBills = _.filter(this.state.bills, function(b) {
+        var isSponsor = b.sponsor_id === bioguideId;
+        var isCosponsor = _.contains(b.cosponsor_ids, bioguideId);
+        return isSponsor || isCosponsor;
+      });
+
+      var bill_ids = _.pluck(sponsoredBills, "bill_id");
+      var sponsoredOrSupportedReforms = _.filter(this.state.reforms, function(r) {
+        var hasSponsored = _.intersection(bill_ids, r.bills).length > 0;
+        var hasSupported = _.contains(congressSupportedReformIds, r.id);
+        return hasSponsored || hasSupported;
+      });
+      var unsupportedReforms = _.reject(this.state.reforms, function(r) {
+        var hasSponsored = _.intersection(bill_ids, r.bills).length > 0;
+        var hasSupported = _.contains(congressSupportedReformIds, r.id);
+        return hasSponsored || hasSupported;
+      });
+
       content = <LegislatorProfile
         key={this.state.identifier}
         bioguideId={this.state.identifier}
-        reforms={reforms}
-        bills={this.state.bills}
+        supportedReforms={sponsoredOrSupportedReforms}
+        unsupportedReforms={unsupportedReforms}
+        bills={sponsoredBills}
         sponsorIds={sponsorIds}
         resource={this.state.resource}
       />;
     } else if (this.state.page === 'candidates') {
+      var fecId = this.state.identifier;
+      var reformers = this.state.reformers;
+      var candidateReformer = _.find(reformers, { 'fec_id' : fecId });
+      var supportedReformsIds = candidateReformer ? candidateReformer.reforms : [];
+      var supportedReforms = _.filter(this.state.reforms, function(r) {
+        return _.contains(supportedReformsIds, r.id);
+      });
       content = <CandidateProfile
         key={this.state.identifier}
         fecId={this.state.identifier}
+        supportedReforms={supportedReforms}
         resource={this.state.resource}
       />;
     } else if (this.state.page === 'badges') {
@@ -282,6 +330,7 @@ var App = React.createClass({
         reforms={badgeReforms}
         bills={this.state.bills}
         sponsors={this.state.sponsors}
+        supporters={this.state.reformers}
       />;
     } else if (this.state.page === 'pledges') {
       content = <PledgeTaker reforms={reforms} states={this.props.states} />;
@@ -394,6 +443,7 @@ var HomePage = React.createClass({
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
     sponsorIds: React.PropTypes.array,
+    reformCandidateIds: React.PropTypes.array,
     states: React.PropTypes.array,
     onUpdateLocation: React.PropTypes.func.isRequired
   },
@@ -416,6 +466,7 @@ var HomePage = React.createClass({
         longitude={this.props.longitude}
         resolution={this.props.resolution}
         sponsorIds={this.props.sponsorIds}
+        reformCandidateIds={this.props.reformCandidateIds}
         states={this.props.states}
       />
       </div>
@@ -460,6 +511,7 @@ var CandidatePicker = React.createClass({
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
     sponsorIds: React.PropTypes.array,
+    reformCandidateIds: React.PropTypes.array,
     states: React.PropTypes.array,
   },
   locateCandidates: function(latitude, longitude, resolution) {
@@ -600,6 +652,7 @@ var CandidatePicker = React.createClass({
           district={this.state.district}
           legislators={this.state.legislators}
           sponsorIds={this.props.sponsorIds}
+          reformCandidateIds={this.props.reformCandidateIds}
           states={this.props.states}
         />
       </div>
@@ -701,7 +754,8 @@ var LegislatorProfile = React.createClass({
   propTypes: {
     key: React.PropTypes.string.isRequired,
     bioguideId: React.PropTypes.string.isRequired,
-    reforms: React.PropTypes.array,
+    supportedReforms: React.PropTypes.array,
+    unsupportedReforms: React.PropTypes.array,
     bills: React.PropTypes.array,
     resource: React.PropTypes.string
   },
@@ -733,21 +787,6 @@ var LegislatorProfile = React.createClass({
     });
   },
   render: function() {
-    var bioguideId = this.props.bioguideId;
-    var bills = _.filter(this.props.bills, function(b) {
-      var isSponsor = b.sponsor_id === bioguideId;
-      var isCosponsor = _.contains(b.cosponsor_ids, bioguideId);
-      return isSponsor || isCosponsor;
-    });
-
-    var bill_ids = _.pluck(bills, "bill_id");
-    var reforms = _.filter(this.props.reforms, function(r) {
-      return _.intersection(bill_ids, r.bills).length > 0;
-    });
-    var unsupported = _.reject(this.props.reforms, function(r) {
-      return _.intersection(bill_ids, r.bills).length > 0;
-    });
-
     var legislatorNameLink;
     var legislatorDeedLink;
     var deedLink;
@@ -781,13 +820,13 @@ var LegislatorProfile = React.createClass({
     var deed =
       <div className="row">
         <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
-          <Deed reforms={reforms} attribution={legislatorNameLink} image={image}/>
+          <Deed reforms={this.props.supportedReforms} attribution={legislatorNameLink} image={image}/>
         </div>
       </div>;
 
     var callOut;
     var callOutClass;
-    if (reforms.length) {
+    if (this.props.supportedReforms.length) {
       callOut = "is committed to cosponsoring fundamental reform.";
       callOutClass = "ac-deed success";
     } else {
@@ -817,8 +856,8 @@ var LegislatorProfile = React.createClass({
       </div>
       <div className="row">
         <div className="large-12 columns">
-          <h4 className="subheader special-header">{reforms.length > 0 ? "Sponsored Reform" : ""}</h4>
-          <Reforms reforms={reforms} bills={bills}/>
+          <h4 className="subheader special-header">{this.props.supportedReforms.length > 0 ? "Sponsored Reform" : ""}</h4>
+          <Reforms reforms={this.props.supportedReforms} />
         </div>
       </div>
       </div>;
@@ -829,7 +868,7 @@ var LegislatorProfile = React.createClass({
           {content}
           <div className="row">
             <div className="large-12 columns">
-              <Lobby legislator={this.state.legislators[0]} reforms={reforms} unsupported={unsupported}/>
+              <Lobby legislator={this.state.legislators[0]} reforms={this.props.supportedReforms} unsupported={this.props.unsupportedReforms}/>
             </div>
           </div>
         </div>
@@ -1094,7 +1133,8 @@ var Deed = React.createClass({
 var CandidateProfile = React.createClass({
   propTypes: {
     key: React.PropTypes.string.isRequired,
-    fecId: React.PropTypes.string.isRequired
+    fecId: React.PropTypes.string.isRequired,
+    supportedReforms: React.PropTypes.array
   },
   getInitialState: function() {
     return {
@@ -1131,6 +1171,7 @@ var CandidateProfile = React.createClass({
   render: function() {
     var attribution;
     var candidateList;
+    var supportedReforms = this.props.supportedReforms;
     if (this.state.candidates.length > 0) {
       var candidate = this.state.candidates[0];
       var cs = candidate.candidate.state;
@@ -1151,7 +1192,7 @@ var CandidateProfile = React.createClass({
     var deed =
       <div className="row">
         <div className="large-8 large-offset-2 columns">
-          <Deed attribution={attribution} />
+          <Deed reforms={supportedReforms} attribution={attribution} />
         </div>
       </div>;
 
@@ -1291,6 +1332,7 @@ var District = React.createClass({
     district: React.PropTypes.number,
     legislators: React.PropTypes.array,
     sponsorIds: React.PropTypes.array,
+    reformCandidateIds: React.PropTypes.array,
     states: React.PropTypes.array,
   },
   locateCandidates: function(state, district) {
@@ -1411,6 +1453,7 @@ var District = React.createClass({
               cycle={this.state.cycle}
               legislators={this.props.legislators}
               sponsorIds={this.props.sponsorIds}
+              reformCandidateIds={this.props.reformCandidateIds}
             />
           </div>
           <div className="medium-6 columns">
@@ -1424,6 +1467,7 @@ var District = React.createClass({
               cycle={this.state.cycle}
               legislators={this.props.legislators}
               sponsorIds={this.props.sponsorIds}
+              reformCandidateIds={this.props.reformCandidateIds}
             />
           </div>
         </div>
@@ -1440,12 +1484,14 @@ var CandidateList = React.createClass({
     chamber: React.PropTypes.oneOf(['House', 'Senate']),
     cycle: React.PropTypes.number,
     legislators: React.PropTypes.array,
-    sponsorIds: React.PropTypes.array
+    sponsorIds: React.PropTypes.array,
+    reformCandidateIds: React.PropTypes.array
   },
   render: function() {
     var state = this.props.state;
 
-    var reformerIds = this.props.sponsorIds ? this.props.sponsorIds : [];
+    var sponsorIds = this.props.sponsorIds ? this.props.sponsorIds : [];
+    var reformCandidateIds = this.props.reformCandidateIds ? this.props.reformCandidateIds : [];
 
     var candidateNodes = _.map(this.props.candidates, function (candidate) {
       // Take the first letter of the party name only
@@ -1464,7 +1510,8 @@ var CandidateList = React.createClass({
       var bioguideId = legislator ? legislator.bioguide_id : null;
 
       // Check if this Candidate is in the list of Reformers
-      var isReformer = bioguideId ? _.contains(reformerIds, bioguideId) : false;
+      var isReformer = bioguideId ? _.contains(sponsorIds, bioguideId) : false;
+      isReformer = fecId && _.contains(reformCandidateIds, fecId) ? true : isReformer;
 
       // Check if this candidate has a district field
       var district;
@@ -2458,7 +2505,8 @@ var BadgeProfile = React.createClass({
     badge: React.PropTypes.object.isRequired,
     reforms: React.PropTypes.array,
     bills: React.PropTypes.array,
-    sponsors: React.PropTypes.array
+    sponsors: React.PropTypes.array,
+    supporters: React.PropTypes.array
   },
   render: function() {
     var more = _.find(this.props.badge.links, function(link) {
@@ -2501,7 +2549,11 @@ var BadgeProfile = React.createClass({
             return _.contains(billSponsors, c.bioguide_id);
           });
 
-          var sponsorCount = sponsors.length;
+          var supporters = _.filter(this.props.supporters, function(s) {
+            return _.contains(s.reforms, reform.id);
+          });
+
+          var sponsorCount = sponsors.length + supporters.length;
           return (
             <div key={reform.id}>
             <h3>
@@ -2515,6 +2567,7 @@ var BadgeProfile = React.createClass({
               </span>
             </h3>
             <StatesLegislators legislators={sponsors} />
+            <Supporters supporters={supporters} />
             <hr/>
             </div>
           );
@@ -2528,13 +2581,12 @@ var BadgeProfile = React.createClass({
 
 var ReformsIndex = React.createClass({
   propTypes: {
-    reforms: React.PropTypes.array,
-    bills: React.PropTypes.array
+    reforms: React.PropTypes.array
   },
   render: function() {
     return (
       <div>
-        <Reforms reforms={this.props.reforms} bills={this.props.bills} />
+        <Reforms reforms={this.props.reforms} />
         <div className="row">
           <div className="large-12 columns">
             <div className="panel callout">
@@ -2551,8 +2603,7 @@ var ReformsIndex = React.createClass({
 
 var Reforms = React.createClass({
   propTypes: {
-    reforms: React.PropTypes.array,
-    bills: React.PropTypes.array
+    reforms: React.PropTypes.array
   },
   render: function() {
     // Group the reforms by type
@@ -2560,10 +2611,8 @@ var Reforms = React.createClass({
       return reform.reform_type;
     });
 
-    var bills = this.props.bills;
-
     var reformsListNodes = _.mapValues(groups, function(reforms, type) {
-      return <ReformsList key={type} reforms={reforms} bills={bills} />;
+      return <ReformsList key={type} reforms={reforms} />;
     });
     return (
       <div className="ac-reforms">
@@ -2580,8 +2629,7 @@ var Reforms = React.createClass({
 var ReformsList = React.createClass({
   propTypes: {
     key: React.PropTypes.string.isRequired,
-    reforms: React.PropTypes.array,
-    bills: React.PropTypes.array
+    reforms: React.PropTypes.array
   },
   render: function() {
     // Filter the reforms into groups based on their known party affiliations
@@ -2691,7 +2739,8 @@ var ReformProfile = React.createClass({
   propTypes: {
     reform: React.PropTypes.object,
     bills: React.PropTypes.array,
-    sponsors: React.PropTypes.array
+    sponsors: React.PropTypes.array,
+    supporters: React.PropTypes.array
   },
   render: function() {
     var reform = this.props.reform;
@@ -2734,6 +2783,8 @@ var ReformProfile = React.createClass({
             })}
             <hr/>
             {bills}
+            <Supporters supporters={this.props.supporters} />
+            <hr/>
           </div>
         </div>
       </div>
@@ -2867,8 +2918,39 @@ var Bills = React.createClass({
           <dt><strong className="subheader">{sponsorsCount ? "Sponsors" : ''}</strong></dt>
           {sponsorNodes}
         </ul>
-        <hr/>
       </div>
+    );
+  }
+});
+
+var Supporters = React.createClass({
+  propTypes: {
+    supporters: React.PropTypes.array
+  },
+  render: function() {
+    supportersCount = this.props.supporters.length;
+    return (
+        <ul className="no-bullet">
+          <dt><strong className="subheader">{supportersCount ? "Supporters" : ''}</strong></dt>
+          <ul className="list-commas">
+          {_.map(this.props.supporters, function(s, i) {
+            var fullName = s.first_name + ' ' + s.last_name;
+            var resource;
+            if (s.fec_id) {
+              resource = "/candidates/" + s.fec_id;
+            }
+            if (s.bioguide_id) {
+              resource = "/legislators/" + s.bioguide_id;
+            }
+            return (
+              <li key={i}>
+                <AppLink route={resource} text={fullName}/>{' '}
+                <span className="minor">({s.state})</span>
+              </li>
+            );
+          })}
+          </ul>
+        </ul>
     );
   }
 });
