@@ -10,7 +10,7 @@ var App = React.createClass({
     longitude: React.PropTypes.number
   },
   getInitialState: function() {
-    return { page: 'home', reforms: [], bills: [], sponsors: [] };
+    return { page: 'home', reforms: [], bills: [], sponsors: [], reformers: [] };
   },
   navigateToCoords: function(empty, latitude, longitude) {
     var lat = parseFloat(latitude);
@@ -172,7 +172,22 @@ var App = React.createClass({
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
-  },
+
+    // Load Reformers
+    var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
+    var reformersURL = reformersAPI + '/reformers';
+
+    $.ajax({
+      url: reformersURL,
+      dataType: 'json',
+      success: function(data) {
+        this.setState({ reformers: data.reformers });
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+        console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+      }
+    });
+},
   componentWillReceiveProps: function(nextProps) {
     // Only route to the new location if the current location state is undefined
     // and we are on the home page
