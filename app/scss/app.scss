@@ -349,7 +349,7 @@ span.helper, small.helper {
       position: absolute;
       height: 32px;
       width: 32px;
-      bottom: 0;
+      bottom: -6px;
       right: 0;
       z-index: 1000;
     }
@@ -402,50 +402,34 @@ span.helper, small.helper {
   background-position: center;
 }
 
+@mixin party-ring($color) {
+  content: " ";
+  position: absolute;
+  margin-top: -11px;
+  margin-left: -11px;
+  border: 7px solid $color;
+  width: 122px;
+  height: 122px;
+  @include radius(50%);
+  opacity: 0.9;
+}
+
 .ac-avatar.has-party:after,
 .ac-avatar.no-party:after,
 .ac-avatar.party-I:after {
-  content: " ";
-  position: absolute;
-  margin-top: -7px;
-  margin-left: -7px;
-  border: 4px solid rgb(180, 50, 180);
-  width: 114px;
-  height: 114px;
-  @include radius(50%);
+  @include party-ring(#b432b4);
 }
 
 .ac-avatar.party-R:after {
-  content: " ";
-  position: absolute;
-  margin-top: -7px;
-  margin-left: -7px;
-  border: 4px solid rgb(180, 50, 50);
-  width: 114px;
-  height: 114px;
-  @include radius(50%);
+  @include party-ring(#b43232);
 }
 
 .ac-avatar.party-D:after {
-  content: " ";
-  position: absolute;
-  margin-top: -7px;
-  margin-left: -7px;
-  border: 4px solid rgb(50, 50, 180);
-  width: 114px;
-  height: 114px;
-  @include radius(50%);
+  @include party-ring(#3232b4);
 }
 
 .ac-avatar.party-G:after {
-  content: " ";
-  position: absolute;
-  margin-top: -7px;
-  margin-left: -7px;
-  border: 4px solid rgb(50, 180, 50);
-  width: 114px;
-  height: 114px;
-  @include radius(50%);
+  @include party-ring(#32b432);
 }
 
 @media #{$medium-up} {
