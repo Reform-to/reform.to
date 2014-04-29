@@ -2564,8 +2564,10 @@ var ReformsList = React.createClass({
     });
     var reformNodes = _.mapValues(groups, function(reforms, topic) {
       var parties = _.uniq(_.flatten(_.compact(_.pluck(reforms, 'parties'))));
+      var panelClass = "panel " + _.map(parties, function(p) { return "party-" + p; }).join(" ");
       return (<li>
-        <div className="panel">
+        <div className={panelClass}>
+        <div className="panel-content">
       <h4 className="subheader serious-header">{topic}</h4>
       {_.map(reforms, function (reform) {
       return <Reform
@@ -2579,6 +2581,7 @@ var ReformsList = React.createClass({
         var labelClass = "label party-" + party;
         return <span className={labelClass}>{party}</span>;
       })}
+      </div>
       </div>
       </li>
       );

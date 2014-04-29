@@ -146,6 +146,31 @@ html, body {
   }
 }
 
+.panel-content {
+  padding: 1.25em;
+  background-color: #fff;
+  opacity: 0.98;
+  box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
+}
+
+@mixin panel-party($color1, $color2) {
+  border: none;
+  padding: 3px;
+  background-image: linear-gradient(to right bottom, lighten($color1, 25%) 0%, lighten($color2, 25%) 100%);
+}
+
+.panel.party-D {
+  @include panel-party($dem-party-color, $dem-party-color);
+}
+
+.panel.party-R {
+  @include panel-party($rep-party-color, $rep-party-color);
+}
+
+.panel.party-D.party-R {
+  @include panel-party($dem-party-color, $rep-party-color);
+}
+
 [class*="block-grid-"] .panel {
   margin-bottom: 0;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
