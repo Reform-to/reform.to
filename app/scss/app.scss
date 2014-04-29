@@ -441,6 +441,27 @@ span.helper, small.helper {
   @include party-ring(#32b432);
 }
 
+@mixin party-label($color) {
+  background-color: $color;
+  opacity: 0.9;
+}
+
+.label.party-I:after {
+  @include party-label(#b432b4);
+}
+
+.label.party-D {
+  @include party-label(#3232b4);
+}
+
+.label.party-R {
+  @include party-label(#b43232);
+}
+
+.label.party-G:after {
+  @include party-label(#32b432);
+}
+
 @media #{$medium-up} {
 
   .ac-candidate {
