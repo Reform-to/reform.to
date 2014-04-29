@@ -426,19 +426,19 @@ span.helper, small.helper {
 .ac-avatar.has-party:after,
 .ac-avatar.no-party:after,
 .ac-avatar.party-I:after {
-  @include party-ring(#b432b4);
+  @include party-ring($ind-party-color);
 }
 
 .ac-avatar.party-R:after {
-  @include party-ring(#b43232);
+  @include party-ring($rep-party-color);
 }
 
 .ac-avatar.party-D:after {
-  @include party-ring(#3232b4);
+  @include party-ring($dem-party-color);
 }
 
 .ac-avatar.party-G:after {
-  @include party-ring(#32b432);
+  @include party-ring($green-party-color);
 }
 
 @mixin party-label($color) {
@@ -447,19 +447,19 @@ span.helper, small.helper {
 }
 
 .label.party-I:after {
-  @include party-label(#b432b4);
+  @include party-label($ind-party-color);
 }
 
 .label.party-D {
-  @include party-label(#3232b4);
+  @include party-label($dem-party-color);
 }
 
 .label.party-R {
-  @include party-label(#b43232);
+  @include party-label($rep-party-color);
 }
 
 .label.party-G:after {
-  @include party-label(#32b432);
+  @include party-label($green-party-color);
 }
 
 @media #{$medium-up} {
