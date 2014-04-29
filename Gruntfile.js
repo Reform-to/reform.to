@@ -140,7 +140,7 @@ module.exports = function(grunt) {
 
       sass: {
         files: 'app/scss/**/*.scss',
-        tasks: ['sass']
+        tasks: ['sass:dev']
       },
 
       app: {
