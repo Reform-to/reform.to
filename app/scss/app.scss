@@ -446,7 +446,7 @@ span.helper, small.helper {
   opacity: 0.9;
 }
 
-.label.party-I:after {
+.label.party-I {
   @include party-label($ind-party-color);
 }
 
@@ -458,7 +458,7 @@ span.helper, small.helper {
   @include party-label($rep-party-color);
 }
 
-.label.party-G:after {
+.label.party-G {
   @include party-label($green-party-color);
 }
 
