@@ -2577,9 +2577,9 @@ var ReformsList = React.createClass({
         status={reform.reform_status}
         />;
       })}
-      {_.map(parties, function(party) {
+      {_.map(parties, function(party, i) {
         var labelClass = "label party-" + party;
-        return <span className={labelClass}>{party}</span>;
+        return <span key={i} className={labelClass}>{party}</span>;
       })}
       </div>
       </div>
@@ -2637,10 +2637,10 @@ var ReformProfile = React.createClass({
               slug={reform.slug}
               status={reform.reform_status}
             />
-            {_.map(parties, function(party) {
+            {_.map(parties, function(party, i) {
               var labelClass = "label party-" + party;
               var partyName = partyNames[party] ? partyNames[party] : party;
-              return <span className={labelClass}>{partyName}</span>;
+              return <span key={i} className={labelClass}>{partyName}</span>;
             })}
             <hr/>
             {bills}
