@@ -2563,6 +2563,7 @@ var ReformsList = React.createClass({
       return reform.reform_topic ? reform.reform_topic : '';
     });
     var reformNodes = _.mapValues(groups, function(reforms, topic) {
+      var parties = _.uniq(_.flatten(_.compact(_.pluck(reforms, 'parties'))));
       return (<li>
         <div className="panel">
       <h4 className="subheader serious-header">{topic}</h4>
@@ -2573,6 +2574,10 @@ var ReformsList = React.createClass({
         slug={reform.slug}
         status={reform.reform_status}
         />;
+      })}
+      {_.map(parties, function(party) {
+        var labelClass = "label party-" + party;
+        return <span className={labelClass}>{party}</span>;
       })}
       </div>
       </li>
@@ -2606,6 +2611,15 @@ var ReformProfile = React.createClass({
       />;
     }
 
+    var parties = reform.parties;
+
+    var partyNames = {
+      "D": "Democratic",
+      "R": "Republican",
+      "G": "Green",
+      "I": "Independent"
+    };
+
     return (
       <div className="ac-reforms">
         <div className="row">
@@ -2620,6 +2634,11 @@ var ReformProfile = React.createClass({
               slug={reform.slug}
               status={reform.reform_status}
             />
+            {_.map(parties, function(party) {
+              var labelClass = "label party-" + party;
+              var partyName = partyNames[party] ? partyNames[party] : party;
+              return <span className={labelClass}>{partyName}</span>;
+            })}
             <hr/>
             {bills}
           </div>
