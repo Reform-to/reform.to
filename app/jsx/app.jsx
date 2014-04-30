@@ -413,13 +413,25 @@ var AboutPage = React.createClass({
     return (
       <div className="ac-about">
         <div className="row">
-            <div className="large-6 large-offset-3 medium-10 medium-offset-1 columns">
+            <div className="large-8 large-offset-2 medium-8 medium-offset-2 columns">
               <h4 className="subheader text-center">About</h4>
               <p>
-                <a href="/">Reform.to</a> tracks members of Congress as well as candidates, and highlights their support for specific{' '}
-                <AppLink route="/reforms" text="legislative and constitutional reforms" />{' '}
-                aimed at fighting the corrupting influence of money in politics.
+                <a href="/">Reform.to</a>{' '}
+                tracks members of Congress as well as candidates for Congress, and highlights their support for specific
+                {' '}
+                <AppLink route="/reforms" text="legislation" />
+                {' '}
+                that would effect fundamental reform of the corrupting influence of money in politics.
               </p>
+              <p>By "support" we mean that they have either co-sponsored specific legislation, or, they have pledged to us to co-sponsor specific legislation.</p>
+              <p>If a Member or candidate supports any of these reforms in this sense, we mark their profile with the AC tag. "AC" means they are working "Against Corruption."</p>
+              <p>If Member or candidate has not indicated support for these reforms in this sense, we mark their profile with a DC tag. "DC" means business as usual.</p>
+              <p>Each of the specific proposals for fundamental reform that we’ve chosen to track would effect a fundamental change in how Congress funds its campaigns. Some would effect more change than others. But each, we think, is significant enough to merit the label "fundamental."</p>
+              <p>Our view is not that these are the only changes that our democracy requires.  But changes like these are required first.</p>
+              <p>We have not included constitutional reforms at this stage. They may be required as well. But our view is that given how unlikely it is that Congress would pass such a resolution just now, indicating support for such a resolution — with out also co-sponsoring these legislative reforms — is too easy. As we evolve this site, we may add the opportunity to indicate support for constitutional reform as well. But support for fundamental legislative reform is, in our view, essential.</p>
+              <p>Over time, the specific legislation that we track may change. We plan to add a forum to this site that helps us determine those changes.</p>
+              <p><strong>If you are a candidate or a Member of Congress</strong>, and would like to pledge support for any of these reforms, please use the "take the pledge" tool. We have a human confirmation process to avoid any errors. If there are errors on the site that you would like us to correct — including changes to your profile or profile image — use the error link at the bottom of the page.</p>
+              <p>Finally, there is a FAQ to come. Please send the questions you have to @, and as we compile answers, we will develop the FAQ.</p>
             </div>
         </div>
       </div>
