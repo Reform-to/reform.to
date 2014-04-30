@@ -148,8 +148,7 @@ html, body {
 
 .panel-content {
   padding: 1.25em;
-  background-color: #fff;
-  opacity: 0.98;
+  background-color: darken(#fff, 1%);
   box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
 }
 
