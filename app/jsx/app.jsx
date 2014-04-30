@@ -431,7 +431,7 @@ var AboutPage = React.createClass({
               <p>We have not included constitutional reforms at this stage. They may be required as well. But our view is that given how unlikely it is that Congress would pass such a resolution just now, indicating support for such a resolution — with out also co-sponsoring these legislative reforms — is too easy. As we evolve this site, we may add the opportunity to indicate support for constitutional reform as well. But support for fundamental legislative reform is, in our view, essential.</p>
               <p>Over time, the specific legislation that we track may change. We plan to add a forum to this site that helps us determine those changes.</p>
               <p><strong>If you are a candidate or a Member of Congress</strong>, and would like to pledge support for any of these reforms, please use the "take the pledge" tool. We have a human confirmation process to avoid any errors. If there are errors on the site that you would like us to correct — including changes to your profile or profile image — use the error link at the bottom of the page.</p>
-              <p>Finally, there is a FAQ to come. Please send the questions you have to @, and as we compile answers, we will develop the FAQ.</p>
+              <p>Finally, there is a FAQ to come. Please send the questions you have to <a href="mailto:info@reform.to">info@reform.to</a>, and as we compile answers, we will develop the FAQ.</p>
             </div>
         </div>
       </div>
