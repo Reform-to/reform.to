@@ -2672,7 +2672,7 @@ var ReformsList = React.createClass({
         {demReformNodes}
         </ul>
         <div className="row">
-        <div className="large-6 large-offset-3 columns">
+        <div className="large-6 large-offset-3 medium-6 medium-offset-3 columns">
         <ul className="large-block-grid-1 medium-block-grid-1">
         {crosspartyReformNodes}
         </ul>
