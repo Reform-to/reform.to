@@ -1076,9 +1076,9 @@ var Deed = React.createClass({
     var isCommitted = this.props.reforms.length > 0;
     var commitment;
     if (isCommitted) {
-      commitment = "is committed to consponsoring the following fundamental reform";
+      commitment = "is committed to cosponsoring the following fundamental reform";
     } else {
-      commitment = "has not committed to consponsoring fundamental reform.";
+      commitment = "has not committed to cosponsoring fundamental reform.";
     }
     var avatarStyle;
     if (this.props.image) {
