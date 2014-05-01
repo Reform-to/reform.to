@@ -2651,6 +2651,7 @@ var ReformPanel = React.createClass({
     var panelClass = "panel " + _.map(parties, function(p) { return "party-" + p; }).join(" ");
     return (<div key={reform.id}>
       <div className={panelClass}>
+      <div className="panel-border">
       <div className="panel-content">
     <h4 className="subheader serious-header">{topic}</h4>
     <Reform
@@ -2663,6 +2664,7 @@ var ReformPanel = React.createClass({
       var labelClass = "label party-" + party;
       return <span key={i} className={labelClass}>{party}</span>;
     })}
+    </div>
     </div>
     </div>
     </div>

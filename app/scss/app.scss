@@ -146,16 +146,22 @@ html, body {
   }
 }
 
+.panel-border {
+  padding: 20px;
+  border-image: url("../img/panel-border.png");
+  border-image-slice: 20 20 20 13 fill;
+  border-image-width: 20px 20px 20px 20px;
+}
+
 .panel-content {
-  padding: 1.25em;
-  background-color: darken(#fff, 1%);
-  box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
+  padding: 5px;
+  background-color: white;
 }
 
 @mixin panel-party($color1, $color2) {
   border: none;
-  padding: 3px;
-  background-image: linear-gradient(to right bottom, lighten($color1, 25%) 0%, lighten($color2, 25%) 100%);
+  padding: 0;
+  background-image: linear-gradient(to right bottom, lighten($color1, 10%) 0%, lighten($color2, 10%) 100%);
 }
 
 .panel.party-D {
@@ -172,7 +178,6 @@ html, body {
 
 [class*="block-grid-"] .panel {
   margin-bottom: 0;
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
 }
 
 @media only screen and (max-width:40.063em) {
