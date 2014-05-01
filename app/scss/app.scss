@@ -147,10 +147,10 @@ html, body {
 }
 
 .panel-border {
-  padding: 20px;
+  padding: 17px 20px 16px 13px;
   border-image: url("../img/panel-border.png");
-  border-image-slice: 20 20 20 13 fill;
-  border-image-width: 20px 20px 20px 20px;
+  border-image-slice: 17 20 16 13 fill;
+  border-image-width: 17px 20px 16px 13px;
 }
 
 .panel-content {
