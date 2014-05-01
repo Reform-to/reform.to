@@ -161,7 +161,7 @@ html, body {
 @mixin panel-party($color1, $color2) {
   border: none;
   padding: 0;
-  background-image: linear-gradient(to right bottom, lighten($color1, 10%) 0%, lighten($color2, 10%) 100%);
+  background-image: linear-gradient(to right bottom, $color1 0%, $color2 100%);
 }
 
 .panel.party-D {
