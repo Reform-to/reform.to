@@ -2569,14 +2569,57 @@ var ReformsList = React.createClass({
     bills: React.PropTypes.array
   },
   render: function() {
-    var reformNodes = _.map(this.props.reforms, function(reform) {
+    // Filter the reforms into groups based on their known party affiliations
+    // Display D reforms on the top, R refors on the bottom, and cross-party reforms
+    // in the middle
+    var reforms = this.props.reforms;
+    var demReforms = _.filter(reforms, function(r) {
+      var p = r.parties;
+      return p.length === 1 && p[0] === "D";
+    });
+    var repReforms = _.filter(reforms, function(r) {
+      var p = r.parties;
+      return p.length === 1 && p[0] === "R";
+    });
+    var crosspartyReforms = _.filter(reforms, function(r) {
+      var p = r.parties;
+      return p.length >= 2;
+    });
+    var otherReforms = _.filter(reforms, function(r) {
+      var p = r.parties;
+      return p.length === 0 || (p.length === 1 && p[0] !== "D" && p[0] !== "R");
+    });
+
+    var demReformNodes = _.map(demReforms, function(reform) {
+      return <ReformListItem key={reform.id} reform={reform} />;
+    });
+    var repReformNodes = _.map(repReforms, function(reform) {
+      return <ReformListItem key={reform.id} reform={reform} />;
+    });
+    var crosspartyReformNodes = _.map(crosspartyReforms, function(reform) {
+      return <ReformListItem key={reform.id} reform={reform} />;
+    });
+    var otherReformNodes = _.map(otherReforms, function(reform) {
       return <ReformListItem key={reform.id} reform={reform} />;
     });
     return (
       <div className="ac-reform-list">
         <h2 className="subheader text-capitalize">{this.props.key} Reform</h2>
         <ul className="large-block-grid-2 medium-block-grid-2">
-        {reformNodes}
+        {demReformNodes}
+        </ul>
+        <div className="row">
+        <div className="large-6 large-offset-3 columns">
+        <ul className="large-block-grid-1 medium-block-grid-1">
+        {crosspartyReformNodes}
+        </ul>
+        </div>
+        </div>
+        <ul className="large-block-grid-2 medium-block-grid-2">
+        {repReformNodes}
+        </ul>
+        <ul className="large-block-grid-2 medium-block-grid-2">
+        {otherReformNodes}
         </ul>
       </div>
     );
