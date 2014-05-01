@@ -2569,26 +2569,20 @@ var ReformsList = React.createClass({
     bills: React.PropTypes.array
   },
   render: function() {
-    var bills = this.props.bills;
-    // Group the reforms by topic
-    var groups = _.groupBy(this.props.reforms, function(reform) {
-      return reform.reform_topic ? reform.reform_topic : '';
-    });
-    var reformNodes = _.mapValues(groups, function(reforms, topic) {
-      var parties = _.uniq(_.flatten(_.compact(_.pluck(reforms, 'parties'))));
+    var reformNodes = _.map(this.props.reforms, function(reform) {
+      var topic = reform.reform_topic;
+      var parties = reform.parties;
       var panelClass = "panel " + _.map(parties, function(p) { return "party-" + p; }).join(" ");
-      return (<li>
+      return (<li key={reform.id}>
         <div className={panelClass}>
         <div className="panel-content">
       <h4 className="subheader serious-header">{topic}</h4>
-      {_.map(reforms, function (reform) {
-      return <Reform
+      <Reform
         key={reform.id}
         title={reform.title}
         slug={reform.slug}
         status={reform.reform_status}
-        />;
-      })}
+        />
       {_.map(parties, function(party, i) {
         var labelClass = "label party-" + party;
         return <span key={i} className={labelClass}>{party}</span>;
