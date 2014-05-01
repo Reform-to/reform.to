@@ -2570,11 +2570,7 @@ var ReformsList = React.createClass({
   },
   render: function() {
     var reformNodes = _.map(this.props.reforms, function(reform) {
-      return (
-        <li key={reform.id}>
-          <ReformPanel key={reform.id} reform={reform} />
-        </li>
-      );
+      return <ReformListItem key={reform.id} reform={reform} />;
     });
     return (
       <div className="ac-reform-list">
@@ -2583,6 +2579,20 @@ var ReformsList = React.createClass({
         {reformNodes}
         </ul>
       </div>
+    );
+  }
+});
+
+var ReformListItem = React.createClass({
+  propTypes: {
+    reform: React.PropTypes.object.isRequired
+  },
+  render: function() {
+    var reform = this.props.reform;
+    return (
+      <li key={reform.id}>
+        <ReformPanel key={reform.id} reform={reform} />
+      </li>
     );
   }
 });
