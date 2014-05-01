@@ -2570,26 +2570,10 @@ var ReformsList = React.createClass({
   },
   render: function() {
     var reformNodes = _.map(this.props.reforms, function(reform) {
-      var topic = reform.reform_topic;
-      var parties = reform.parties;
-      var panelClass = "panel " + _.map(parties, function(p) { return "party-" + p; }).join(" ");
-      return (<li key={reform.id}>
-        <div className={panelClass}>
-        <div className="panel-content">
-      <h4 className="subheader serious-header">{topic}</h4>
-      <Reform
-        key={reform.id}
-        title={reform.title}
-        slug={reform.slug}
-        status={reform.reform_status}
-        />
-      {_.map(parties, function(party, i) {
-        var labelClass = "label party-" + party;
-        return <span key={i} className={labelClass}>{party}</span>;
-      })}
-      </div>
-      </div>
-      </li>
+      return (
+        <li key={reform.id}>
+          <ReformPanel key={reform.id} reform={reform} />
+        </li>
       );
     });
     return (
@@ -2599,6 +2583,36 @@ var ReformsList = React.createClass({
         {reformNodes}
         </ul>
       </div>
+    );
+  }
+});
+
+var ReformPanel = React.createClass({
+  propTypes: {
+    reform: React.PropTypes.object.isRequired
+  },
+  render: function() {
+    var reform = this.props.reform;
+    var topic = reform.reform_topic;
+    var parties = reform.parties;
+    var panelClass = "panel " + _.map(parties, function(p) { return "party-" + p; }).join(" ");
+    return (<div key={reform.id}>
+      <div className={panelClass}>
+      <div className="panel-content">
+    <h4 className="subheader serious-header">{topic}</h4>
+    <Reform
+      key={reform.id}
+      title={reform.title}
+      slug={reform.slug}
+      status={reform.reform_status}
+      />
+    {_.map(parties, function(party, i) {
+      var labelClass = "label party-" + party;
+      return <span key={i} className={labelClass}>{party}</span>;
+    })}
+    </div>
+    </div>
+    </div>
     );
   }
 });
