@@ -178,7 +178,12 @@ var App = React.createClass({
 
     // Load Reformers
     var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
-    var reformersURL = reformersAPI + '/reformers';
+
+    // The .json extension is a workaround for older browsers that do not
+    // set the Accept header correctly. The backend resource is configured to
+    // interpret this file extension as a request for an application/json
+    // media type.
+    var reformersURL = reformersAPI + '/reformers/index.json';
 
     $.ajax({
       headers: {
