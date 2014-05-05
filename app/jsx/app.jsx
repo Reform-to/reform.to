@@ -181,6 +181,9 @@ var App = React.createClass({
     var reformersURL = reformersAPI + '/reformers';
 
     $.ajax({
+      headers: {
+        Accept: "application/json; charset=utf-8"
+      },
       url: reformersURL,
       dataType: 'json',
       success: function(data) {
