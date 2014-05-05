@@ -1783,6 +1783,9 @@ var PledgeTaker = React.createClass({
 
     var attribution = [this.state.firstName, this.state.middleName, this.state.lastName, this.state.suffix].join(" ").trim();
 
+    var reformersAPI = window.ENV.API.ANTICORRUPT.REFORMERS.endpoint;
+    var addReformersURL = reformersAPI + '/pledges/add';
+
     return (
       <div className="ac-pledge-taker">
       <div className="row">
@@ -1793,7 +1796,7 @@ var PledgeTaker = React.createClass({
             Are you a member of Congress or a candidate in the next election? Please tell us
             what reform you are willing to support.
           </div>
-          <form className="congress-form" data-abide="ajax" onSubmit={this.handleSubmit}>
+          <form className="congress-form" data-abide="ajax" action={addReformersURL} method="POST">
             <CandidacyFieldset
               states={this.props.states}
               onCandidacyChange={this.fillInCandidacy}
@@ -2444,13 +2447,20 @@ var ReviewFieldset = React.createClass({
     var reforms = this.props.reforms;
     var checked = this.props.checked;
 
+    // Determine whether or not to submit the form using AJAX
+    var ajaxSubmit = window.ENV.SITE.ajaxSubmit;
+
     var submitButton;
     if (this.props.submitted) {
       submitButton = <button className="button blue expand slim" disabled>Sending...</button>;
     } else if (checked.length === 0) {
       submitButton = <button className="button blue expand slim" disabled>I do so pledge</button>;
     } else {
-      submitButton = <button className="button blue expand slim" onClick={this.handleSubmit}>I do so pledge</button>;
+      if (ajaxSubmit === true ) {
+        submitButton = <button className="button blue expand slim" onClick={this.handleSubmit}>I do so pledge</button>;
+      } else {
+        submitButton = <input className="button blue expand slim" type="submit" value="I do so pledge"/>;
+      }
     }
 
     var supportedReforms = _.filter(reforms, function(r) {
