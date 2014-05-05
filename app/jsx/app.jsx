@@ -157,11 +157,13 @@ var App = React.createClass({
                 this.setState({ sponsors: data.results });
               }.bind(this),
               error: function(xhr, status, errorThrown) {
+                console.log("Error: Can't find legislators.");
                 console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
               }
             });
           }.bind(this),
           error: function(xhr, status, errorThrown) {
+            console.log("Error: Can't find bills.");
             console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
           }
         });
@@ -169,6 +171,7 @@ var App = React.createClass({
         this.setState({ reforms: data.reforms });
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+        console.log("Error: Can't find reforms.");
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
@@ -184,6 +187,7 @@ var App = React.createClass({
         this.setState({ reformers: data.reformers });
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+        console.log("Error: Can't find reformers.");
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
@@ -571,6 +575,7 @@ var CandidatePicker = React.createClass({
               this.setState({legislators: data.results});
             }.bind(this),
             error: function(xhr, status, errorThrown) {
+              console.log("Error: Can't locate legislators.");
               console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
             }
           });
@@ -580,6 +585,7 @@ var CandidatePicker = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+        console.log("Error: Can't locate district.");
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
@@ -714,6 +720,7 @@ var AddressForm = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+        console.log("Error: Can't locate address.");
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
@@ -782,6 +789,7 @@ var LegislatorProfile = React.createClass({
         this.setState({legislators: data.results});
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+        console.log("Error: Can't find legislator.");
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
@@ -1164,6 +1172,7 @@ var CandidateProfile = React.createClass({
         this.setState({candidates: candidates});
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+        console.log("Error: Can't find candidate.");
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
@@ -1368,6 +1377,7 @@ var District = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+          console.log("Error: Can't find Representatives.");
           console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
           // Wipe state on API error
           this.setState({
@@ -1393,6 +1403,7 @@ var District = React.createClass({
         }
       }.bind(this),
       error: function(xhr, status, errorThrown) {
+          console.log("Error: Can't find Senators.");
           console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
           // Wipe state on API error
           this.setState({
@@ -1747,6 +1758,7 @@ var PledgeTaker = React.createClass({
           this.setState({ confirmed: true});
         }.bind(this),
         error: function(xhr, status, errorThrown) {
+          console.log("Error: Can't add a reform.");
           console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
         },
         dataType: "json"
@@ -1877,6 +1889,7 @@ var CandidacyFieldset = React.createClass({
               this.setState({legislators: data.results});
             }.bind(this),
             error: function(xhr, status, errorThrown) {
+              console.log("Error: Can't find a legislator for this pledge.");
               console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
             }
           });
@@ -1912,6 +1925,7 @@ var CandidacyFieldset = React.createClass({
               }
             }.bind(this),
             error: function(xhr, status, errorThrown) {
+                console.log("Error: Can't find a Senate candidate for this pledge.");
                 console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
                 // Wipe state on API error
                 this.setState({
@@ -1937,6 +1951,7 @@ var CandidacyFieldset = React.createClass({
               }
             }.bind(this),
             error: function(xhr, status, errorThrown) {
+                console.log("Error: Can't find a House candidate for this pledge.");
                 console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
                 // Wipe state on API error
                 this.setState({
