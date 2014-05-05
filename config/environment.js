@@ -31,7 +31,7 @@ window.ENV = {
     },
     GOOGLE: {
       MAPS: {
-        endpoint: "http://maps.googleapis.com/maps/api/geocode/json"
+        endpoint: "https://maps.googleapis.com/maps/api/geocode/json"
       }
     },
     TWITTER: {
