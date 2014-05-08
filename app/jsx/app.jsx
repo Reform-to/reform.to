@@ -89,6 +89,7 @@ var App = React.createClass({
 
     $.ajax({
       url: reformsURL,
+      dataType: 'json',
       success: function(data) {
         // Get all the bill_id's from any reforms that have one
         var billIds = _.uniq(_.flatten(_.compact(_.pluck(data.reforms, 'bills'))));
@@ -124,6 +125,7 @@ var App = React.createClass({
 
         $.ajax({
           url: findBillsURL,
+          dataType: 'json',
           success: function(data) {
             this.setState({ bills: data.results });
             sponsorIds = _.uniq(_.flatten(_.pluck(data.results, 'sponsor_id')));
@@ -153,6 +155,7 @@ var App = React.createClass({
 
             $.ajax({
               url: findLegislatorsURL,
+              dataType: 'json',
               success: function(data) {
                 this.setState({ sponsors: data.results });
               }.bind(this),
@@ -542,6 +545,7 @@ var CandidatePicker = React.createClass({
 
     $.ajax({
       url: locateDistrictURL,
+      dataType: 'json',
       success: function(data) {
         if (data.count > 0) {
           var state = data.results[0].state;
@@ -579,6 +583,7 @@ var CandidatePicker = React.createClass({
 
           $.ajax({
             url: locateLegislatorsURL,
+            dataType: 'json',
             success: function(data) {
               this.setState({legislators: data.results});
             }.bind(this),
@@ -698,6 +703,7 @@ var AddressForm = React.createClass({
 
     $.ajax({
       url: geocodeAddressURL,
+      dataType: 'json',
       success: function(data) {
         var results = data.results;
         var status = data.status;
@@ -793,6 +799,7 @@ var LegislatorProfile = React.createClass({
 
     $.ajax({
       url: locateLegislatorsURL,
+      dataType: 'json',
       success: function(data) {
         this.setState({legislators: data.results});
       }.bind(this),
@@ -1896,6 +1903,7 @@ var CandidacyFieldset = React.createClass({
 
           $.ajax({
             url: locateLegislatorsURL,
+            dataType: 'json',
             success: function(data) {
               this.setState({legislators: data.results});
             }.bind(this),
