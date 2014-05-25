@@ -1207,9 +1207,12 @@ var CandidateProfile = React.createClass({
       var resource = "/candidates/" + candidate.candidate.id;
       attribution = <AppLink route={resource} text={candidateName}/>;
 
+      var reformCandidateIds = [candidate.candidate.id];
+
       candidateList = <CandidateList
         candidates={this.state.candidates}
         state={state}
+        reformCandidateIds={reformCandidateIds}
       />;
     }
 
