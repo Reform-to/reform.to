@@ -66,7 +66,8 @@ var App = React.createClass({
         '': this.setState.bind(this, {page: 'badges'}, null)
       },
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
-      '/about': this.setState.bind(this, {page: 'about'}, null)
+      '/about': this.setState.bind(this, {page: 'about'}, null),
+      '/developers': this.setState.bind(this, {page: 'developers'}, null)
     }).configure({
       // Reset the scroll position every time a route is entered
       on: function() { window.scrollTo(0, 0); }
@@ -351,6 +352,8 @@ var App = React.createClass({
       content = <PledgeTaker reforms={reforms} states={this.props.states} />;
     } else if (this.state.page === 'about') {
       content = <AboutPage />;
+    } else if (this.state.page === 'developers') {
+      content = <DevelopersPage />;
     }
     return (
       <div key={this.state.page}>
@@ -514,6 +517,29 @@ var AboutPage = React.createClass({
               <p><strong>If you are a candidate or a Member of Congress</strong>, and would like to pledge support for any of these reforms, please use the "take the pledge" tool. We have a human confirmation process to avoid any errors. If there are errors on the site that you would like us to correct — including changes to your profile or profile image — use the error link at the bottom of the page.</p>
               <p>Finally, there is a FAQ to come. Please send the questions you have to <a href="mailto:info@reform.to">info@reform.to</a>, and as we compile answers, we will develop the FAQ.</p>
             </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var DevelopersPage = React.createClass({
+  render: function() {
+    return (
+      <div className="ac-developers">
+        <div className="row">
+          <div className="large-8 large-offset-2 medium-8 medium-offset-2 columns">
+            <h4 className="subheader text-center">Developers</h4>
+              <p>The source code for this project is released as open source under the <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>. The concept and project was initiated by <a href="http://en.wikipedia.org/wiki/Lawrence_Lessig">Lawrence Lessig</a> and is developed by <a href="http://fabricatorz.com">Fabricatorz</a>.</p>
+              <p>The official public repositories and issues tracking is on Github at <a href="https://github.com/Reform-to">https://github.com/Reform-to</a>. The Reform-to group has five repositories:</p>
+              <ul>
+                <li><a href="https://github.com/Reform-to/reform.to">reform.to</a> - front-end website</li>
+                <li><a href="https://github.com/Reform-to/api.reform.to">api.reform.to</a> - site-specific backend (for pledge submissions, verifying reformers)</li>
+                <li><a href="https://github.com/Reform-to/reforms">reforms</a> - metadata for featured reforms</li>
+                <li><a href="https://github.com/Reform-to/congress-photos">congress-photos</a> - resized photos from the Congressional Pictorial Directory</li>
+                <li><a href="https://github.com/Reform-to/congress-legislators">congress-legislators</a> - our fork of unitedstates/congress-legislators.  We commit back upstream</li>
+            </ul>
+          </div>
         </div>
       </div>
     );
