@@ -67,7 +67,7 @@ var App = React.createClass({
       },
       '/pledges': this.setState.bind(this, {page: 'pledges'}, null),
       '/about': this.setState.bind(this, {page: 'about'}, null),
-      '/developers': this.setState.bind(this, {page: 'developers'}, null)
+      '/developer': this.setState.bind(this, {page: 'developer'}, null)
     }).configure({
       // Reset the scroll position every time a route is entered
       on: function() { window.scrollTo(0, 0); }
@@ -352,8 +352,8 @@ var App = React.createClass({
       content = <PledgeTaker reforms={reforms} states={this.props.states} />;
     } else if (this.state.page === 'about') {
       content = <AboutPage />;
-    } else if (this.state.page === 'developers') {
-      content = <DevelopersPage />;
+    } else if (this.state.page === 'developer') {
+      content = <DeveloperPage />;
     }
     return (
       <div key={this.state.page}>
@@ -523,13 +523,13 @@ var AboutPage = React.createClass({
   }
 });
 
-var DevelopersPage = React.createClass({
+var DeveloperPage = React.createClass({
   render: function() {
     return (
-      <div className="ac-developers">
+      <div className="ac-developer">
         <div className="row">
           <div className="large-8 large-offset-2 medium-8 medium-offset-2 columns">
-            <h4 className="subheader text-center">Developers</h4>
+            <h4 className="subheader text-center">Developer</h4>
               <p>The source code for this project is released as open source under the <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>. The concept and project was initiated by <a href="http://en.wikipedia.org/wiki/Lawrence_Lessig">Lawrence Lessig</a> and is developed by <a href="http://fabricatorz.com">Fabricatorz</a>.</p>
               <p>The official public repositories and issues tracking is on Github at <a href="https://github.com/Reform-to">https://github.com/Reform-to</a>. The Reform-to group has five repositories:</p>
               <ul>
