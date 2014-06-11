@@ -15,12 +15,18 @@ var App = React.createClass({
   navigateToCoords: function(empty, latitude, longitude) {
     var lat = parseFloat(latitude);
     var lng = parseFloat(longitude);
-    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: null});
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: null, query: null});
   },
   navigateToPlace: function(empty, latitude, longitude, resolution) {
     var lat = parseFloat(latitude);
     var lng = parseFloat(longitude);
-    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: resolution});
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: resolution, query: null});
+  },
+  navigateToSearch: function(empty, latitude, longitude, resolution, query) {
+    var lat = parseFloat(latitude);
+    var lng = parseFloat(longitude);
+    var q = decodeURIComponent(query);
+    this.setState({page: 'home', latitude: lat, longitude: lng, resolution: resolution, query: q});
   },
   navigateToReform: function(empty, id) {
     this.setState({page: 'reform', identifier: id});
@@ -45,6 +51,7 @@ var App = React.createClass({
     var router = Router({
       '/': this.setState.bind(this, {page: 'home'}, null),
       '/home': {
+        "/(.*),(.*),(.*),(.*)": this.navigateToSearch.bind(this, null),
         "/(.*),(.*),(.*)": this.navigateToPlace.bind(this, null),
         "/(.*),(.*)": this.navigateToCoords.bind(this, null),
         '': this.setState.bind(this, {page: 'home'}, null),
@@ -214,7 +221,8 @@ var App = React.createClass({
     }
   },
   routeToLocation: function(coords) {
-    var loc = [coords.latitude,coords.longitude,coords.resolution].join(',');
+    var query = encodeURIComponent(coords.query);
+    var loc = [coords.latitude,coords.longitude,coords.resolution, query].join(',');
     this.router.setRoute("/home/" + loc);
   },
   render: function() {
@@ -245,6 +253,7 @@ var App = React.createClass({
         latitude={lat}
         longitude={lng}
         resolution={this.state.resolution}
+        query={this.state.query}
         sponsorIds={combinedCongressIds}
         reformCandidateIds={reformCandidateIds}
         states={this.props.states}
@@ -361,6 +370,7 @@ var App = React.createClass({
           latitude={lat}
           longitude={lng}
           resolution={this.state.resolution}
+          query={this.state.query}
           page={this.state.page}
         />
         <div>
@@ -398,6 +408,7 @@ var Navigation = React.createClass({
     latitude: React.PropTypes.number,
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
+    query: React.PropTypes.string,
     page: React.PropTypes.string.isRequired
   },
   getInitialState: function() {
@@ -417,7 +428,8 @@ var Navigation = React.createClass({
     var lat = this.props.latitude;
     var lng = this.props.longitude;
     var rez = this.props.resolution;
-    var coords = lat && lng ? [lat,lng,rez].join(',') : '';
+    var query = encodeURIComponent(this.props.query);
+    var coords = lat && lng ? [lat,lng,rez,query].join(',') : '';
     var homeRoute = coords ? "/home/" + coords : "/home";
 
     var nextRoute;
@@ -460,6 +472,7 @@ var HomePage = React.createClass({
     latitude: React.PropTypes.number,
     longitude: React.PropTypes.number,
     resolution: React.PropTypes.string,
+    query: React.PropTypes.string,
     sponsorIds: React.PropTypes.array,
     reformCandidateIds: React.PropTypes.array,
     states: React.PropTypes.array,
@@ -479,6 +492,12 @@ var HomePage = React.createClass({
           <AddressForm onAddressGeocode={this.updateLocation} />
         </div>
       </div>
+      <CandidateSearch
+        query={this.props.query}
+        sponsorIds={this.props.sponsorIds}
+        reformCandidateIds={this.props.reformCandidateIds}
+        states={this.props.states}
+      />
       <CandidatePicker
         latitude={this.props.latitude}
         longitude={this.props.longitude}
@@ -546,6 +565,112 @@ var DeveloperPage = React.createClass({
   }
 });
 
+var CandidateSearch = React.createClass({
+  propTypes: {
+    query: React.PropTypes.string,
+    sponsorIds: React.PropTypes.array,
+    reformCandidateIds: React.PropTypes.array,
+    states: React.PropTypes.array,
+  },
+  getInitialState: function() {
+    return {
+      legislators: []
+    };
+  },
+  findCandidates: function(query) {
+    var apiKey = window.ENV.API.SUNLIGHT.CONGRESS.apiKey;
+    var sunlightAPI = window.ENV.API.SUNLIGHT.CONGRESS.endpoint;
+
+    var terms = query.split(" ");
+    var component = this;
+
+    // Look up all words in the query
+    function searchLegislators(query, terms, component, legislators) {
+      var first = _.first(terms);
+      var rest = _.rest(terms);
+
+      // Use the query field to get a case insensitive search across first, last, etc. names
+      var findQuery = {
+        apikey: apiKey,
+        per_page: "all",
+        query: first
+      };
+
+      var findLegislatorsURL =
+        sunlightAPI + '/legislators' + "?" + $.param(findQuery);
+
+      $.ajax({
+        url: findLegislatorsURL,
+        dataType: 'json',
+        success: function(data) {
+          var raw = data.results;
+
+          // We only want results where the query contains the last name
+          var filtered = _.filter(raw, function(r) {
+            q = query.toLowerCase();
+            last_name = r.last_name.toLowerCase();
+
+            return q.indexOf(last_name) > -1;
+          });
+
+          var results = _.union(filtered, legislators);
+
+          if (rest.length > 0) {
+            searchLegislators(query, rest, component, filtered);
+          } else {
+            var legs = _.uniq(results, function(r) { return r.bioguide_id; });
+            this.setState({legislators: legs});
+          }
+        }.bind(component),
+        error: function(xhr, status, errorThrown) {
+          console.log("Error: Can't find legislators.");
+          console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+        }
+      });
+    }
+
+    searchLegislators(query, terms, component, []);
+  },
+  componentWillMount: function() {
+    var query = this.props.query;
+    if (query) {
+      this.findCandidates(query);
+    }
+  },
+  componentWillReceiveProps: function(props) {
+    var query = props.query;
+    if (query && query != this.props.query) {
+      this.findCandidates(query);
+    }
+  },
+  render: function() {
+    var hasLegislators = this.state.legislators.length > 0;
+    return (
+    <div className="ac-candidate-picker">
+    <div className="row">
+      <div className="large-6 medium-8 columns">
+        <h2 className="subheader">
+          {hasLegislators ? 'United States Congress' : ''}
+        </h2>
+      </div>
+      <div className="large-6 medium-4 columns">
+        <h2>
+          {hasLegislators ? 'Search Results' : ''}
+        </h2>
+      </div>
+    </div>
+    <div className="row">
+      <div className="large-12 columns">
+        <LegislatorList
+          legislators={this.state.legislators}
+          sponsorIds={this.props.sponsorIds}
+        />
+      </div>
+    </div>
+    </div>
+    );
+  }
+});
 var CandidatePicker = React.createClass({
   propTypes: {
     latitude: React.PropTypes.number,
@@ -750,7 +875,7 @@ var AddressForm = React.createClass({
             var lat = location.lat;
             var lng = location.lng;
             var rez = results[0].types[0];
-            this.props.onAddressGeocode({latitude: lat, longitude: lng, resolution: rez});
+            this.props.onAddressGeocode({latitude: lat, longitude: lng, resolution: rez, query: address});
           } else {
             this.setState({
               addressHelper:'No information for ' + results[0].formatted_address
@@ -764,6 +889,9 @@ var AddressForm = React.createClass({
         console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
       }
     });
+    //
+    // At least send back the query
+    this.props.onAddressGeocode({latitude: null, longitude: null, resolution: null, query: address});
 
     // Remove focus from the address input
     this.refs.address.getDOMNode().blur();
