@@ -339,6 +339,7 @@ var App = React.createClass({
         fecId={this.state.identifier}
         supportedReforms={supportedReforms}
         resource={this.state.resource}
+        reformCandidateIds={reformCandidateIds}
       />;
     } else if (this.state.page === 'badges') {
       content = <BadgesIndex badges={this.props.badges} />;
@@ -1361,12 +1362,10 @@ var CandidateProfile = React.createClass({
       var resource = "/candidates/" + candidate.candidate.id;
       attribution = <AppLink route={resource} text={candidateName}/>;
 
-      var reformCandidateIds = [candidate.candidate.id];
-
       candidateList = <CandidateList
         candidates={this.state.candidates}
         state={state}
-        reformCandidateIds={reformCandidateIds}
+        reformCandidateIds={this.props.reformCandidateIds}
       />;
     }
 
