@@ -1,5 +1,9 @@
 // Put development configuration here.
 
 window.ENV.API.ANTICORRUPT.REFORMERS = {
-  endpoint: 'http://api.fabricatorz.com'
+  endpoint: '/api'
+}
+
+window.ENV.API.ANTICORRUPT.REFORMS = {
+  endpoint: '/api/reforms/index.json'
 }

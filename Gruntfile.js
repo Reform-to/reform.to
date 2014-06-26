@@ -75,6 +75,16 @@ module.exports = function(grunt) {
     },
 
     copy: {
+      api: {
+        files: [
+          {
+            expand: true,
+            cwd: 'api',
+            src: ['**/*'],
+            dest: 'tmp/result/api'
+          }
+        ]
+      },
       compiled: {
         files: [
           {
@@ -130,7 +140,20 @@ module.exports = function(grunt) {
       server: {
         options: {
           port: 9001,
-          base: 'tmp/result'
+          base: 'tmp/result',
+          // Add custom middleware so that we can test pledge form submission. Otherwise connect
+          // will return a 404 when we try to POST to the local pledges/add file.
+          middleware: function(connect, options, middlewares) {
+            middlewares.push(function(req, res, next) {
+              if (req.url !== '/api/pledges/add') {
+                return next();
+              }
+
+              res.end("{}");
+            });
+
+            return middlewares;
+          }
         }
       }
     },
@@ -183,9 +206,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
 
   grunt.registerTask('build', ['copy:vendor', 'copy:assets', 'preprocess:dev', 'jquery', 'react', 'copy:compiled', 'jshint:app']);
-  grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev']);
+  grunt.registerTask('default', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'copy:api']);
   grunt.registerTask('supervise', ['connect', 'watch']);
-  grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'supervise']);
+  grunt.registerTask('server', ['clean:tmp', 'build', 'sass:dev', 'concat:dev', 'copy:api', 'supervise']);
   grunt.registerTask('dist', ['clean', 'build', 'sass:dist', 'preprocess:dist', 'concat:dist', 'uglify', 'copy:dist']);
 
 }

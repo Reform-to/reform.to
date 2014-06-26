@@ -13,9 +13,6 @@ window.ENV = {
     ANTICORRUPT: {
       PHOTOS: {
         endpoint: "/vendor/congress-photos/"
-      },
-      REFORMS: {
-        endpoint: 'http://reforms.fabricatorz.com/us/b5/'
       }
     },
     SUNLIGHT: {
