@@ -913,7 +913,7 @@ var AddressForm = React.createClass({
         <input
           type="text"
           className={this.state.addressStatus}
-          placeholder="Enter an address to find your legislators"
+          placeholder="Enter your address or legislator's name"
           ref="address"
           autoFocus
         />
