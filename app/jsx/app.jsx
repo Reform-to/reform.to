@@ -429,7 +429,7 @@ var Navigation = React.createClass({
     var lat = this.props.latitude;
     var lng = this.props.longitude;
     var rez = this.props.resolution;
-    var query = encodeURIComponent(this.props.query);
+    var query = this.props.query ? encodeURIComponent(this.props.query) : '';
     var coords = lat && lng ? [lat,lng,rez,query].join(',') : '';
     var homeRoute = coords ? "/home/" + coords : "/home";
 
