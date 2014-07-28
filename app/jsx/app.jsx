@@ -1516,8 +1516,6 @@ var District = React.createClass({
     states: React.PropTypes.array,
   },
   locateCandidates: function(state, district) {
-    var candidate_ids = window.ENV.CANDIDATES;
-
     var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
     var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
 
@@ -1536,9 +1534,7 @@ var District = React.createClass({
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
-          var congressional = _.filter(data.results, function(r) {
-            return _.contains(candidate_ids, r.candidate.id);
-          });
+          var congressional = data.results;
           this.setState({
             cycle: data.cycle,
             state: data.state,
@@ -1565,9 +1561,7 @@ var District = React.createClass({
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
-          var senatorial = _.filter(data.results, function(r) {
-            return _.contains(candidate_ids, r.candidate.id);
-          });
+          var senatorial = data.results;
           this.setState({
             senatorial: senatorial
           });
