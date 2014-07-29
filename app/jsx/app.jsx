@@ -737,7 +737,8 @@ var CandidatePicker = React.createClass({
             url: locateLegislatorsURL,
             dataType: 'json',
             success: function(data) {
-              this.setState({legislators: data.results});
+              var results = _.sortBy(data.results, 'district');
+              this.setState({legislators: results});
             }.bind(this),
             error: function(xhr, status, errorThrown) {
               console.log("Error: Can't locate legislators.");
@@ -1534,7 +1535,7 @@ var District = React.createClass({
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
-          var congressional = data.results;
+          var congressional = _.sortBy(data.results, 'district');
           this.setState({
             cycle: data.cycle,
             state: data.state,
