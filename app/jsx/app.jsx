@@ -1517,6 +1517,7 @@ var District = React.createClass({
     states: React.PropTypes.array,
   },
   locateCandidates: function(state, district) {
+    var candidate_ids = window.ENV.CANDIDATES;
     var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
     var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
 
@@ -1547,7 +1548,9 @@ var District = React.createClass({
               return _.contains(fec_ids_on_ballot, r.candidate.id);
             });
           } else {
-            results = data.results;
+            results = _.filter(data.results, function(r) {
+              return _.contains(candidate_ids, r.candidate.id);
+            });
           }
           var congressional = _.sortBy(results, 'district');
           this.setState({
@@ -1582,7 +1585,9 @@ var District = React.createClass({
               return _.contains(fec_ids_on_ballot, r.candidate.id);
             });
           } else {
-            results = data.results;
+            results = _.filter(data.results, function(r) {
+              return _.contains(candidate_ids, r.candidate.id);
+            });
           }
           var senatorial = results;
           this.setState({
