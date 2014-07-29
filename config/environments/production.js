@@ -5,5 +5,5 @@ window.ENV.API.ANTICORRUPT.REFORMERS = {
 }
 
 window.ENV.API.ANTICORRUPT.REFORMS = {
-  endpoint: 'http://reforms.fabricatorz.com/us/b5/'
+  endpoint: 'http://reforms.reform.to/us/b5/'
 }
