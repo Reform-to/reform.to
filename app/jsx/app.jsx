@@ -1187,7 +1187,7 @@ var Lobby = React.createClass({
 
     var twQuery = {
       url: legislatorURL,
-      text: [tweetMessage, legislatorTwitterHandle].join(' ')
+      text: [tweetMessage, legislatorTwitterHandle, "@reform_to"].join(' ')
     };
     var twitterShareURL = [this.state.twitterAPI, "?" ,$.param(twQuery)].join('');
 
