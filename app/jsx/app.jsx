@@ -1727,6 +1727,7 @@ var CandidateList = React.createClass({
         state={state}
         district={district}
         bioguideId={bioguideId}
+        fecId={fecId}
         isReformer={isReformer}
       />;
     }.bind(this));
@@ -1747,6 +1748,7 @@ var Candidate = React.createClass({
     state: React.PropTypes.string,
     district: React.PropTypes.number,
     bioguideId: React.PropTypes.string,
+    fecId: React.PropTypes.string,
     isReformer: React.PropTypes.bool
   },
   render: function() {
@@ -1756,7 +1758,16 @@ var Candidate = React.createClass({
       var photoResource = '/img/100x125/'+ this.props.bioguideId + '.jpg';
       image = congressPhotosAPI + photoResource;
     } else {
-      image = '/img/avatar.png';
+      var candidates = window.ENV.ELECTIONS.candidates;
+      var fecId = this.props.fecId;
+      var candidateWithImage = _.find(candidates, function(c) {
+        return c.fec_id === fecId;
+      });
+      if(candidateWithImage) {
+        image = '/vendor/candidate-photos/' + candidateWithImage.avatar;
+      } else {
+        image = '/img/avatar.png';
+      }
     }
 
     var badge = this.props.isReformer ? "ac-badge" : "dc-badge";
