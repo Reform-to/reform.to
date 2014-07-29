@@ -1542,7 +1542,7 @@ var District = React.createClass({
       success: function(data) {
         if (data.status == "OK") {
           // Filter out candidates who aren't on the ballot
-          if (fec_ids_on_ballot) {
+          if (fec_ids_on_ballot.length > 0) {
             results = _.filter(data.results, function(r) {
               return _.contains(fec_ids_on_ballot, r.candidate.id);
             });
@@ -1577,7 +1577,7 @@ var District = React.createClass({
       success: function(data) {
         if (data.status == "OK") {
           // Filter out candidates who aren't on the ballot
-          if (fec_ids_on_ballot) {
+          if (fec_ids_on_ballot.length > 0) {
             results = _.filter(data.results, function(r) {
               return _.contains(fec_ids_on_ballot, r.candidate.id);
             });
