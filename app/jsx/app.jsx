@@ -1525,6 +1525,12 @@ var District = React.createClass({
     };
     var cycle = window.ENV.ELECTIONS.cycle;
 
+    // Filter out candidates from states where we know the primary results are in
+    var election_state = _.find(window.ENV.ELECTIONS.states, function(s) {
+      return s.abbr === state;
+    });
+    fec_ids_on_ballot = election_state ? _.pluck(election_state.candidates, 'fec_id') : [];
+
     var districtResource = district ? '/' + district : '';
     var houseURI = nytimesAPI +
       cycle + '/seats/' + state + '/house' + districtResource +
@@ -1535,7 +1541,15 @@ var District = React.createClass({
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
-          var congressional = _.sortBy(data.results, 'district');
+          // Filter out candidates who aren't on the ballot
+          if (fec_ids_on_ballot) {
+            results = _.filter(data.results, function(r) {
+              return _.contains(fec_ids_on_ballot, r.candidate.id);
+            });
+          } else {
+            results = data.results;
+          }
+          var congressional = _.sortBy(results, 'district');
           this.setState({
             cycle: data.cycle,
             state: data.state,
@@ -1562,7 +1576,15 @@ var District = React.createClass({
       dataType: 'jsonp',
       success: function(data) {
         if (data.status == "OK") {
-          var senatorial = data.results;
+          // Filter out candidates who aren't on the ballot
+          if (fec_ids_on_ballot) {
+            results = _.filter(data.results, function(r) {
+              return _.contains(fec_ids_on_ballot, r.candidate.id);
+            });
+          } else {
+            results = data.results;
+          }
+          var senatorial = results;
           this.setState({
             senatorial: senatorial
           });
