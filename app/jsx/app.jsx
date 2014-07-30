@@ -559,6 +559,7 @@ var DeveloperPage = React.createClass({
                 <li><a href="https://github.com/Reform-to/congress-photos">congress-photos</a> - resized photos from the Congressional Pictorial Directory</li>
                 <li><a href="https://github.com/Reform-to/congress-legislators">congress-legislators</a> - our fork of unitedstates/congress-legislators.  We commit back upstream</li>
             </ul>
+            <p>We also offer an <a href="http://api.reform.to/reformers/index.rss">RSS feed of reformers</a>.</p>
           </div>
         </div>
       </div>
