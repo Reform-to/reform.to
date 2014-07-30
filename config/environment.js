@@ -17,7 +17,8 @@ window.ENV = {
     },
     SUNLIGHT: {
       CONGRESS: {
-        endpoint: "https://congress.api.sunlightfoundation.com/",
+        //endpoint: "https://congress.api.sunlightfoundation.com/",
+        endpoint: "/js/",
         apiKey: "574712f76976437cb98767c4a2622588"
       }
     },
