@@ -124,7 +124,7 @@ var App = React.createClass({
         };
 
         var findBillsURL =
-          sunlightAPI + "/bills" + "?" + $.param(billQuery);
+          "/js/bills" + "?" + $.param(billQuery);
 
         $.ajax({
           url: findBillsURL,
@@ -154,7 +154,7 @@ var App = React.createClass({
             };
 
             var findLegislatorsURL =
-              sunlightAPI + "/legislators" + "?" + $.param(legislatorQuery);
+              "/js/legislators" + "?" + $.param(legislatorQuery);
 
             $.ajax({
               url: findLegislatorsURL,
@@ -244,15 +244,19 @@ var App = React.createClass({
 
     var slug;
     if (this.state.page === 'home') {
-      content = <HomePage
-        latitude={lat}
-        longitude={lng}
-        resolution={this.state.resolution}
-        query={this.state.query}
-        sponsorIds={combinedCongressIds}
-        reformCandidateIds={reformCandidateIds}
-        states={this.props.states}
-        onUpdateLocation={this.routeToLocation}
+      slug = "anti-corruption";
+      var acBadge = _.find(this.props.badges, function(b) {
+        return slug === b.slug;
+      });
+      var acReforms = _.filter(this.state.reforms, function(r) {
+        return _.contains(acBadge.reforms, r.id);
+      });
+      content = <BadgeProfile
+        badge={acBadge}
+        reforms={acReforms}
+        bills={this.state.bills}
+        sponsors={this.state.sponsors}
+        supporters={this.state.reformers}
       />;
     } else if (this.state.page === 'reforms') {
       content = <ReformsIndex reforms={reforms} />;
@@ -485,7 +489,6 @@ var HomePage = React.createClass({
           <h2 className="subheader special-header text-center text-lowercase">
             What reform does your candidate support?
           </h2>
-          <AddressForm onAddressGeocode={this.updateLocation} />
         </div>
       </div>
       <CandidateSearch
@@ -598,7 +601,7 @@ var CandidateSearch = React.createClass({
 
       $.ajax({
         url: findLegislatorsURL,
-        dataType: 'json',
+        dataType: 'jsonp',
         success: function(data) {
           var raw = data.results;
 
@@ -693,7 +696,7 @@ var CandidatePicker = React.createClass({
 
     $.ajax({
       url: locateDistrictURL,
-      dataType: 'json',
+      dataType: 'jsonp',
       success: function(data) {
         if (data.count > 0) {
           var state = data.results[0].state;
@@ -731,7 +734,7 @@ var CandidatePicker = React.createClass({
 
           $.ajax({
             url: locateLegislatorsURL,
-            dataType: 'json',
+            dataType: 'jsonp',
             success: function(data) {
               var results = _.sortBy(data.results, 'district');
               this.setState({legislators: results});
@@ -951,7 +954,7 @@ var LegislatorProfile = React.createClass({
 
     $.ajax({
       url: locateLegislatorsURL,
-      dataType: 'json',
+      dataType: 'jsonp',
       success: function(data) {
         this.setState({legislators: data.results});
       }.bind(this),
@@ -2088,7 +2091,7 @@ var CandidacyFieldset = React.createClass({
 
           $.ajax({
             url: locateLegislatorsURL,
-            dataType: 'json',
+            dataType: 'jsonp',
             success: function(data) {
               this.setState({legislators: data.results});
             }.bind(this),
