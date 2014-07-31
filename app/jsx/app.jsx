@@ -1319,6 +1319,7 @@ var CandidateProfile = React.createClass({
   componentWillMount: function() {
     var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
     var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+    var nytimesDataType = window.ENV.API.NYT.FINANCES.dataType;
 
     var query = {
       'api-key': apiKey
@@ -1331,7 +1332,7 @@ var CandidateProfile = React.createClass({
 
     $.ajax({
       url: candidateURI,
-      dataType: 'jsonp',
+      dataType: nytimesDataType,
       success: function(data) {
         var candidates = _.map(data.results, function(c) {
           return { candidate: c , district: c.district, state: c.state };
@@ -1516,6 +1517,7 @@ var District = React.createClass({
     var candidate_ids = window.ENV.CANDIDATES;
     var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
     var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+    var nytimesDataType = window.ENV.API.NYT.FINANCES.dataType;
 
     var query = {
       'api-key': apiKey
@@ -1535,7 +1537,7 @@ var District = React.createClass({
 
     $.ajax({
       url: houseURI,
-      dataType: 'jsonp',
+      dataType: nytimesDataType,
       success: function(data) {
         if (data.status == "OK") {
           // Filter out candidates who aren't on the ballot
@@ -1572,7 +1574,7 @@ var District = React.createClass({
 
     $.ajax({
       url: senateURI,
-      dataType: 'jsonp',
+      dataType: nytimesDataType,
       success: function(data) {
         if (data.status == "OK") {
           // Filter out candidates who aren't on the ballot
@@ -2105,6 +2107,7 @@ var CandidacyFieldset = React.createClass({
         // Use the NYT Campaign Finance API
         var nytApiKey = window.ENV.API.NYT.FINANCES.apiKey;
         var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+        var nytimesDataType = window.ENV.API.NYT.FINANCES.dataType;
 
         var query = {
           'api-key': nytApiKey
@@ -2120,7 +2123,7 @@ var CandidacyFieldset = React.createClass({
 
           $.ajax({
             url: senateURI,
-            dataType: 'jsonp',
+            dataType: nytimesDataType,
             success: function(data) {
               if (data.status == "OK") {
                 this.setState({
@@ -2146,7 +2149,7 @@ var CandidacyFieldset = React.createClass({
 
           $.ajax({
             url: houseURI,
-            dataType: 'jsonp',
+            dataType: nytimesDataType,
             success: function(data) {
               if (data.status == "OK") {
                 this.setState({
