@@ -1552,7 +1552,6 @@ var District = React.createClass({
           }
           var congressional = _.sortBy(results, 'district');
           this.setState({
-            cycle: data.cycle,
             state: data.state,
             district: _.parseInt(data.district),
             congressional: congressional
@@ -1606,7 +1605,6 @@ var District = React.createClass({
   },
   getInitialState: function() {
     return {
-      cycle: null,
       state: '',
       district: null,
       congressional: [],
@@ -1627,12 +1625,13 @@ var District = React.createClass({
     var state = _.find(this.props.states, function(s) { return s.abbr === stateAbbr; });
     var stateName = state ? state.name : '';
     var district = this.state.district ? this.state.district : '';
+    var cycle = window.ENV.ELECTIONS.cycle;
     return (
       <div>
         <div className="row">
           <div className="large-6 medium-8 columns">
             <h2 className="special-header subheader">
-              {hasCandidates ? 'Election ' + this.state.cycle : ''}
+              {hasCandidates ? 'Election ' + cycle : ''}
             </h2>
           </div>
           <div className="large-6 medium-4 columns">
@@ -1652,7 +1651,6 @@ var District = React.createClass({
               state={this.props.state}
               chamber="House"
               district={this.state.district}
-              cycle={this.state.cycle}
               legislators={this.props.legislators}
               sponsorIds={this.props.sponsorIds}
               reformCandidateIds={this.props.reformCandidateIds}
@@ -1666,7 +1664,6 @@ var District = React.createClass({
               candidates={this.state.senatorial}
               state={this.props.state}
               chamber="Senate"
-              cycle={this.state.cycle}
               legislators={this.props.legislators}
               sponsorIds={this.props.sponsorIds}
               reformCandidateIds={this.props.reformCandidateIds}
@@ -1684,7 +1681,6 @@ var CandidateList = React.createClass({
     state: React.PropTypes.string,
     district: React.PropTypes.number,
     chamber: React.PropTypes.oneOf(['House', 'Senate']),
-    cycle: React.PropTypes.number,
     legislators: React.PropTypes.array,
     sponsorIds: React.PropTypes.array,
     reformCandidateIds: React.PropTypes.array
