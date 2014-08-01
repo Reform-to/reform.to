@@ -84,15 +84,8 @@ html, body {
   border-bottom: 1px solid $secondary-color;
 }
 
-.top-bar-section {
-  ul li {
-    &.active > a {
-    &:hover {
-      color: $topbar-link-color-active-hover;
-      background-color: $primary-color;
-    }
-    }
-  }
+.top-bar-section li.active:not(.has-form) a:not(.button):hover {
+  color: #fff;
 }
 
 .fa-chevron-right {
