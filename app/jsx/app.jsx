@@ -1159,7 +1159,7 @@ var Lobby = React.createClass({
             <ul>
             {_.map(this.props.unsupported, function(r) { return (<li key={r.id}>{r.title}</li>); }) }
             </ul>
-            <p>You can find out more at <AppLink route="/reforms" text="Reform.to"/></p>
+            <p>You can find out more at <AppLink route="/reforms" text="http://reform.to"/></p>
             </div>;
     }
     var unsupportedReforms = _.pluck(this.props.unsupported, 'title').join(", ");
