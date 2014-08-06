@@ -1948,6 +1948,9 @@ var PledgeTaker = React.createClass({
 
       this.setState({ submitted: true});
 
+      // Optimistically confirm form submission
+      this.setState({ confirmed: true});
+
       $.ajax({
         type: "POST",
         url: addReformersURL,
