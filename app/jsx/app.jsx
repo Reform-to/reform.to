@@ -1514,7 +1514,6 @@ var District = React.createClass({
     states: React.PropTypes.array,
   },
   locateCandidates: function(state, district) {
-    var candidate_ids = window.ENV.CANDIDATES;
     var apiKey = window.ENV.API.NYT.FINANCES.apiKey;
     var nytimesAPI = window.ENV.API.NYT.FINANCES.endpoint;
     var nytimesDataType = window.ENV.API.NYT.FINANCES.dataType;
@@ -1523,12 +1522,6 @@ var District = React.createClass({
       'api-key': apiKey
     };
     var cycle = window.ENV.ELECTIONS.cycle;
-
-    // Filter out candidates from states where we know the primary results are in
-    var election_state = _.find(window.ENV.ELECTIONS.states, function(s) {
-      return s.abbr === state;
-    });
-    fec_ids_on_ballot = election_state ? _.pluck(election_state.candidates, 'fec_id') : [];
 
     var districtResource = district ? '/' + district : '';
     var houseURI = nytimesAPI +
@@ -1540,17 +1533,7 @@ var District = React.createClass({
       dataType: nytimesDataType,
       success: function(data) {
         if (data.status == "OK") {
-          // Filter out candidates who aren't on the ballot
-          if (fec_ids_on_ballot.length > 0) {
-            results = _.filter(data.results, function(r) {
-              return _.contains(fec_ids_on_ballot, r.candidate.id);
-            });
-          } else {
-            results = _.filter(data.results, function(r) {
-              return _.contains(candidate_ids, r.candidate.id);
-            });
-          }
-          var congressional = _.sortBy(results, 'district');
+          var congressional = _.sortBy(data.results, 'district');
           this.setState({
             state: data.state,
             district: _.parseInt(data.district),
@@ -1576,17 +1559,7 @@ var District = React.createClass({
       dataType: nytimesDataType,
       success: function(data) {
         if (data.status == "OK") {
-          // Filter out candidates who aren't on the ballot
-          if (fec_ids_on_ballot.length > 0) {
-            results = _.filter(data.results, function(r) {
-              return _.contains(fec_ids_on_ballot, r.candidate.id);
-            });
-          } else {
-            results = _.filter(data.results, function(r) {
-              return _.contains(candidate_ids, r.candidate.id);
-            });
-          }
-          var senatorial = results;
+          var senatorial = data.results;
           this.setState({
             senatorial: senatorial
           });

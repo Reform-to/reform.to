@@ -23,7 +23,7 @@ window.ENV = {
     },
     NYT: {
       FINANCES: {
-        endpoint: "http://elections.reform.to/finances/",
+        endpoint: "http://elections.reform.to/races/",
         apiKey: "",
         dataType: "json"
       }
