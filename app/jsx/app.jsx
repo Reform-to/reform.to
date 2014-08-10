@@ -571,7 +571,8 @@ var CandidateSearch = React.createClass({
   },
   getInitialState: function() {
     return {
-      legislators: []
+      legislators: [],
+      candidates: []
     };
   },
   findCandidates: function(query) {
@@ -627,6 +628,42 @@ var CandidateSearch = React.createClass({
     }
 
     searchLegislators(query, terms, component, []);
+
+    //Search candidates
+    var cycle = window.ENV.ELECTIONS.cycle;
+    var financesApiKey = window.ENV.API.NYT.FINANCES.apiKey;
+    var financesAPI = window.ENV.API.NYT.FINANCES.endpoint;
+    var financesDataType = window.ENV.API.NYT.FINANCES.dataType;
+    var searchQuery = {
+      'api-key': financesApiKey,
+      'query': query
+    };
+    var searchURI = financesAPI +
+      cycle + '/candidates/search.json?' + $.param(searchQuery);
+
+    $.ajax({
+      url: searchURI,
+      dataType: financesDataType,
+      success: function(data) {
+        if (data.status == "OK") {
+          this.setState({
+            candidates: data.results
+          });
+        } else {
+          this.setState({
+            candidates: []
+          });
+        }
+      }.bind(this),
+      error: function(xhr, status, errorThrown) {
+          console.log("Error: Can't search for Candidates.");
+          console.log(errorThrown+'\n'+status+'\n'+xhr.statusText);
+          // Wipe state on API error
+          this.setState({
+            candidates: []
+          });
+      }.bind(this),
+    });
   },
   componentWillMount: function() {
     var query = this.props.query;
@@ -642,6 +679,8 @@ var CandidateSearch = React.createClass({
   },
   render: function() {
     var hasLegislators = this.state.legislators.length > 0;
+    var hasCandidates = this.state.candidates.length > 0;
+    var cycle = window.ENV.ELECTIONS.cycle;
     return (
     <div className="ac-candidate-picker">
     <div className="row">
@@ -661,6 +700,28 @@ var CandidateSearch = React.createClass({
         <LegislatorList
           legislators={this.state.legislators}
           sponsorIds={this.props.sponsorIds}
+        />
+      </div>
+    </div>
+    <div className="row">
+      <div className="large-6 medium-8 columns">
+        <h2 className="special-header subheader">
+          {hasCandidates ? 'Election ' + cycle : ''}
+        </h2>
+      </div>
+      <div className="large-6 medium-4 columns">
+        <h2>
+          {hasCandidates ? 'Search Results' : ''}
+        </h2>
+      </div>
+    </div>
+    <div className="row">
+      <div className="large-12 columns">
+        <CandidateList
+          candidates={this.state.candidates}
+          sponsorIds={this.props.sponsorIds}
+          legislators={this.state.legislators}
+          reformCandidateIds={this.props.reformCandidateIds}
         />
       </div>
     </div>
@@ -1659,7 +1720,6 @@ var CandidateList = React.createClass({
     reformCandidateIds: React.PropTypes.array
   },
   render: function() {
-    var state = this.props.state;
 
     var sponsorIds = this.props.sponsorIds ? this.props.sponsorIds : [];
     var reformCandidateIds = this.props.reformCandidateIds ? this.props.reformCandidateIds : [];
@@ -1683,6 +1743,9 @@ var CandidateList = React.createClass({
       // Check if this Candidate is in the list of Reformers
       var isReformer = bioguideId ? _.contains(sponsorIds, bioguideId) : false;
       isReformer = fecId && _.contains(reformCandidateIds, fecId) ? true : isReformer;
+
+      var cs = candidate.state;
+      var state = cs.substring(cs.lastIndexOf('/') + 1, cs.lastIndexOf('.'));
 
       // Check if this candidate has a district field
       var district;
