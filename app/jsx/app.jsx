@@ -3321,6 +3321,7 @@ var Application = React.renderComponent(
 
 // Attempt to update the location using the geolocation API
 
+/*
 if ('geolocation' in navigator) {
   navigator.geolocation.getCurrentPosition(function (position) {
     Application.setProps({
@@ -3329,3 +3330,4 @@ if ('geolocation' in navigator) {
     });
   });
 }
+*/
