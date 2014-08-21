@@ -11,6 +11,12 @@
     npm install
     bower install
 
+## Updating
+
+To update dependencies (such as `candidate-photos`), run the command:
+
+    bower update
+
 ## Development
 
     grunt
@@ -23,6 +29,7 @@ This task will compile and run the app on `http://localhost:9001`.
 
 ## Deployment
 
+    bower update
     grunt dist
 
 The compiled app will be built in the `dist/` directory, and can be deployed to
