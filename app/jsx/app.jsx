@@ -545,7 +545,7 @@ var DeveloperPage = React.createClass({
         <div className="row">
           <div className="large-8 large-offset-2 medium-8 medium-offset-2 columns">
             <h4 className="subheader text-center">Developer</h4>
-              <p>The source code for this project is released as open source under the <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>. The concept and project was initiated by <a href="http://en.wikipedia.org/wiki/Lawrence_Lessig">Lawrence Lessig</a> and is developed by <a href="http://fabricatorz.com">Fabricatorz</a>.</p>
+              <p>The source code for this site is released as open source under the <a href="http://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>. The project was conceived by <a href="http://en.wikipedia.org/wiki/Lawrence_Lessig">Lawrence Lessig</a> to track congressional candidates in conjunction with <a href="https://mayday.us/">MAYDAY.US</a>.</p>
               <p>The official public repositories and issues tracking is on Github at <a href="https://github.com/Reform-to">https://github.com/Reform-to</a>. The Reform-to group has five repositories:</p>
               <ul>
                 <li><a href="https://github.com/Reform-to/reform.to">reform.to</a> - front-end website</li>
